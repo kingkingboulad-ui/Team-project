@@ -11,7 +11,7 @@ import CTASection from "@/components/sections/CTASection";
 export default function Home() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <main>
         <Hero />
         <HowItWorks />
@@ -21,7 +21,7 @@ export default function Home() {
         <Testimonials />
         <CTASection />
       </main>
-      <Footer />
+ 
     </>
   );
 }
