@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HeartPulse, Menu, X } from "lucide-react";
 import Button from "@/components/ui/Button";
+import axios from "axios";
 //hun esta3malna useState btkun false par default lal Menu kermel phone bikun Menu hidden w eza kenet fu2 size md btsir btebayen
 //bel Mobile rah tkun hk ☰ w bel desktop rah tkun tabi3iyeh metel hk Home   Find A Nurses   For Nurses   AI Care Assistant
 const links = [
@@ -19,6 +20,22 @@ const links = [
 //container-content mwjud bel css w hatin margin 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+
+
+  // useEffect(()=>{
+  //    const fetchData = async () => {
+
+  //     const res = await axios.get(
+  //       "http://localhost:5000/api/auth/me",
+  //       {
+  //         withCredentials: true
+  //       }
+  //     );
+  //     console.log(res.data.user.name);
+  //    }
+  //    fetchData();
+  
+  // },[]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/5 bg-white/90 backdrop-blur">

@@ -1,9 +1,56 @@
 'use client';
 
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const res = await axios.post('http://localhost:5000/api/auth/register', {
+        first_name: name,
+        last_name: lastName,
+        email,
+        phone,
+        password,
+      },{
+        withCredentials: true,
+      }
+    );
+
+      if (res.status === 200 || res.status === 201) {
+        setSuccess(true);
+        // تفريغ الحقول بعد النجاح
+        setName('');
+        setLastName('');
+        setEmail('');
+        setPhone('');
+        setPassword('');
+        router.push('/Sign-in'); 
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'حدث خطأ أثناء إنشاء الحساب. يُرجى المحاولة لاحقاً.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f8fafc]">
@@ -38,7 +85,7 @@ export default function SignUpPage() {
       {/* Right Side: Sign Up Form Content */}
       <div className="flex items-center justify-center p-6 sm:p-10 lg:p-12">
         <div className="w-full max-w-md space-y-6">
-          
+
           {/* Header Icon & Title */}
           <div>
             <div className="w-10 h-10 rounded-full bg-[#0d7c7b] text-white flex items-center justify-center mb-4 shadow-sm">
@@ -54,9 +101,21 @@ export default function SignUpPage() {
             </p>
           </div>
 
+          {/* Alerts for Error and Success */}
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="p-3 bg-green-50 border border-green-200 text-green-700 rounded-xl text-xs">
+              Account created successfully!
+            </div>
+          )}
+
           {/* Form */}
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-            
+          <form onSubmit={handleSubmit} className="space-y-4">
+
             {/* First Name & Last Name Grid */}
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
@@ -71,6 +130,9 @@ export default function SignUpPage() {
                   </div>
                   <input
                     type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Jane"
                     className="w-full pl-10 pr-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-300 focus:outline-none focus:border-[#0d7c7b] focus:ring-1 focus:ring-[#0d7c7b] transition-all"
                   />
@@ -83,6 +145,9 @@ export default function SignUpPage() {
                 </label>
                 <input
                   type="text"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   placeholder="Doe"
                   className="w-full px-3 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-300 focus:outline-none focus:border-[#0d7c7b] focus:ring-1 focus:ring-[#0d7c7b] transition-all"
                 />
@@ -102,6 +167,9 @@ export default function SignUpPage() {
                 </div>
                 <input
                   type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-300 focus:outline-none focus:border-[#0d7c7b] focus:ring-1 focus:ring-[#0d7c7b] transition-all"
                 />
@@ -121,6 +189,9 @@ export default function SignUpPage() {
                 </div>
                 <input
                   type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   placeholder="(555) 000-0000"
                   className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-300 focus:outline-none focus:border-[#0d7c7b] focus:ring-1 focus:ring-[#0d7c7b] transition-all"
                 />
@@ -140,6 +211,9 @@ export default function SignUpPage() {
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-300 focus:outline-none focus:border-[#0d7c7b] focus:ring-1 focus:ring-[#0d7c7b] transition-all"
                 />
@@ -159,12 +233,15 @@ export default function SignUpPage() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-[#0d5c5c] hover:bg-[#094747] text-white text-xs font-semibold rounded-full transition-colors flex items-center justify-center gap-2 shadow-sm mt-4"
+              disabled={loading}
+              className="w-full py-3 bg-[#0d5c5c] hover:bg-[#094747] disabled:opacity-50 text-white text-xs font-semibold rounded-full transition-colors flex items-center justify-center gap-2 shadow-sm mt-4"
             >
-              <span>Create Patient Account</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
+              <span>{loading ? 'Creating Account...' : 'Create Patient Account'}</span>
+              {!loading && (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              )}
             </button>
           </form>
 

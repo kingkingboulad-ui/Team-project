@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 // تعريف خطوات التسجيل والتحقق
 type OnboardingStep = 'FORM' | 'LICENSE' | 'BACKGROUND' | 'ACTIVATED';
 
 export default function NurseOnboardingFlow() {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('FORM');
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   // FormData State
   const [formData, setFormData] = useState({
@@ -22,10 +24,45 @@ export default function NurseOnboardingFlow() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const [licenseFile, setLicenseFile] = useState<File | null>(null);
+  const [cvFile, setCvFile] = useState<File | null>(null);
+
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    setFile: React.Dispatch<React.SetStateAction<File | null>>
+  ) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const checkLogin = async () => {
+    try {
+      const res = await axios.get(
+        'http://localhost:5000/api/auth/me',
+        {
+          withCredentials: true
+        }
+      );
+  
+      console.log(res.data.user.email);
+      setIsLoggedIn(true);
+  
+    } catch (error) {
+      setIsLoggedIn(false);
+    }
+  };
+
+
+  useEffect(() => {
+    checkLogin()
+  }, [])
+
+
 
   return (
     <div className="min-h-screen bg-[#f4f8f8] text-slate-800 font-sans py-8 px-4 sm:px-6 lg:px-8">
-      
+
       {/* ==========================================
           STEP 1: Registration Form (joinnurses)
          ========================================== */}
@@ -163,19 +200,80 @@ export default function NurseOnboardingFlow() {
               <p className="text-[11px] text-slate-400 mb-4">Accepted formats: PDF, JPG, PNG (Max 5MB per file)</p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-50 transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-2 text-slate-600">
-                    📷
-                  </div>
-                  <p className="text-[11px] font-semibold text-slate-700">Click to upload license</p>
-                  <p className="text-[10px] text-slate-400">NURSING LICENSE / CERTIFICATE</p>
+                {/* Upload Nursing License */}
+                <div className="relative border-2 border-dashed border-slate-200 hover:border-[#0d7c7b] rounded-xl p-4 text-center cursor-pointer hover:bg-slate-50 transition-colors">
+                  <input
+                    type="file"
+                    id="license-upload"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, setLicenseFile)}
+                  />
+
+                  {!licenseFile ? (
+                    <label htmlFor="license-upload" className="cursor-pointer block">
+                      <div className="w-9 h-9 rounded-full bg-teal-50 text-[#0d7c7b] flex items-center justify-center mx-auto mb-2 text-sm font-bold">
+                        📷
+                      </div>
+                      <p className="text-[11px] font-semibold text-slate-700">Click to upload license</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">NURSING LICENSE / CERTIFICATE</p>
+                    </label>
+                  ) : (
+                    <div className="flex items-center justify-between text-left bg-teal-50/60 p-2.5 rounded-lg border border-teal-100">
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <span className="text-sm">📄</span>
+                        <div className="truncate">
+                          <p className="text-[11px] font-bold text-slate-800 truncate">{licenseFile.name}</p>
+                          <p className="text-[9px] text-slate-400">{(licenseFile.size / (1024 * 1024)).toFixed(2)} MB</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setLicenseFile(null)}
+                        className="text-slate-400 hover:text-rose-500 text-xs font-bold p-1 ml-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-50 transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-2 text-slate-600">
-                    📄
-                  </div>
-                  <p className="text-[11px] font-semibold text-slate-700">Click to upload CV</p>
-                  <p className="text-[10px] text-slate-400">CURRICULUM VITAE (CV)</p>
+
+                {/* Upload CV */}
+                <div className="relative border-2 border-dashed border-slate-200 hover:border-[#0d7c7b] rounded-xl p-4 text-center cursor-pointer hover:bg-slate-50 transition-colors">
+                  <input
+                    type="file"
+                    id="cv-upload"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, setCvFile)}
+                  />
+
+                  {!cvFile ? (
+                    <label htmlFor="cv-upload" className="cursor-pointer block">
+                      <div className="w-9 h-9 rounded-full bg-teal-50 text-[#0d7c7b] flex items-center justify-center mx-auto mb-2 text-sm font-bold">
+                        📄
+                      </div>
+                      <p className="text-[11px] font-semibold text-slate-700">Click to upload CV</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5">CURRICULUM VITAE (CV)</p>
+                    </label>
+                  ) : (
+                    <div className="flex items-center justify-between text-left bg-teal-50/60 p-2.5 rounded-lg border border-teal-100">
+                      <div className="flex items-center gap-2 overflow-hidden">
+                        <span className="text-sm">📄</span>
+                        <div className="truncate">
+                          <p className="text-[11px] font-bold text-slate-800 truncate">{cvFile.name}</p>
+                          <p className="text-[9px] text-slate-400">{(cvFile.size / (1024 * 1024)).toFixed(2)} MB</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setCvFile(null)}
+                        className="text-slate-400 hover:text-rose-500 text-xs font-bold p-1 ml-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -185,7 +283,8 @@ export default function NurseOnboardingFlow() {
             </div>
 
             <button
-              onClick={() => setCurrentStep('LICENSE')}
+            disabled={!isLoggedIn}
+              onClick={() => console.log('cliked')}
               className="w-full py-3 bg-[#0d7c7b] hover:bg-[#095f5e] text-white text-xs font-bold rounded-lg transition-colors tracking-wider"
             >
               SUBMIT REGISTRATION →
@@ -487,7 +586,7 @@ export default function NurseOnboardingFlow() {
             {/* Left Steps Card */}
             <div className="md:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
               <h2 className="text-sm font-bold text-slate-900">Your First Steps</h2>
-              
+
               <div className="space-y-3">
                 <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex items-start gap-3">
                   <div className="w-7 h-7 rounded-lg bg-[#0d7c7b] text-white flex items-center justify-center text-xs shrink-0 mt-0.5">👤</div>
