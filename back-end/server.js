@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 
 import DBConnection from "./config/DBConnect.js";
 import authRoutes from "./router/authRoutes.js";
+import nurseRoutes from "./router/nurseRoutes.js";
+// import upload from '../middleware/uploadMiddleware.js';
 import cors from "cors";
 
 dotenv.config();
@@ -16,6 +18,12 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+app.use("/uploads",express.static("uploads"));
+
+app.use("/api/nurses", nurseRoutes);
+
+
 
 app.use("/api/auth", authRoutes);
 

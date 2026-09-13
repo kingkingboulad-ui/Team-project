@@ -9,8 +9,9 @@ type OnboardingStep = 'FORM' | 'LICENSE' | 'BACKGROUND' | 'ACTIVATED';
 export default function NurseOnboardingFlow() {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('FORM');
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // FormData State
+  // FormData State - تم إضافة tags هنا
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -19,11 +20,16 @@ export default function NurseOnboardingFlow() {
     specialization: '',
     experience: '',
     location: '',
+    price:'',
+    // tags: '', 
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
 
@@ -38,31 +44,86 @@ export default function NurseOnboardingFlow() {
 
   const checkLogin = async () => {
     try {
-      const res = await axios.get(
-        'http://localhost:5000/api/auth/me',
-        {
-          withCredentials: true
-        }
-      );
-  
-      console.log(res.data.user.email);
-      setIsLoggedIn(true);
-  
+      const res = await axios.get('http://localhost:5000/api/auth/me', {
+        withCredentials: true,
+      });
+
+      if (res.data?.user) {
+        setIsLoggedIn(true);
+      }
     } catch (error) {
       setIsLoggedIn(false);
     }
   };
 
-
   useEffect(() => {
-    checkLogin()
-  }, [])
+    checkLogin();
+  }, []);
 
+  // دالة تقديم الطلب
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
 
+    try {
+      if (!isLoggedIn) {
+        alert('You must be logged in to submit an application.');
+        return;
+      }
+
+      if (!licenseFile || !cvFile) {
+        alert('Please upload both your nursing license and CV.');
+        return;
+      }
+
+      if (
+        !formData.specialization ||
+        !formData.experience ||
+        !formData.location
+      ) {
+        alert('Please complete all professional information fields.');
+        return;
+      }
+
+      setLoading(true);
+
+      const data = new FormData();
+      data.append('specialization', formData.specialization);
+      data.append('experience', formData.experience);
+      data.append('location', formData.location);
+      // data.append('tags', formData.tags); 
+      data.append('licenseFile', licenseFile);
+      data.append('cvFile', cvFile);
+      data.append('price', formData.price);
+
+      const res = await axios.post(
+        'http://localhost:5000/api/nurses/apply',
+        data,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      console.log('Response:', res.data);
+
+      // الانتقال للخطوة التالية عند النجاح
+      setCurrentStep('LICENSE');
+    } catch (error: any) {
+      console.error(error);
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(error.response.data.message);
+      } else {
+        alert('Something went wrong during submission. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f4f8f8] text-slate-800 font-sans py-8 px-4 sm:px-6 lg:px-8">
-
       {/* ==========================================
           STEP 1: Registration Form (joinnurses)
          ========================================== */}
@@ -140,6 +201,15 @@ export default function NurseOnboardingFlow() {
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#0d7c7b]"
                   />
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1 mt-1">Session price</label>
+                  <input
+                    type="number"
+                    name="price"
+                    placeholder="50$"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#0d7c7b]"
+                  />
                 </div>
               </div>
             </div>
@@ -191,6 +261,21 @@ export default function NurseOnboardingFlow() {
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#0d7c7b]"
                   />
                 </div>
+
+                {/* حقل Tags الجديد */}
+                {/* <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+                    Skills / Tags <span className="text-slate-400 font-normal lowercase">(comma separated)</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="tags"
+                    placeholder="e.g. Elderly Care, Night Shifts, CPR Certified, Emergency"
+                    value={formData.tags}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:border-[#0d7c7b]"
+                  />
+                </div> */}
               </div>
             </div>
 
@@ -283,11 +368,15 @@ export default function NurseOnboardingFlow() {
             </div>
 
             <button
-            disabled={!isLoggedIn}
-              onClick={() => console.log('cliked')}
-              className="w-full py-3 bg-[#0d7c7b] hover:bg-[#095f5e] text-white text-xs font-bold rounded-lg transition-colors tracking-wider"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full py-3 bg-[#0d7c7b] hover:bg-[#095f5e] disabled:bg-slate-300 text-white text-xs font-bold rounded-lg transition-colors tracking-wider flex items-center justify-center gap-2"
             >
-              SUBMIT REGISTRATION →
+              {loading ? (
+                <span>SUBMITTING...</span>
+              ) : (
+                <span>SUBMIT REGISTRATION →</span>
+              )}
             </button>
             <p className="text-center text-[11px] text-slate-400">
               Already have an account? <span className="text-[#0d7c7b] font-bold cursor-pointer">LOG IN</span>
@@ -301,7 +390,6 @@ export default function NurseOnboardingFlow() {
          ========================================== */}
       {currentStep === 'LICENSE' && (
         <div className="max-w-5xl mx-auto space-y-6">
-          {/* Header Badge */}
           <div className="bg-white border border-slate-200 rounded-xl p-3 flex justify-between items-center shadow-sm">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
               <span className="w-5 h-5 rounded-full bg-teal-100 text-[#0d7c7b] flex items-center justify-center text-[10px]">✓</span>
@@ -312,31 +400,26 @@ export default function NurseOnboardingFlow() {
             </span>
           </div>
 
-          {/* Process Flow Bar */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
             <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-4">PROCESS FLOW</p>
             <h2 className="text-lg font-bold text-slate-900 mb-6">Onboarding Status</h2>
 
             <div className="grid grid-cols-4 gap-2 text-center relative">
-              {/* Stepper Node 1 */}
               <div className="flex flex-col items-center">
                 <div className="w-8 h-8 rounded-full bg-[#0d7c7b] text-white font-bold flex items-center justify-center text-xs mb-2">✓</div>
                 <p className="text-xs font-bold text-slate-800">ACCOUNT CREATED</p>
                 <p className="text-[10px] text-slate-400">Completed</p>
               </div>
-              {/* Stepper Node 2 */}
               <div className="flex flex-col items-center">
                 <div className="w-8 h-8 rounded-full border-2 border-[#0d7c7b] text-[#0d7c7b] font-bold flex items-center justify-center text-xs mb-2 bg-teal-50">●</div>
                 <p className="text-xs font-bold text-slate-800">LICENSE VERIFICATION</p>
                 <p className="text-[10px] text-amber-600 font-medium">Under Review</p>
               </div>
-              {/* Stepper Node 3 */}
               <div className="flex flex-col items-center opacity-40">
                 <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs mb-2">…</div>
                 <p className="text-xs font-bold text-slate-800">BACKGROUND CHECK</p>
                 <p className="text-[10px] text-slate-400">Pending</p>
               </div>
-              {/* Stepper Node 4 */}
               <div className="flex flex-col items-center opacity-40">
                 <div className="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-xs mb-2">🔒</div>
                 <p className="text-xs font-bold text-slate-800">ACTIVATION</p>
@@ -345,7 +428,6 @@ export default function NurseOnboardingFlow() {
             </div>
           </div>
 
-          {/* Cards Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-8 bg-white border-2 border-[#0d7c7b] rounded-2xl p-6 shadow-sm relative">
               <div className="flex justify-between items-start mb-4">
@@ -376,7 +458,6 @@ export default function NurseOnboardingFlow() {
               </div>
             </div>
 
-            {/* Sidebar Actions */}
             <div className="lg:col-span-4 space-y-4">
               <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-2">
                 <p className="text-[10px] font-bold text-slate-400 uppercase">REQUIRED ACTIONS</p>
@@ -391,7 +472,6 @@ export default function NurseOnboardingFlow() {
             </div>
           </div>
 
-          {/* Navigation Controls */}
           <div className="flex justify-between pt-4">
             <button
               onClick={() => setCurrentStep('FORM')}
@@ -426,7 +506,6 @@ export default function NurseOnboardingFlow() {
             <p className="text-xs text-slate-500">Step 3 of your clinical onboarding process.</p>
           </div>
 
-          {/* Horizontal Stepper Progress */}
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
             <div className="flex items-center justify-between relative max-w-2xl mx-auto">
               <div className="flex items-center gap-2">
@@ -452,9 +531,7 @@ export default function NurseOnboardingFlow() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Main Status & Action Required */}
             <div className="lg:col-span-7 space-y-6">
-              {/* In Progress Status */}
               <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-teal-50 text-[#0d7c7b] flex items-center justify-center font-bold text-sm">
@@ -470,7 +547,6 @@ export default function NurseOnboardingFlow() {
                 </p>
               </div>
 
-              {/* Required Action Card */}
               <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-3">
                 <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Required Actions</h3>
                 <div className="bg-rose-50 border border-rose-200 rounded-xl p-4 space-y-3">
@@ -490,7 +566,6 @@ export default function NurseOnboardingFlow() {
               </div>
             </div>
 
-            {/* Verification Scope & Timeline */}
             <div className="lg:col-span-5 space-y-6">
               <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
                 <h3 className="text-xs font-bold text-slate-800">Verification Scope</h3>
@@ -545,7 +620,6 @@ export default function NurseOnboardingFlow() {
          ========================================== */}
       {currentStep === 'ACTIVATED' && (
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Top Progress Nodes */}
           <div className="flex items-center justify-center gap-6 text-center">
             <div className="flex items-center gap-2">
               <span className="w-6 h-6 rounded-full bg-[#0d7c7b] text-white text-xs flex items-center justify-center">✓</span>
@@ -568,7 +642,6 @@ export default function NurseOnboardingFlow() {
             </div>
           </div>
 
-          {/* Hero Celebration Banner */}
           <div className="text-center space-y-3 max-w-xl mx-auto">
             <div className="w-14 h-14 rounded-full bg-teal-100 text-[#0d7c7b] flex items-center justify-center mx-auto text-2xl border-4 border-teal-50">
               🛡️
@@ -577,85 +650,11 @@ export default function NurseOnboardingFlow() {
               Account Activated & Ready for Work!
             </h1>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Welcome to the team, Sarah. Your clinical credentials have been verified, and your profile is now live on the NurseConnect network. You are ready to start accepting care requests and managing your schedule.
+              Welcome to the team. Your clinical credentials have been verified, and your profile is now live on the NurseConnect network. You are ready to start accepting care requests and managing your schedule.
             </p>
-          </div>
-
-          {/* Next Steps & Digital ID Card Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
-            {/* Left Steps Card */}
-            <div className="md:col-span-7 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
-              <h2 className="text-sm font-bold text-slate-900">Your First Steps</h2>
-
-              <div className="space-y-3">
-                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-[#0d7c7b] text-white flex items-center justify-center text-xs shrink-0 mt-0.5">👤</div>
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800">Complete Clinical Profile</h3>
-                    <p className="text-[11px] text-slate-500">Add details about your specific clinical experience and specializations to match with the right patients.</p>
-                    <button className="text-[11px] font-bold text-[#0d7c7b] mt-1 hover:underline">Edit Profile →</button>
-                  </div>
-                </div>
-
-                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-teal-100 text-[#0d7c7b] flex items-center justify-center text-xs shrink-0 mt-0.5">📅</div>
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800">Set Weekly Availability</h3>
-                    <p className="text-[11px] text-slate-500">Update your recurring schedule so care coordinators know when you are open for new assignments.</p>
-                    <button className="text-[11px] font-bold text-[#0d7c7b] mt-1 hover:underline">Manage Schedule →</button>
-                  </div>
-                </div>
-
-                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center text-xs shrink-0 mt-0.5">🔍</div>
-                  <div>
-                    <h3 className="text-xs font-bold text-slate-800">Browse Care Requests</h3>
-                    <p className="text-[11px] text-slate-500">View open shifts and patient requests in your designated coverage area and apply immediately.</p>
-                    <button className="text-[11px] font-bold text-[#0d7c7b] mt-1 hover:underline">View Requests →</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right ID & Dashboard Card */}
-            <div className="md:col-span-5 space-y-4">
-              {/* Nurse Digital Badge */}
-              <div className="bg-[#0b5c5e] text-white rounded-2xl p-5 shadow-lg space-y-4 relative overflow-hidden">
-                <div>
-                  <p className="text-xs font-bold tracking-wide">NurseConnect</p>
-                  <p className="text-[9px] text-teal-200 tracking-wider">DIGITAL NURSE ID</p>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://images.unsplash.com/photo-1594824813566-88855ce78961?q=80&w=200&auto=format&fit=crop"
-                    alt="Nurse avatar"
-                    className="w-12 h-12 rounded-xl object-cover border-2 border-white/20"
-                  />
-                  <div>
-                    <h3 className="text-sm font-bold">Sarah Jenkins, RN</h3>
-                    <p className="text-[10px] text-teal-200 font-mono">ID: NC-8472-91A</p>
-                    <div className="inline-flex items-center gap-1 bg-teal-500/30 px-2 py-0.5 rounded-full text-[9px] text-teal-100 font-medium mt-1">
-                      <span>✓</span> Active & Verified
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Box */}
-              <div className="bg-teal-50 border border-teal-100 rounded-2xl p-4 text-center space-y-3">
-                <p className="text-xs text-slate-600">
-                  Your dashboard is ready. Access your schedule, messages, and patient files all in one place.
-                </p>
-                <button className="w-full py-2.5 bg-[#0b5c5e] text-white text-xs font-bold rounded-lg hover:bg-[#08484a] transition-colors flex items-center justify-center gap-1">
-                  Go to Profile →
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}
-
     </div>
   );
 }
