@@ -6,7 +6,8 @@ import {
     getAllNurses,
     getNurseById,
     updateNurseStatus,
-    getNurses 
+    getNurses ,
+    getUserProfile
 } from "../controllers/nurseController.js";
 
 import {
@@ -69,6 +70,17 @@ router.put(
 router.get("/getall", getNurses);
 
 
+
+
+
+
+
+
+
+
+
+
+router.get("/users/:id", getUserProfile);
 
 
 

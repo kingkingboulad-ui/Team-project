@@ -2,9 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-
+import Link from "next/link";
 export interface Nurse {
     id: number | string;
+    user_id: number | string;
     name?: string;
     fullName?: string;
     role?: string;
@@ -128,9 +129,9 @@ export default function NurseCard({ nurse }: { nurse: Nurse }) {
 
                 <div className="flex gap-2">
 
-                    <button className="px-3 py-1.5 border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium rounded-md transition-colors">
+                    <Link href={`/find-a-nurses/${nurse.user_id}`} className="px-3 py-1.5 border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium rounded-md transition-colors">
                         Profile
-                    </button>
+                    </Link >
 
                     <button className="px-3.5 py-1.5 bg-[#0d7c7b] hover:bg-[#095f5e] text-white text-xs font-medium rounded-md transition-colors">
                         Book

@@ -345,3 +345,66 @@ export const getNurses = async (req, res) => {
         });
     }
 };
+
+
+
+
+
+
+export const getUserProfile = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const [rows] = await pool.query(
+            `
+            SELECT
+                u.id,
+                u.first_name,
+                u.last_name,
+                u.email,
+                u.phone,
+
+                np.id AS nurse_id,
+                np.user_id,
+                np.specialization,
+                np.experience,
+                np.license_file,
+                np.location,
+                np.cv_file,
+                np.status,
+                np.created_at,
+                np.updated_at,
+                np.price,
+                np.rating,
+                np.reviews
+
+            FROM users u
+            LEFT JOIN nurse_profiles np
+                ON u.id = np.user_id
+
+            WHERE u.id = ?
+            `,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Nurse not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            nurse: rows[0]
+        });
+
+    } catch (error) {
+        console.error("Get user profile error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};
