@@ -1,9 +1,9 @@
+
 import Link from "next/link";
 import { ComponentPropsWithoutRef } from "react";
 
 type Variant = "primary" | "outline" | "solid";
-{/*children heweh mehtawa mawjud bi aleb button <button><Icon>Get started</button/> w fi ykun 8er text  */}
-{/*ComponentPropsWithoutRef haydi ye3ni enu fina nzid aa button maslan bi alba <Button disabled or type="submit" */}
+
 type ButtonProps = {
   href?: string;
   variant?: Variant;
@@ -15,8 +15,6 @@ const variantClass: Record<Variant, string> = {
   outline: "btn-outline",
   solid: "btn-solid",
 };
-{/*ye3ni variantClass rahh tjib variant w terbetu ma3 css te3u  ha tjib variant:primary
-	w primary:"btn-primary" w ysir 3na <Primary,btn-primary> tfatech aalaya bi css " */}
 
 export default function Button({
   href,
@@ -33,7 +31,9 @@ export default function Button({
       <Link
         href={href}
         className={classes}
-        onClick={onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>}
+        onClick={
+          onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>
+        }
       >
         {children}
       </Link>

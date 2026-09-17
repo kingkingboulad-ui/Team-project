@@ -1,6 +1,25 @@
 
 import pool from "../config/DBConnect.js";
 
+/* =========================================================
+   CATEGORIES
+========================================================= */
+
+const NURSE_CATEGORIES = [
+    "Elderly Care",
+    "Post-Surgery",
+    "Medication Support",
+    "Daily Assistance",
+    "Disability Support",
+    "Palliative Care",
+    "Companionship"
+];
+
+
+/* =========================================================
+   APPLY AS NURSE
+========================================================= */
+
 export const applyAsNurse = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -27,7 +46,6 @@ export const applyAsNurse = async (req, res) => {
             });
         }
 
-        // Check if user already applied
         const [existing] = await pool.execute(
             `
             SELECT id, status
@@ -75,9 +93,30 @@ export const applyAsNurse = async (req, res) => {
             ]
         );
 
+        const nurseId = result.insertId;
+
+        /*
+         * New nurses get all categories for now.
+         * Existing nurses already have different categories
+         * in nurse_categories.
+         */
+        for (const category of NURSE_CATEGORIES) {
+            await pool.execute(
+                `
+                INSERT INTO nurse_categories
+                (
+                    nurse_id,
+                    category
+                )
+                VALUES (?, ?)
+                `,
+                [nurseId, category]
+            );
+        }
+
         res.status(201).json({
             message: "Nurse application submitted successfully",
-            nurseId: result.insertId
+            nurseId
         });
 
     } catch (error) {
@@ -88,6 +127,12 @@ export const applyAsNurse = async (req, res) => {
         });
     }
 };
+
+
+/* =========================================================
+   GET MY NURSE PROFILE
+========================================================= */
+
 export const getMyNurseProfile = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -102,23 +147,20 @@ export const getMyNurseProfile = async (req, res) => {
                 np.price,
                 np.rating,
                 np.reviews,
+                np.image,
                 np.license_file,
                 np.cv_file,
                 np.status,
                 np.created_at,
                 np.updated_at,
-
                 u.id AS user_id,
                 u.first_name,
                 u.last_name,
                 u.email,
                 u.phone
-
             FROM nurse_profiles np
-
             INNER JOIN users u
                 ON np.user_id = u.id
-
             WHERE np.user_id = ?
             `,
             [userId]
@@ -130,10 +172,30 @@ export const getMyNurseProfile = async (req, res) => {
             });
         }
 
-        res.json(rows[0]);
+        const nurse = rows[0];
+
+        /* Get nurse categories */
+        const [categories] = await pool.execute(
+            `
+            SELECT category
+            FROM nurse_categories
+            WHERE nurse_id = ?
+            ORDER BY id ASC
+            `,
+            [nurse.id]
+        );
+
+        nurse.categories = categories.map(
+            (item) => item.category
+        );
+
+        res.json(nurse);
 
     } catch (error) {
-        console.error(error);
+        console.error(
+            "Get my nurse profile error:",
+            error
+        );
 
         res.status(500).json({
             message: "Server error"
@@ -142,7 +204,9 @@ export const getMyNurseProfile = async (req, res) => {
 };
 
 
-
+/* =========================================================
+   GET ALL NURSES
+========================================================= */
 
 export const getAllNurses = async (req, res) => {
     try {
@@ -157,29 +221,64 @@ export const getAllNurses = async (req, res) => {
                 np.price,
                 np.rating,
                 np.reviews,
+                np.image,
                 np.license_file,
                 np.cv_file,
                 np.status,
                 np.created_at,
-
                 u.first_name,
                 u.last_name,
                 u.email,
-                u.phone
-
+                u.phone,
+                CONCAT(
+                    u.first_name,
+                    ' ',
+                    u.last_name
+                ) AS fullName
             FROM nurse_profiles np
-
             INNER JOIN users u
                 ON np.user_id = u.id
-
             ORDER BY np.created_at DESC
             `
         );
 
-        res.json(rows);
+        /* Get all categories */
+        const [categories] = await pool.execute(
+            `
+            SELECT
+                nurse_id,
+                category
+            FROM nurse_categories
+            ORDER BY id ASC
+            `
+        );
+
+        /* Attach categories to each nurse */
+        const nursesWithCategories = rows.map((nurse) => {
+
+            const nurseCategories = categories
+                .filter(
+                    (item) =>
+                        Number(item.nurse_id) ===
+                        Number(nurse.id)
+                )
+                .map(
+                    (item) => item.category
+                );
+
+            return {
+                ...nurse,
+                categories: nurseCategories
+            };
+        });
+
+        res.json(nursesWithCategories);
 
     } catch (error) {
-        console.error(error);
+        console.error(
+            "Get all nurses error:",
+            error
+        );
 
         res.status(500).json({
             message: "Server error"
@@ -188,8 +287,9 @@ export const getAllNurses = async (req, res) => {
 };
 
 
-
-
+/* =========================================================
+   GET NURSE BY ID
+========================================================= */
 
 export const getNurseById = async (req, res) => {
     try {
@@ -203,6 +303,7 @@ export const getNurseById = async (req, res) => {
                 np.specialization,
                 np.experience,
                 np.location,
+                np.image,
                 np.license_file,
                 np.cv_file,
                 np.status,
@@ -211,18 +312,18 @@ export const getNurseById = async (req, res) => {
                 np.reviews,
                 np.created_at,
                 np.updated_at,
-
                 u.first_name,
                 u.last_name,
-                CONCAT(u.first_name, ' ', u.last_name) AS fullName,
+                CONCAT(
+                    u.first_name,
+                    ' ',
+                    u.last_name
+                ) AS fullName,
                 u.email,
                 u.phone
-
             FROM nurse_profiles np
-
             INNER JOIN users u
                 ON np.user_id = u.id
-
             WHERE np.id = ?
             `,
             [id]
@@ -234,13 +335,33 @@ export const getNurseById = async (req, res) => {
             });
         }
 
+        const nurse = rows[0];
+
+        /* Get categories for this nurse */
+        const [categories] = await pool.execute(
+            `
+            SELECT category
+            FROM nurse_categories
+            WHERE nurse_id = ?
+            ORDER BY id ASC
+            `,
+            [id]
+        );
+
+        nurse.categories = categories.map(
+            (item) => item.category
+        );
+
         res.status(200).json({
             success: true,
-            nurse: rows[0]
+            nurse
         });
 
     } catch (error) {
-        console.error("Get nurse by ID error:", error);
+        console.error(
+            "Get nurse by ID error:",
+            error
+        );
 
         res.status(500).json({
             success: false,
@@ -250,10 +371,12 @@ export const getNurseById = async (req, res) => {
 };
 
 
+/* =========================================================
+   UPDATE NURSE STATUS
+========================================================= */
+
 export const updateNurseStatus = async (req, res) => {
-
     try {
-
         const { id } = req.params;
         const { status } = req.body;
 
@@ -289,8 +412,10 @@ export const updateNurseStatus = async (req, res) => {
         });
 
     } catch (error) {
-
-        console.error(error);
+        console.error(
+            "Update nurse status error:",
+            error
+        );
 
         res.status(500).json({
             message: "Server error"
@@ -299,26 +424,42 @@ export const updateNurseStatus = async (req, res) => {
 };
 
 
+/* =========================================================
+   GET APPROVED NURSES
+   Used by Find a Nurse page
+========================================================= */
 
 export const getNurses = async (req, res) => {
     try {
-        const [rows] = await pool.execute(`
+
+        const [rows] = await pool.execute(
+            `
             SELECT
                 np.id,
                 np.user_id,
 
-                CONCAT(u.first_name, ' ', u.last_name) AS name,
-                CONCAT(u.first_name, ' ', u.last_name) AS fullName,
+                CONCAT(
+                    u.first_name,
+                    ' ',
+                    u.last_name
+                ) AS name,
+
+                CONCAT(
+                    u.first_name,
+                    ' ',
+                    u.last_name
+                ) AS fullName,
 
                 np.specialization AS role,
                 np.specialization,
+
                 np.price,
                 np.location,
                 np.experience,
                 np.rating,
                 np.reviews,
 
-                np.license_file
+                np.image
 
             FROM nurse_profiles np
 
@@ -326,18 +467,51 @@ export const getNurses = async (req, res) => {
                 ON np.user_id = u.id
 
             WHERE np.status = 'approved'
-              AND u.role = 'user'
 
             ORDER BY np.created_at DESC
-        `);
+            `
+        );
+
+        /* Get categories for all nurses */
+        const [categories] = await pool.execute(
+            `
+            SELECT
+                nurse_id,
+                category
+            FROM nurse_categories
+            ORDER BY id ASC
+            `
+        );
+
+        /* Attach categories to each nurse */
+        const nursesWithCategories = rows.map((nurse) => {
+
+            const nurseCategories = categories
+                .filter(
+                    (item) =>
+                        Number(item.nurse_id) ===
+                        Number(nurse.id)
+                )
+                .map(
+                    (item) => item.category
+                );
+
+            return {
+                ...nurse,
+                categories: nurseCategories
+            };
+        });
 
         res.status(200).json({
             success: true,
-            nurses: rows
+            nurses: nursesWithCategories
         });
 
     } catch (error) {
-        console.error("Get nurses error:", error);
+        console.error(
+            "Get nurses error:",
+            error
+        );
 
         res.status(500).json({
             success: false,
@@ -347,9 +521,9 @@ export const getNurses = async (req, res) => {
 };
 
 
-
-
-
+/* =========================================================
+   GET USER / NURSE PROFILE
+========================================================= */
 
 export const getUserProfile = async (req, res) => {
     try {
@@ -366,19 +540,26 @@ export const getUserProfile = async (req, res) => {
 
                 np.id AS nurse_id,
                 np.user_id,
+
                 np.specialization,
                 np.experience,
+
+                np.image,
+
                 np.license_file,
                 np.location,
                 np.cv_file,
+
                 np.status,
                 np.created_at,
                 np.updated_at,
+
                 np.price,
                 np.rating,
                 np.reviews
 
             FROM users u
+
             LEFT JOIN nurse_profiles np
                 ON u.id = np.user_id
 
@@ -394,13 +575,39 @@ export const getUserProfile = async (req, res) => {
             });
         }
 
+        const nurse = rows[0];
+
+        /* Get categories if this user is a nurse */
+        if (nurse.nurse_id) {
+
+            const [categories] = await pool.execute(
+                `
+                SELECT category
+                FROM nurse_categories
+                WHERE nurse_id = ?
+                ORDER BY id ASC
+                `,
+                [nurse.nurse_id]
+            );
+
+            nurse.categories = categories.map(
+                (item) => item.category
+            );
+
+        } else {
+            nurse.categories = [];
+        }
+
         res.status(200).json({
             success: true,
-            nurse: rows[0]
+            nurse
         });
 
     } catch (error) {
-        console.error("Get user profile error:", error);
+        console.error(
+            "Get user profile error:",
+            error
+        );
 
         res.status(500).json({
             success: false,
