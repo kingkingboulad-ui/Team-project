@@ -13,12 +13,14 @@ fs.mkdirSync(cvDir, { recursive: true });
 // Storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    if (file.fieldname === "license") {
+    // قبول license أو licenseFile
+    if (file.fieldname === "license" || file.fieldname === "licenseFile") {
       cb(null, licenseDir);
-    } else if (file.fieldname === "cv") {
+    // قبول cv أو cvFile
+    } else if (file.fieldname === "cv" || file.fieldname === "cvFile") {
       cb(null, cvDir);
     } else {
-      cb(new Error("Invalid file field"), false);
+      cb(new Error(`Invalid file field: ${file.fieldname}`), false);
     }
   },
 

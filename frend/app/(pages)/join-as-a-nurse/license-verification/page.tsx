@@ -15,7 +15,7 @@ export default function LicenseVerificationPage() {
 
   return (
     <div className="min-h-screen bg-[#F1F8FB]">
-      <Navbar />
+    
 
       <main className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-[1100px]">
@@ -252,7 +252,7 @@ export default function LicenseVerificationPage() {
         </div>
       </main>
 
-      <Footer />
+      
     </div>
   );
 }

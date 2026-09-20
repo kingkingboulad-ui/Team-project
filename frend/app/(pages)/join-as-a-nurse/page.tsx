@@ -3,6 +3,19 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Check } from 'lucide-react';
+
+const AVAILABLE_CATEGORIES = [
+  'Home Care',
+  'Elderly Care',
+  'Pediatric Care',
+  'Post-Surgery Care',
+  'Wound Dressing',
+  'IV Therapy & Injections',
+  'Palliative Care',
+  'ICU Support',
+  'Physical Therapy Assistance'
+];
 
 export default function CreateNurseAccountPage() {
   const router = useRouter();
@@ -18,6 +31,8 @@ export default function CreateNurseAccountPage() {
   const [specialization, setSpecialization] = useState('');
   const [yearsExperience, setYearsExperience] = useState('');
   const [location, setLocation] = useState('');
+  const [price, setPrice] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // التصنيفات المتعددة
 
   // Credential Upload
   const [licenseFile, setLicenseFile] = useState<File | null>(null);
@@ -26,16 +41,27 @@ export default function CreateNurseAccountPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const toggleCategory = (cat: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(cat) ? prev.filter((item) => item !== cat) : [...prev, cat]
+    );
+  };
+
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     setter: (file: File | null) => void
   ) => {
     setter(e.target.files?.[0] ?? null);
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
+
+    if (selectedCategories.length === 0) {
+      setErrorMessage('Please select at least one care category / service.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -45,14 +71,21 @@ export default function CreateNurseAccountPage() {
       formData.append('phone', phone);
       formData.append('password', password);
       formData.append('specialization', specialization);
-      formData.append('yearsExperience', yearsExperience);
+      formData.append('experience', yearsExperience); // مطابقة الاسم مع دالة الباك إند
       formData.append('location', location);
+      formData.append('price', price);
       formData.append('role', 'nurse');
-      if (licenseFile) formData.append('license', licenseFile);
-      if (cvFile) formData.append('cv', cvFile);
 
+      // إرسال الـ Categories كـ JSON
+      formData.append('categories', JSON.stringify(selectedCategories));
+
+      // مطابقة أسماء حقول الملفات تماماً مع ما ينتظره الباك إند
+      if (licenseFile) formData.append('licenseFile', licenseFile);
+      if (cvFile) formData.append('cvFile', cvFile);
+
+      // تأكد هل الرابط هو /api/nurses/apply أم /api/auth/register
       const res = await axios.post(
-        'http://localhost:5000/api/auth/register',
+        'http://localhost:5000/api/nurses/apply', // أو /api/auth/register حسب المسار الذي توجد به الدالة
         formData,
         {
           withCredentials: true,
@@ -217,18 +250,74 @@ export default function CreateNurseAccountPage() {
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                  Current Location / Region
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="City, State"
-                  className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
+                    Current Location / Region
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="City, State"
+                    className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
+                    Hourly Rate ($ / hour)
+                  </label>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-xs font-semibold">
+                      $
+                    </span>
+                    <input
+                      type="number"
+                      required
+                      min="0"
+                      step="0.5"
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      placeholder="50.00"
+                      className="w-full pl-7 pr-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* اختيار التصنيفات المتعددة */}
+              <div className="space-y-2 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
+                    Select Care Categories / Services Provided
+                  </label>
+                  <span className="text-[10px] text-slate-400">
+                    {selectedCategories.length} selected
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {AVAILABLE_CATEGORIES.map((cat) => {
+                    const isSelected = selectedCategories.includes(cat);
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => toggleCategory(cat)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all border ${
+                          isSelected
+                            ? 'bg-[#0d7c7b] text-white border-[#0d7c7b] shadow-sm'
+                            : 'bg-[#e8f8f8] text-slate-700 border-transparent hover:border-[#0d7c7b]/30'
+                        }`}
+                      >
+                        {isSelected && <Check className="w-3.5 h-3.5" />}
+                        <span>{cat}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </section>
 
@@ -284,16 +373,6 @@ export default function CreateNurseAccountPage() {
                   />
                 </label>
               </div>
-
-              <div className="bg-[#e8f8f8] border border-[#d2f0f0] rounded-xl p-3 flex items-start gap-2.5">
-                <svg className="w-4 h-4 text-[#0d7c7b] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01M10.29 3.86l-8.18 14.14A2 2 0 003.82 21h16.36a2 2 0 001.71-3l-8.18-14.14a2 2 0 00-3.42 0z" />
-                </svg>
-                <p className="text-[11px] text-slate-600 leading-relaxed">
-                  Your documents will be securely reviewed to verify your professional qualifications.
-                  This process is mandatory for network activation.
-                </p>
-              </div>
             </section>
 
             {/* Submit */}
@@ -317,13 +396,6 @@ export default function CreateNurseAccountPage() {
               </a>
             </p>
           </form>
-
-          <p className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400">
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-            Secure Registration Portal
-          </p>
         </div>
       </div>
     </main>

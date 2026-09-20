@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   Home, Users, Calendar, Settings, 
-  Bell, Search, Menu, X, LogOut, ChevronDown, UserCheck
+  Bell, Search, Menu, X, LogOut, ChevronDown, UserCheck, Loader2
 } from 'lucide-react';
+import axios from 'axios';
 
 interface ShellProps {
   children: React.ReactNode;
@@ -14,15 +15,48 @@ interface ShellProps {
 
 export default function DashboardShell({ children }: ShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const pathname = usePathname(); // جلب المسار الحالي للرابط
+  const [loggingOut, setLoggingOut] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
 
-  // مصفوفة روابط القائمة لسهولة الصيانة والتكرار
   const navItems = [
     { name: 'Overview', href: '/admin', icon: Home },
     { name: 'Nurses', href: '/admin/nurses', icon: UserCheck },
     { name: 'Patients', href: '/admin/patients', icon: Users },
     { name: 'Appointments', href: '/admin/appointments', icon: Calendar },
   ];
+
+  // دالة تسجيل الخروج ومسح التوكن من الكوكيز والتخزين المحلي
+  const handleLogout = async () => {
+    try {
+      setLoggingOut(true);
+
+      // 1. استدعاء السيرفر لحذف كوكي token
+      await axios.post(
+        'http://localhost:5000/api/auth/logout',
+        {},
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // 2. تنظيف التخزين المحلي كإجراء أمان إضافي
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        sessionStorage.clear();
+
+        // 3. حذف الكوكي يدوياً من جانب العميل احتياطياً في حال كان غير محمي بـ httpOnly
+        document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      }
+
+      setLoggingOut(false);
+      setIsSidebarOpen(false);
+
+      // 4. إعادة التوجيه إلى صفحة تسجيل دخول الأدمن مع تحديث الصفحة لتفعيل Middleware
+      window.location.href = '/admin/login';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans">
@@ -100,10 +134,8 @@ export default function DashboardShell({ children }: ShellProps) {
           <div className="p-4 space-y-1 overflow-y-auto">
             <p className="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Main Menu</p>
             
-            {/* dynamic navigation links */}
             {navItems.map((item) => {
               const Icon = item.icon;
-              // فحص إذا كان الرابط هو المفعل حالياً
               const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
 
               return (
@@ -126,12 +158,11 @@ export default function DashboardShell({ children }: ShellProps) {
             <div className="pt-4 mt-4 border-t border-slate-100">
               <p className="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">System</p>
               
-              {/* Settings Link */}
               <Link 
-                href="/admin/settings"
+                href="/admin/Settings"
                 onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                  pathname.startsWith('/admin/settings')
+                  pathname.startsWith('/admin/settings') || pathname.startsWith('/admin/Settings')
                     ? 'bg-[#0d6e6e] text-white shadow-sm' 
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
@@ -142,10 +173,20 @@ export default function DashboardShell({ children }: ShellProps) {
             </div>
           </div>
 
+          {/* زر تسجيل الخروج مع الربط البرمجي الكامل */}
           <div className="p-4 border-t border-slate-100 bg-white">
-            <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-rose-600 hover:bg-rose-50 transition-colors">
-              <LogOut className="w-4 h-4" />
-              <span>Log Out</span>
+            <button 
+              type="button"
+              disabled={loggingOut}
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-rose-600 hover:bg-rose-50 transition-colors disabled:opacity-50"
+            >
+              {loggingOut ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <LogOut className="w-4 h-4" />
+              )}
+              <span>{loggingOut ? 'Signing out...' : 'Log Out'}</span>
             </button>
           </div>
         </aside>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import Providers from "@/components/providers/Providers";
 // import Navbar from "@/components/layout/Navbar";
 // import Footer from "@/components/layout/Footer";
 
@@ -23,10 +24,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={sans.variable}>
-      <body className="font-sans">
-        {/* <Navbar /> */}
-        {children}
-        {/* <Footer /> */}
+      <body className="font-sans antialiased bg-slate-50 text-slate-900">
+        <Providers>
+          {/* <Navbar /> */}
+          {children}
+          {/* <Footer /> */}
+        </Providers>
       </body>
     </html>
   );

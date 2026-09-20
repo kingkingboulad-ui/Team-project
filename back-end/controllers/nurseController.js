@@ -22,112 +22,128 @@ const NURSE_CATEGORIES = [
 
 export const applyAsNurse = async (req, res) => {
     try {
-        const userId = req.user.id;
-
-        const {
-            specialization,
-            experience,
-            location,
-            price
-        } = req.body;
-
-        const licenseFile = req.files?.licenseFile?.[0];
-        const cvFile = req.files?.cvFile?.[0];
-
-        if (!specialization || !experience || !location || !price) {
-            return res.status(400).json({
-                message: "All nurse information is required"
-            });
+      const userId = req.user.id;
+  
+      const {
+        specialization,
+        experience,
+        location,
+        price,
+        categories // 1. استقبال التصنيفات من الفرونت إند
+      } = req.body;
+  
+      const licenseFile = req.files?.licenseFile?.[0];
+      const cvFile = req.files?.cvFile?.[0];
+  
+      if (!specialization || !experience || !location || !price) {
+        return res.status(400).json({
+          message: "All nurse information is required"
+        });
+      }
+  
+      if (!licenseFile || !cvFile) {
+        return res.status(400).json({
+          message: "License and CV are required"
+        });
+      }
+  
+      // 2. التحقق من التصنيفات وفكها في حال أُرسلت عبر FormData كـ JSON String
+      let selectedCategories = [];
+      if (categories) {
+        try {
+          selectedCategories = typeof categories === "string" 
+            ? JSON.parse(categories) 
+            : categories;
+        } catch (err) {
+          selectedCategories = Array.isArray(categories) ? categories : [categories];
         }
-
-        if (!licenseFile || !cvFile) {
-            return res.status(400).json({
-                message: "License and CV are required"
-            });
-        }
-
-        const [existing] = await pool.execute(
+      }
+  
+      if (!Array.isArray(selectedCategories) || selectedCategories.length === 0) {
+        return res.status(400).json({
+          message: "Please select at least one category"
+        });
+      }
+  
+      // 3. فحص هل المستخدم قدم مسبقاً
+      const [existing] = await pool.execute(
+        `
+        SELECT id, status
+        FROM nurse_profiles
+        WHERE user_id = ?
+        `,
+        [userId]
+      );
+  
+      if (existing.length > 0) {
+        return res.status(409).json({
+          message: "You already submitted a nurse application",
+          status: existing[0].status
+        });
+      }
+  
+      const licensePath = `/uploads/licenses/${licenseFile.filename}`;
+      const cvPath = `/uploads/cvs/${cvFile.filename}`;
+  
+      // 4. إنشاء ملف الممرض
+      const [result] = await pool.execute(
+        `
+        INSERT INTO nurse_profiles
+        (
+          user_id,
+          specialization,
+          experience,
+          location,
+          license_file,
+          cv_file,
+          price
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        `,
+        [
+          userId,
+          specialization,
+          experience,
+          location,
+          licensePath,
+          cvPath,
+          price
+        ]
+      );
+  
+      const nurseId = result.insertId;
+  
+      // 5. حفظ التصنيفات التي اختارها المستخدم فقط
+      for (const category of selectedCategories) {
+        if (category && typeof category === "string" && category.trim() !== "") {
+          await pool.execute(
             `
-            SELECT id, status
-            FROM nurse_profiles
-            WHERE user_id = ?
-            `,
-            [userId]
-        );
-
-        if (existing.length > 0) {
-            return res.status(409).json({
-                message: "You already submitted a nurse application",
-                status: existing[0].status
-            });
-        }
-
-        const licensePath =
-            `/uploads/licenses/${licenseFile.filename}`;
-
-        const cvPath =
-            `/uploads/cvs/${cvFile.filename}`;
-
-        const [result] = await pool.execute(
-            `
-            INSERT INTO nurse_profiles
+            INSERT INTO nurse_categories
             (
-                user_id,
-                specialization,
-                experience,
-                location,
-                license_file,
-                cv_file,
-                price
+              nurse_id,
+              category
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?)
             `,
-            [
-                userId,
-                specialization,
-                experience,
-                location,
-                licensePath,
-                cvPath,
-                price
-            ]
-        );
-
-        const nurseId = result.insertId;
-
-        /*
-         * New nurses get all categories for now.
-         * Existing nurses already have different categories
-         * in nurse_categories.
-         */
-        for (const category of NURSE_CATEGORIES) {
-            await pool.execute(
-                `
-                INSERT INTO nurse_categories
-                (
-                    nurse_id,
-                    category
-                )
-                VALUES (?, ?)
-                `,
-                [nurseId, category]
-            );
+            [nurseId, category.trim()]
+          );
         }
-
-        res.status(201).json({
-            message: "Nurse application submitted successfully",
-            nurseId
-        });
-
+      }
+  
+      return res.status(201).json({
+        success: true,
+        message: "Nurse application submitted successfully",
+        nurseId
+      });
+  
     } catch (error) {
-        console.error("Apply nurse error:", error);
-
-        res.status(500).json({
-            message: "Server error"
-        });
+      console.error("Apply nurse error:", error);
+  
+      return res.status(500).json({
+        message: "Server error"
+      });
     }
-};
-
+  };
 
 /* =========================================================
    GET MY NURSE PROFILE
@@ -376,52 +392,82 @@ export const getNurseById = async (req, res) => {
 ========================================================= */
 
 export const updateNurseStatus = async (req, res) => {
+    let connection;
+  
     try {
-        const { id } = req.params;
-        const { status } = req.body;
-
-        const allowedStatuses = [
-            "pending",
-            "approved",
-            "rejected"
-        ];
-
-        if (!allowedStatuses.includes(status)) {
-            return res.status(400).json({
-                message: "Invalid status"
-            });
-        }
-
-        const [result] = await pool.execute(
-            `
-            UPDATE nurse_profiles
-            SET status = ?
-            WHERE id = ?
-            `,
-            [status, id]
-        );
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                message: "Nurse application not found"
-            });
-        }
-
-        res.json({
-            message: `Nurse application ${status}`
+      const { id } = req.params; // معرف ملف الممرض nurse_profiles.id
+      const { status } = req.body;
+  
+      const allowedStatuses = ["pending", "approved", "rejected"];
+  
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({
+          message: "Invalid status",
         });
-
+      }
+  
+      connection = await pool.getConnection();
+      await connection.beginTransaction();
+  
+      // 1. جلب user_id المرتبط بهذا الملف
+      const [nurseRows] = await connection.query(
+        `SELECT user_id FROM nurse_profiles WHERE id = ?`,
+        [id]
+      );
+  
+      if (nurseRows.length === 0) {
+        await connection.rollback();
+        return res.status(404).json({
+          message: "Nurse application not found",
+        });
+      }
+  
+      const userId = nurseRows[0].user_id;
+  
+      // 2. تحديث حالة الملف الشخصي في nurse_profiles
+      await connection.query(
+        `
+        UPDATE nurse_profiles 
+        SET status = ? 
+        WHERE id = ?
+        `,
+        [status, id]
+      );
+  
+      // 3. إذا تمت الموافقة، نقوم بتحديث دور المستخدم في جدول users إلى nurse
+      if (status === "approved") {
+        await connection.query(
+          `
+          UPDATE users 
+          SET role = 'nurse' 
+          WHERE id = ?
+          `,
+          [userId]
+        );
+      }
+  
+      await connection.commit();
+  
+      return res.json({
+        success: true,
+        message: `Nurse application ${status} and user role updated successfully`,
+      });
     } catch (error) {
-        console.error(
-            "Update nurse status error:",
-            error
-        );
-
-        res.status(500).json({
-            message: "Server error"
-        });
+      if (connection) {
+        await connection.rollback();
+      }
+  
+      console.error("Update nurse status error:", error);
+  
+      return res.status(500).json({
+        message: "Server error",
+      });
+    } finally {
+      if (connection) {
+        connection.release();
+      }
     }
-};
+  };
 
 
 /* =========================================================
@@ -615,3 +661,260 @@ export const getUserProfile = async (req, res) => {
         });
     }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const getNurseBookings = async (req, res) => {
+    try {
+    //   const userId = req.user.id; // معرّف الممرض من الـ auth middleware
+  
+      const userId = req.user?.id || req.user?.userId || req.userId;
+      const [profileRows] = await pool.query(
+        "SELECT id FROM nurse_profiles WHERE user_id = ?",
+        [userId]
+      );
+  
+      if (profileRows.length === 0) {
+        return res.status(404).json({ success: false, message: "Nurse profile not found." });
+      }
+  
+      const nurseProfileId = profileRows[0].id;
+  
+      // جلب كافة الحجوزات مع تفاصيل المريض
+      const [bookings] = await pool.query(
+        `SELECT 
+          cr.id,
+          cr.user_id AS patient_id,
+          CONCAT(u.first_name, ' ', u.last_name) AS patient_name,
+          u.email AS patient_email,
+          u.phone AS patient_phone,
+          cr.care_for,
+          cr.care_type,
+          cr.start_date,
+          cr.duration,
+          cr.address,
+          cr.latitude,
+          cr.longitude,
+          cr.notes,
+          cr.status,
+          cr.created_at
+        FROM care_requests cr
+        JOIN users u ON cr.user_id = u.id
+        WHERE cr.preferred_nurse_id = ?
+        ORDER BY cr.created_at DESC`,
+        [nurseProfileId]
+      );
+  
+      return res.status(200).json({
+        success: true,
+        count: bookings.length,
+        bookings,
+      });
+    } catch (error) {
+      console.error("Error fetching nurse bookings:", error);
+      return res.status(500).json({ success: false, message: "Server error fetching bookings." });
+    }
+  };
+  
+  // مسار لتحديث حالة الحجز (قبول / رفض / إكمال)
+  export const updateBookingStatus = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body; // 'accepted', 'rejected', 'completed'
+  
+      const [result] = await pool.query(
+        "UPDATE care_requests SET status = ? WHERE id = ?",
+        [status, id]
+      );
+  
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: "Booking not found." });
+      }
+  
+      return res.json({ success: true, message: `Booking marked as ${status}` });
+    } catch (error) {
+      console.error("Error updating status:", error);
+      return res.status(500).json({ success: false, message: "Failed to update status." });
+    }
+  };
+
+
+
+
+
+
+
+
+
+  export const deleteNurseBooking = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user?.id || req.user?.userId || req.userId;
+  
+      // 1. جلب profile_id الخاص بالممرض
+      const [nurseProfile] = await pool.query(
+        "SELECT id FROM nurse_profiles WHERE user_id = ?",
+        [userId]
+      );
+  
+      if (nurseProfile.length === 0) {
+        return res.status(404).json({ success: false, message: "Nurse profile not found." });
+      }
+  
+      const nurseProfileId = nurseProfile[0].id;
+  
+      // 2. حذف الحجز بشرط أن يكون تابعاً لهذا الممرض
+      const [result] = await pool.query(
+        "DELETE FROM care_requests WHERE id = ? AND preferred_nurse_id = ?",
+        [id, nurseProfileId]
+      );
+  
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Booking not found or you do not have permission to delete it.",
+        });
+      }
+  
+      return res.status(200).json({
+        success: true,
+        message: "Booking deleted successfully.",
+      });
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Server error deleting booking.",
+      });
+    }
+  };
+
+
+
+
+
+
+
+
+
+  export const getLatestNurses = async (req, res) => {
+    try {
+      const [rows] = await pool.query(
+        `SELECT 
+          np.id,
+          np.user_id,
+          CONCAT(u.first_name, ' ', u.last_name) AS name,
+          u.email,
+          u.phone,
+          np.specialization,
+          np.experience,
+          np.location,
+          np.price,
+          np.rating,
+          np.reviews,
+          np.image,
+          np.status,
+          np.created_at
+        FROM nurse_profiles np
+        JOIN users u ON np.user_id = u.id
+        WHERE np.status = 'approved'
+        ORDER BY np.created_at DESC
+        LIMIT 3`
+      );
+  
+      return res.status(200).json({
+        success: true,
+        count: rows.length,
+        nurses: rows,
+      });
+    } catch (error) {
+      console.error("Error fetching latest nurses:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Server error fetching nurses",
+      });
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  export const rateNurse = async (req, res) => {
+    const connection = await pool.getConnection();
+    try {
+      const { nurseId } = req.params; // معرف الممرض (nurse_profiles.id)
+      const { rating, comment } = req.body;
+      const patientId = req.user?.id; // معرف المريض من توكن الدخول
+  
+      if (!patientId) {
+        return res.status(401).json({ success: false, message: "Please sign in to rate." });
+      }
+  
+      const numRating = parseFloat(rating);
+      if (isNaN(numRating) || numRating < 1 || numRating > 5) {
+        return res.status(400).json({ success: false, message: "Rating must be between 1 and 5 stars." });
+      }
+  
+      await connection.beginTransaction();
+  
+      // 1. إدخال التقييم
+      await connection.query(
+        `INSERT INTO reviews (nurse_id, patient_id, rating, comment) VALUES (?, ?, ?, ?)`,
+        [nurseId, patientId, numRating, comment || null]
+      );
+  
+      // 2. حساب المتوسط الجديد وعدد التقييمات
+      const [stats] = await connection.query(
+        `SELECT AVG(rating) AS avgRating, COUNT(id) AS totalReviews FROM reviews WHERE nurse_id = ?`,
+        [nurseId]
+      );
+  
+      const newAvgRating = parseFloat(stats[0].avgRating || 0).toFixed(2);
+      const newTotalReviews = stats[0].totalReviews || 0;
+  
+      // 3. تحديث جدول nurse_profiles
+      await connection.query(
+        `UPDATE nurse_profiles SET rating = ?, reviews = ? WHERE id = ?`,
+        [newAvgRating, newTotalReviews, nurseId]
+      );
+  
+      await connection.commit();
+  
+      return res.status(200).json({
+        success: true,
+        message: "Review added successfully",
+        rating: newAvgRating,
+        reviews: newTotalReviews,
+      });
+    } catch (error) {
+      await connection.rollback();
+      console.error("Rate nurse error:", error);
+      return res.status(500).json({ success: false, message: "Server error rating nurse" });
+    } finally {
+      connection.release();
+    }
+  };

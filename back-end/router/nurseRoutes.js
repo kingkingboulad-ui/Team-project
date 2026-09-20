@@ -7,7 +7,12 @@ import {
     getNurseById,
     updateNurseStatus,
     getNurses ,
-    getUserProfile
+    getNurseBookings, updateBookingStatus,
+    getUserProfile,
+    deleteNurseBooking,
+    getLatestNurses,
+    rateNurse
+
 } from "../controllers/nurseController.js";
 
 import {
@@ -15,7 +20,9 @@ import {
     adminOnly
 } from "../middleware/authMiddleware.js";
 
-import upload from "../middleware/UploadMiddleware.js";
+// import upload from "../middleware/UploadMiddleware.js";
+
+import upload from "../middleware/UploadMiddleware.js"
 
 const router = express.Router();
 
@@ -46,24 +53,22 @@ router.get(
     getMyNurseProfile
 );
 
-
+router.get("/latest", getLatestNurses);
 
 router.get(
     "/",
-    protect,
-    adminOnly,
+   
     getAllNurses
 );
 
 
 router.put(
     "/:id/status",
-    protect,
-    adminOnly,
+   
     updateNurseStatus
 );
 
-
+router.post("/:nurseId/rate", protect, rateNurse);
 
 
 
@@ -71,7 +76,8 @@ router.get("/getall", getNurses);
 
 
 
-
+router.get("/my-bookings", protect, getNurseBookings);
+router.patch("/bookings/:id/status", protect, updateBookingStatus);
 
 
 
@@ -82,7 +88,7 @@ router.get("/getall", getNurses);
 
 router.get("/users/:id", getUserProfile);
 
-
+router.delete("/bookings/:id", protect, deleteNurseBooking);
 
 export default router;
 

@@ -105,7 +105,7 @@ export default function NurseHero() {
           {/* BUTTONS */}
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Button
-              href="/nurse-register"
+              href="/join-as-a-nurse"
               variant="primary"
               className="w-full sm:w-auto"
             >

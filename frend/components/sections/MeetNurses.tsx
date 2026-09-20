@@ -1,10 +1,50 @@
+'use client';
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star } from "lucide-react";
-import { nurses } from "@/data/nurses";
+import axios from "axios";
 import Button from "@/components/ui/Button";
 
+interface Nurse {
+  id: number;
+  name: string;
+  credential?: string;
+  specialty?: string;
+  specialization?: string;
+  experience?: string | number;
+  location?: string;
+  price?: number | string;
+  rating?: number | string;
+  reviews?: number;
+  photo?: string;
+  image?: string | null;
+  available?: string;
+  tags?: string[];
+}
+
 export default function MeetNurses() {
+  const [nursesList, setNursesList] = useState<Nurse[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLatestNurses = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/nurses/latest");
+        const data = res.data.nurses || res.data || [];
+        // أخذ أحدث 10 ممرضين
+        setNursesList(data.slice(0, 10));
+      } catch (error) {
+        console.error("Failed to load latest nurses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLatestNurses();
+  }, []);
+
   return (
     <section className="bg-[#F2F8FC] py-20">
       <div className="container-content">
@@ -16,68 +56,97 @@ export default function MeetNurses() {
             </h2>
           </div>
           <Link
-            href="/nurses"
+            href="/find-a-nurses"
             className="hidden text-sm font-semibold text-teal-700 hover:underline sm:block"
           >
             View All Nurses →
           </Link>
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-3">
-          {nurses.map((nurse) => (
-            <div
-              key={nurse.id}
-              className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm"
-            >
-              <div className="relative h-48 w-full">
-                <Image
-                  src={nurse.photo}
-                  alt={nurse.name}
-                  fill
-                  className="object-cover"
-                />
-                <span className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-teal-700">
-                  {nurse.available}
-                </span>
-              </div>
-              <div className="p-5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-semibold text-navy-900">{nurse.name}</h3>
-                    <p className="text-xs text-navy-900/50">{nurse.credential}</p>
-                  </div>
-                </div>
-                <p className="mt-2 text-sm font-medium text-teal-700">
-                  {nurse.specialty}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {nurse.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-teal-50 px-2.5 py-1 text-xs text-teal-700"
-                    >
-                      {tag}
+        {loading ? (
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="h-80 animate-pulse rounded-2xl border border-black/5 bg-white shadow-sm"
+              />
+            ))}
+          </div>
+        ) : nursesList.length === 0 ? (
+          <div className="mt-10 py-12 text-center text-sm text-navy-900/40">
+            No registered nurses available at the moment.
+          </div>
+        ) : (
+          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+            {nursesList.map((nurse) => {
+              // معالجة رابط الصورة سواء كانت مرفوعة على السيرفر، رابط خارجي، أو صورة افتراضية
+              const imageSource = nurse.photo || nurse.image
+                ? (nurse.photo || nurse.image)!.startsWith("http")
+                  ? (nurse.photo || nurse.image)!
+                  : `http://localhost:5000${nurse.photo || nurse.image}`
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(nurse.name)}&background=00535B&color=fff&size=300`;
+
+              const tags = nurse.tags && nurse.tags.length > 0 
+                ? nurse.tags 
+                : [nurse.location || "Lebanon", `${nurse.experience || 1} yrs exp.`];
+
+              return (
+                <div
+                  key={nurse.id}
+                  className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm"
+                >
+                  <div className="relative h-48 w-full">
+                    <img
+                      src={imageSource}
+                      alt={nurse.name}
+                      className="h-full w-full object-cover"
+                    />
+                    <span className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-teal-700">
+                      {nurse.available || (nurse.price ? `$${nurse.price}/hr` : "Available")}
                     </span>
-                  ))}
-                </div>
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="flex items-center gap-1 text-sm">
-                    <Star size={14} className="fill-amber-400 text-amber-400" />
-                    <span className="font-semibold">{nurse.rating}</span>
-                    <span className="text-navy-900/40">({nurse.reviews})</span>
                   </div>
-                  <Button
-                    href={`/nurses/${nurse.id}`}
-                    variant="solid"
-                    className="px-4 py-2 text-xs"
-                  >
-                    Book Now
-                  </Button>
+                  <div className="p-5">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-semibold text-navy-900">{nurse.name}</h3>
+                        <p className="text-xs text-navy-900/50">
+                          {nurse.credential || "Registered Nurse"}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mt-2 text-sm font-medium text-teal-700">
+                      {nurse.specialty || nurse.specialization || "General / Home Care"}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {tags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="rounded-full bg-teal-50 px-2.5 py-1 text-xs text-teal-700"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="flex items-center gap-1 text-sm">
+                        <Star size={14} className="fill-amber-400 text-amber-400" />
+                        <span className="font-semibold">{Number(nurse.rating || 5.0).toFixed(1)}</span>
+                        <span className="text-navy-900/40">({nurse.reviews || 0})</span>
+                      </div>
+                      <Button
+                        href={`/book?nurseId=${nurse.id}`}
+                        variant="solid"
+                        className="px-4 py-2 text-xs"
+                      >
+                        Book Now
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

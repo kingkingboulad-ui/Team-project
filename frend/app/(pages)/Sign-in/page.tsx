@@ -3,6 +3,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { GoogleLogin } from '@react-oauth/google';
 
 type LoginType = 'patient' | 'nurse';
 
@@ -17,7 +18,7 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Handle Form Submission
+  // 1. تسجيل الدخول العادي بالبريد وكلمة المرور
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
@@ -29,19 +30,32 @@ export default function SignInPage() {
         {
           email,
           password,
-          role: loginType, // يميز بين حساب المريض وحساب الممرضة
+          role: loginType,
         },
         {
-          withCredentials: true, // ضروري لنقل الـ Cookie/Session بين السيرفر والعميل
+          withCredentials: true,
         }
       );
 
       if (res.status === 200) {
-        // توجيه المستخدم بعد نجاح الدخول
-        router.push('/');
+        const user = res.data?.user;
+        if (res.data?.token) {
+          localStorage.setItem('token', res.data.token);
+        }
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+        }
+
+        // التوجيه بحسب الدور
+        if (user?.role === 'admin') {
+          window.location.href = '/admin';
+        } else if (user?.role === 'nurse') {
+          window.location.href = '/profile';
+        } else {
+          window.location.href = '/';
+        }
       }
     } catch (error: any) {
-      // إظهار رسالة الخطأ القادمة من السيرفر أو رسالة عامة
       const message =
         error.response?.data?.message || 'حدث خطأ أثناء تسجيل الدخول، يرجى المحاولة لاحقاً.';
       setErrorMessage(message);
@@ -50,9 +64,40 @@ export default function SignInPage() {
     }
   };
 
+  // 2. معالجة نجاح تسجيل الدخول بجوجل
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    setErrorMessage('');
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/api/auth/google',
+        { credential: credentialResponse.credential },
+        { withCredentials: true }
+      );
+
+      if (res.data?.success) {
+        const user = res.data?.user;
+        if (res.data?.token) {
+          localStorage.setItem('token', res.data.token);
+        }
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+        }
+
+        // التوجيه بحسب الدور
+        if (user?.role === 'admin') {
+          window.location.href = '/admin';
+        } else {
+          window.location.href = '/';
+        }
+      }
+    } catch (error: any) {
+      console.error('Google login error:', error);
+      setErrorMessage(error.response?.data?.message || 'فشل تسجيل الدخول باستخدام Google');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col">
-  
       {/* Main Content */}
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-2">
         {/* Left Side: Hero Image with Overlay Content */}
@@ -62,7 +107,6 @@ export default function SignInPage() {
             alt="Medical staff collaborating"
             className="absolute inset-0 w-full h-full object-cover object-center opacity-85"
           />
-          {/* Subtle Dark Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
 
           <div className="relative z-10 max-w-lg text-white">
@@ -214,51 +258,42 @@ export default function SignInPage() {
                 </div>
               </div>
 
-              {/* Social Logins */}
-              <div className="grid grid-cols-2 gap-3">
-                <button type="button" className="flex items-center justify-center gap-2 py-2 px-3 bg-[#e8f8f8] hover:bg-[#dbf3f3] text-slate-700 rounded-xl text-xs font-medium transition-colors">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                  </svg>
-                  <span>Google</span>
-                </button>
-
-                <button type="button" className="flex items-center justify-center gap-2 py-2 px-3 bg-[#e8f8f8] hover:bg-[#dbf3f3] text-slate-700 rounded-xl text-xs font-medium transition-colors">
-                  <svg className="w-4 h-4 fill-current text-slate-800" viewBox="0 0 24 24">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.01c.62-.75 1.04-1.8.92-2.85-.9.04-2 .6-2.65 1.35-.58.67-1.09 1.74-.95 2.78 1.01.08 2.05-.53 2.68-1.28z"/>
-                  </svg>
-                  <span>Apple</span>
-                </button>
+              {/* Google Login Component */}
+              <div className="flex justify-center w-full">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => setErrorMessage('Google Login service is unavailable')}
+                  theme="outline"
+                  shape="pill"
+                  text="continue_with"
+                  width="100%"
+                />
               </div>
 
             </div>
 
-       {/* Bottom Banner */}
-<div className="bg-[#e8f8f8] border border-[#d2f0f0] rounded-xl p-3.5 text-center">
-  {loginType === 'patient' ? (
-    <p className="text-xs text-slate-600">
-      Don&apos;t have an account?{' '}
-      <a href="/Sign-Up" className="font-semibold text-[#0d7c7b] hover:underline">
-        Create Account
-      </a>
-    </p>
-  ) : (
-    <p className="text-xs text-slate-600">
-      Want to join our network?{' '}
-      <a href="/join-as-a-nurse" className="font-semibold text-[#0d7c7b] hover:underline">
-        Join as a Nurse
-      </a>
-    </p>
-  )}
-</div>
+            {/* Bottom Banner */}
+            <div className="bg-[#e8f8f8] border border-[#d2f0f0] rounded-xl p-3.5 text-center">
+              {loginType === 'patient' ? (
+                <p className="text-xs text-slate-600">
+                  Don&apos;t have an account?{' '}
+                  <a href="/Sign-Up" className="font-semibold text-[#0d7c7b] hover:underline">
+                    Create Account
+                  </a>
+                </p>
+              ) : (
+                <p className="text-xs text-slate-600">
+                  Want to join our network?{' '}
+                  <a href="/join-as-a-nurse" className="font-semibold text-[#0d7c7b] hover:underline">
+                    Join as a Nurse
+                  </a>
+                </p>
+              )}
+            </div>
+
           </div>
         </div>
       </main>
-
-      
     </div>
   );
 }
