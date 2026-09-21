@@ -22,7 +22,10 @@ import {
   Calendar,
   Check,
   XCircle,
-  Trash2
+  Trash2,
+  ExternalLink,
+  Eye,
+  FileCheck
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -74,6 +77,10 @@ export default function NurseProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+  
+  // حالة نافذة معاينة الـ CV
+  const [showCvModal, setShowCvModal] = useState(false);
+
   const [editFormData, setEditFormData] = useState({
     location: '',
     price: '',
@@ -137,7 +144,6 @@ export default function NurseProfilePage() {
     }
   };
 
-  // دالة حذف الحجز
   const handleDeleteBooking = async (bookingId: number) => {
     if (!window.confirm('Are you sure you want to delete this booking record?')) {
       return;
@@ -151,7 +157,6 @@ export default function NurseProfilePage() {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
 
-      // حذف الحجز محلياً من القائمة فوراً
       setBookings((prev) => prev.filter((b) => b.id !== bookingId));
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to delete booking.');
@@ -214,8 +219,15 @@ export default function NurseProfilePage() {
 
   const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Nurse Member';
   const avatarUrl = profile.image 
-    ? (profile.image.startsWith('http') ? profile.image : `http://localhost:5000${profile.image}`)
+    ? (profile.image.startsWith('http') ? profile.image : `http://localhost:5000/${profile.image.replace(/^\/+/, '')}`)
     : `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=00535B&color=fff&size=160`;
+
+  // رابط الـ CV المحسوب
+  const cvUrl = profile.cv_file 
+    ? (profile.cv_file.startsWith('http') ? profile.cv_file : `http://localhost:5000/${profile.cv_file.replace(/^\/+/, '')}`)
+    : null;
+
+  const isCvImage = cvUrl ? /\.(jpg|jpeg|png|webp)$/i.test(cvUrl) : false;
 
   return (
     <div className="min-h-screen bg-[#f8fafc] py-10 px-4 sm:px-6 lg:px-8">
@@ -271,6 +283,18 @@ export default function NurseProfilePage() {
                   </div>
                 </div>
               </div>
+
+              {/* زر عرض الـ CV في رأس الصفحة */}
+              {cvUrl && (
+                <button
+                  type="button"
+                  onClick={() => setShowCvModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-colors border border-slate-200 shadow-sm"
+                >
+                  <FileText className="w-4 h-4 text-[#00535B]" />
+                  <span>View My CV</span>
+                </button>
+              )}
             </div>
 
             {/* Quick Stats */}
@@ -300,6 +324,48 @@ export default function NurseProfilePage() {
                 </span>
               </div>
             </div>
+
+            {/* قسم الملفات والـ Documents المرفقة */}
+            <div className="mt-6 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50/70 p-4 rounded-2xl">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 text-[#00535B] flex items-center justify-center">
+                  <FileCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-slate-900">Curriculum Vitae (CV)</p>
+                  <p className="text-[11px] text-slate-500">
+                    {cvUrl ? 'Verified and submitted to the administration' : 'No CV uploaded yet'}
+                  </p>
+                </div>
+              </div>
+
+              {cvUrl ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowCvModal(true)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#00535B] text-white hover:bg-[#00737D] rounded-xl text-xs font-medium transition-colors"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Preview CV</span>
+                  </button>
+                  <a
+                    href={cvUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 rounded-xl text-xs font-medium transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Open in new tab</span>
+                  </a>
+                </div>
+              ) : (
+                <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg">
+                  Not Provided
+                </span>
+              )}
+            </div>
+
           </div>
         </div>
 
@@ -361,7 +427,7 @@ export default function NurseProfilePage() {
           </form>
         )}
 
-        {/* ================= BOOKINGS SECTION (ALL DETAILS + DELETE) ================= */}
+        {/* ================= BOOKINGS SECTION ================= */}
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
@@ -396,7 +462,6 @@ export default function NurseProfilePage() {
                       </p>
                     </div>
 
-                    {/* Status Badge + Delete Button */}
                     <div className="flex items-center gap-2">
                       <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
                         booking.status === 'accepted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
@@ -407,7 +472,6 @@ export default function NurseProfilePage() {
                         {booking.status}
                       </span>
 
-                      {/* زر الحذف السريع */}
                       <button
                         type="button"
                         disabled={actionLoading === booking.id}
@@ -420,7 +484,6 @@ export default function NurseProfilePage() {
                     </div>
                   </div>
 
-                  {/* Detailed Grid */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 py-4 text-xs">
                     <div>
                       <span className="text-slate-400 block font-medium">Care Type</span>
@@ -456,7 +519,6 @@ export default function NurseProfilePage() {
                     </div>
                   </div>
 
-                  {/* Notes */}
                   {booking.notes && (
                     <div className="bg-white p-3 rounded-xl border border-slate-100 text-xs text-slate-600 mb-4">
                       <span className="font-semibold text-slate-700 block mb-0.5">Notes:</span>
@@ -464,7 +526,6 @@ export default function NurseProfilePage() {
                     </div>
                   )}
 
-                  {/* Actions for Status */}
                   {booking.status === 'pending' && (
                     <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
                       <button
@@ -505,6 +566,59 @@ export default function NurseProfilePage() {
         </div>
 
       </div>
+
+      {/* ================= MODAL PREVIEW FOR CV ================= */}
+      {showCvModal && cvUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-4xl h-[85vh] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
+            {/* Modal Header */}
+            <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-[#00535B]" />
+                <div>
+                  <h3 className="font-bold text-slate-900 text-sm">Curriculum Vitae Preview</h3>
+                  <p className="text-[11px] text-slate-500">{fullName}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href={cvUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-200/70 rounded-xl transition-colors inline-flex items-center gap-1"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" /> Open
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setShowCvModal(false)}
+                  className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-xl transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="flex-1 bg-slate-100 p-4 overflow-auto flex items-center justify-center">
+              {isCvImage ? (
+                <img
+                  src={cvUrl}
+                  alt="Nurse CV Document"
+                  className="max-h-full max-w-full rounded-xl object-contain shadow-md bg-white"
+                />
+              ) : (
+                <iframe
+                  src={cvUrl}
+                  title="Nurse CV Viewer"
+                  className="w-full h-full rounded-xl border border-slate-200 bg-white shadow-inner"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

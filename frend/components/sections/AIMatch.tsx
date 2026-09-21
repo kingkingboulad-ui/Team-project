@@ -17,7 +17,7 @@ export default function AIMatch() {
             engine will surface licensed nurses nearby who fit your schedule,
             budget, and specialty requirements.
           </p>
-          <Button href="/ai-match" variant="primary" className="mt-6 sm:mt-8">
+          <Button href="/Ai-care-assistant" variant="primary" className="mt-6 sm:mt-8">
             Try AI Matching
           </Button>
         </div>
@@ -55,7 +55,7 @@ export default function AIMatch() {
             </div>
           </dl>
 
-          <Button href="/ai-match" variant="solid" className="mt-6 w-full">
+          <Button href="/Ai-care-assistant" variant="solid" className="mt-6 w-full">
             View My Matches
           </Button>
         </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 19, 2026 at 12:31 PM
+-- Generation Time: Sep 21, 2026 at 01:51 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,37 @@ SET time_zone = "+00:00";
 --
 -- Database: `db_nurses`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `care_requests`
+--
+
+CREATE TABLE `care_requests` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `preferred_nurse_id` int(11) DEFAULT NULL,
+  `care_for` varchar(50) NOT NULL,
+  `care_type` varchar(100) NOT NULL,
+  `start_date` date NOT NULL,
+  `duration` varchar(50) NOT NULL,
+  `address` text NOT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `status` enum('pending','accepted','rejected','completed') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `care_requests`
+--
+
+INSERT INTO `care_requests` (`id`, `user_id`, `preferred_nurse_id`, `care_for`, `care_type`, `start_date`, `duration`, `address`, `latitude`, `longitude`, `notes`, `status`, `created_at`) VALUES
+(3, 37, 58, 'Myself', 'Daily Assistance', '2027-02-10', '4-hours', 'akkar', 34.55552720, 36.17595750, 'bonjour', 'pending', '2026-09-20 10:26:15'),
+(4, 37, 61, 'Spouse / Partner', 'Post-Surgery Care', '2027-02-08', '8-hours', 'ببنين', 34.50975610, 35.98909800, 'bonjour 2', 'pending', '2026-09-20 10:27:20'),
+(6, 37, 75, 'Person with disability', 'Mobility Assistance', '2028-02-03', '4-hours', 'حرار', 34.45717670, 36.12218020, 'sdfsdfsdfsfsf', 'pending', '2026-09-20 16:32:49');
 
 -- --------------------------------------------------------
 
@@ -89,7 +120,10 @@ INSERT INTO `nurse_categories` (`id`, `nurse_id`, `category`) VALUES
 (424, 65, 'Companionship'),
 (425, 66, 'Elderly Care'),
 (426, 66, 'Post-Surgery'),
-(427, 66, 'Medication Support');
+(427, 66, 'Medication Support'),
+(432, 75, 'Elderly Care'),
+(433, 75, 'IV Therapy & Injections'),
+(434, 75, 'Pediatric Care');
 
 -- --------------------------------------------------------
 
@@ -119,8 +153,8 @@ CREATE TABLE `nurse_profiles` (
 --
 
 INSERT INTO `nurse_profiles` (`id`, `user_id`, `specialization`, `experience`, `location`, `license_file`, `cv_file`, `image`, `status`, `created_at`, `updated_at`, `price`, `rating`, `reviews`) VALUES
-(46, 5, 'Registered Nurse', '15 yrs', 'San Jose, CA', '', '', 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=600&auto=format&fit=crop', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 65.00, 5.00, 189),
-(47, 6, 'Registered Nurse', '8 yrs', 'San Francisco, CA', '', '', '/images/nurse2.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 45.00, 4.90, 127),
+(46, 5, 'Registered Nurse', '15 yrs', 'San Jose, CA', '', '', 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=600&auto=format&fit=crop', 'approved', '2026-09-16 12:29:43', '2026-09-19 12:11:01', 65.00, 5.00, 189),
+(47, 6, 'Registered Nurse', '8 yrs', 'San Francisco, CA', '', '', '/images/nurse2.png', 'pending', '2026-09-16 12:29:43', '2026-09-19 11:11:40', 45.00, 4.90, 127),
 (48, 7, 'Home Health Aide', '7 yrs', 'Palo Alto, CA', '', '', '/images/nurses1.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 65.00, 4.80, 112),
 (49, 8, 'Licensed Practical Nurse', '12 yrs', 'Oakland, CA', '', '', '/images/nurses3.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 52.00, 4.50, 99),
 (50, 9, 'Licensed Practical Nurse', '8 yrs', 'Oakland, CA', '', '', '/images/Aisha.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 52.00, 4.50, 99),
@@ -142,7 +176,33 @@ INSERT INTO `nurse_profiles` (`id`, `user_id`, `specialization`, `experience`, `
 (66, 25, 'Registered Nurse', '8 yrs', 'San Mateo, CA', '', '', '/images/Ayman.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 56.00, 4.70, 113),
 (67, 28, 'pediatric', '5-10', 'Tripoli,Abu Samra ', 'uploads/licenses/1789632141440-607501942.png', 'uploads/cvs/1789632141444-736483460.jpg', NULL, 'pending', '2026-09-17 08:02:21', '2026-09-17 08:02:21', 0.00, 0.00, 0),
 (68, 29, 'pediatric', '0-1', 'Tripoli,Abu Samra ', 'uploads/licenses/1789632250863-979543844.jpg', 'uploads/cvs/1789632250866-221387732.png', NULL, 'pending', '2026-09-17 08:04:10', '2026-09-17 08:04:10', 0.00, 0.00, 0),
-(69, 30, 'pediatric', '1-3', 'tripoli', 'uploads/licenses/1789636240159-108444241.png', 'uploads/cvs/1789636240159-967824817.png', NULL, 'pending', '2026-09-17 09:10:40', '2026-09-17 09:10:40', 0.00, 0.00, 0);
+(69, 30, 'pediatric', '1-3', 'tripoli', 'uploads/licenses/1789636240159-108444241.png', 'uploads/cvs/1789636240159-967824817.png', NULL, 'pending', '2026-09-17 09:10:40', '2026-09-17 09:10:40', 0.00, 0.00, 0),
+(70, 32, 'pediatric', '1-3', 'bebnin', 'uploads/licenses/1789819975011-613376570.jpg', 'uploads/cvs/1789819975015-504384617.pdf', NULL, 'approved', '2026-09-19 12:12:55', '2026-09-19 12:31:53', 0.00, 0.00, 0),
+(71, 35, 'postop', '5-10', 'bebin', 'uploads/licenses/1789837410919-880510126.jpg', 'uploads/cvs/1789837410921-605566577.pdf', NULL, 'approved', '2026-09-19 17:03:31', '2026-09-19 17:04:59', 0.00, 0.00, 0),
+(72, 38, 'pediatric', '3-5', 'bbnin', 'uploads/licenses/1789901295827-859029006.jpg', 'uploads/cvs/1789901295837-363358703.pdf', NULL, 'approved', '2026-09-20 10:48:15', '2026-09-20 10:49:12', 0.00, 0.00, 0),
+(75, 41, 'geriatric', '5-10', 'bbnin', '/uploads/licenses/1789921081816-409364749.pdf', '/uploads/cvs/1789921081834-11777481.pdf', NULL, 'approved', '2026-09-20 16:18:01', '2026-09-20 16:32:21', 23.00, 5.00, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `id` int(11) NOT NULL,
+  `nurse_id` int(11) NOT NULL,
+  `patient_id` int(11) NOT NULL,
+  `rating` decimal(2,1) NOT NULL,
+  `comment` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`id`, `nurse_id`, `patient_id`, `rating`, `comment`, `created_at`) VALUES
+(4, 75, 37, 5.0, '4\n', '2026-09-20 16:32:21');
 
 -- --------------------------------------------------------
 
@@ -196,11 +256,27 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password`, `phon
 (27, 'sara', 'sara', 'sara@gmail.com', '$2b$10$UerfGGR60rJC2L32yGbVlupchC6EXTgNWdzTcWzP4PfnK7VXbf.R2', '81233333', 'patient', '2026-09-17 07:47:57', '2026-09-17 07:47:57'),
 (28, 'Razan', 'Hassoun', 'rznhassoun@gmail.com', '$2b$10$wt9ppHxFI2boAoO/YLA5g..3jE6PFbVLi7AMG1Z91mDIMSIVk1HCi', '70852961', 'nurse', '2026-09-17 08:02:21', '2026-09-17 08:02:21'),
 (29, 'Roro', 'hass', 'razan@gmail.com', '$2b$10$dT0u/lrOi6LsOyis7sU4EOqBxjZOXBh3kEGuyy6cuZkTxliVvmGUC', '70852961', 'nurse', '2026-09-17 08:04:10', '2026-09-17 08:04:10'),
-(30, 'sasa', 'sasa', 'sasa@email.com', '$2b$10$YO4ARgLNmV08YY3s3WIxJOjPQFYf9dcahU09.zgn26nMg3r9CfKJW', '3030303', 'nurse', '2026-09-17 09:10:40', '2026-09-17 09:10:40');
+(30, 'sasa', 'sasa', 'sasa@email.com', '$2b$10$YO4ARgLNmV08YY3s3WIxJOjPQFYf9dcahU09.zgn26nMg3r9CfKJW', '3030303', 'nurse', '2026-09-17 09:10:40', '2026-09-17 09:10:40'),
+(32, 'jana', 'boulad', 'jana@gmai.com', '$2b$10$fGsh3o6CK5AQy07k58zNCOIEUKt2KjhvxNI1vto2cRLTfOWgCqaRO', '76986611', 'nurse', '2026-09-19 12:12:55', '2026-09-19 12:12:55'),
+(33, 'abedlrazak', 'boulad', 'bouladabedlrazak@gmail.com', 'google_authenticated_oauth', NULL, 'patient', '2026-09-19 16:43:02', '2026-09-19 16:43:02'),
+(34, 'habib', 'sarrag', 'habib@gmail.com', '$2b$10$1KVZAfDyTHMG/77txpoo1evBCuoVipMfuDWX2D2XLmCF2/cTIzsya', '76986611', 'patient', '2026-09-19 16:57:44', '2026-09-19 16:57:44'),
+(35, 'amjad', 'boulad', 'amjad@gmail.com', '$2b$10$lCACcoX78sfwUNb5EjKkOe3NJugkw6G4gFnHdaXIOyu7IXC1gzBrW', '76986611', 'nurse', '2026-09-19 17:03:31', '2026-09-19 17:03:31'),
+(36, 'King ', 'Kingboulad', 'kingkingboulad@gmail.com', 'google_authenticated_oauth', NULL, 'patient', '2026-09-19 17:29:56', '2026-09-19 17:29:56'),
+(37, 'dora', 'sarrg', 'dora@gmail.com', '$2b$10$4YOxQrtprIVwX2TokOsI0OoMsOqyrcPmvdywifWD2LpF9to.Wv44W', '76986611', 'patient', '2026-09-19 17:32:49', '2026-09-19 17:32:49'),
+(38, 'boudi', 'boulad', 'boudi@gmail.com', '$2b$10$niy6DwQsc08aDx4dga7eteScEk4bvP.yzudmOFAviON5cyZtMsRCy', '76986611', 'nurse', '2026-09-20 10:48:15', '2026-09-20 10:48:15'),
+(41, 'jihan', 'eid', 'jihan@gmail.com', '$2b$10$gt4d7EDC9LIKI3fFC.GryOb9nAucNL3o7HZpWR6XxO.5aBltwazrO', '12345678', 'nurse', '2026-09-20 16:17:23', '2026-09-20 16:29:45');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `care_requests`
+--
+ALTER TABLE `care_requests`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_care_requests_user` (`user_id`),
+  ADD KEY `fk_care_requests_nurse` (`preferred_nurse_id`);
 
 --
 -- Indexes for table `nurse_categories`
@@ -217,6 +293,14 @@ ALTER TABLE `nurse_profiles`
   ADD UNIQUE KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `nurse_id` (`nurse_id`),
+  ADD KEY `patient_id` (`patient_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -228,26 +312,45 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `care_requests`
+--
+ALTER TABLE `care_requests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `nurse_categories`
 --
 ALTER TABLE `nurse_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=428;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=435;
 
 --
 -- AUTO_INCREMENT for table `nurse_profiles`
 --
 ALTER TABLE `nurse_profiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+
+--
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `care_requests`
+--
+ALTER TABLE `care_requests`
+  ADD CONSTRAINT `fk_care_requests_nurse` FOREIGN KEY (`preferred_nurse_id`) REFERENCES `nurse_profiles` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_care_requests_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `nurse_categories`
@@ -260,6 +363,13 @@ ALTER TABLE `nurse_categories`
 --
 ALTER TABLE `nurse_profiles`
   ADD CONSTRAINT `fk_nurse_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `fk_review_nurse_profile` FOREIGN KEY (`nurse_id`) REFERENCES `nurse_profiles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_review_patient_user` FOREIGN KEY (`patient_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

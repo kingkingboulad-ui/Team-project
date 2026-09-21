@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Sparkles, AlertCircle, Loader2, Mic, MicOff } from 'lucide-react';
 
 const examples = [
   "My mother is 75 and needs help with medication, walking, and daily activities after her hip surgery.",
@@ -9,25 +10,151 @@ const examples = [
   "I am recovering from knee surgery and need temporary nursing assistance for 3 weeks."
 ];
 
-export default function CareAssistantForm() {
-  const [prompt, setPrompt] = useState('');
+interface CareAssistantFormProps {
+  prompt: string;
+  // التصحيح هنا: دعم كل من (prev => ...) وتمرير النص المباشر
+  setPrompt: React.Dispatch<React.SetStateAction<string>>;
+  loading: boolean;
+  error: string | null;
+  onAnalyze: () => void;
+}
+
+export default function CareAssistantForm({
+  prompt,
+  setPrompt,
+  loading,
+  error,
+  onAnalyze,
+}: CareAssistantFormProps) {
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(true);
+  const [speechError, setSpeechError] = useState<string | null>(null);
+  const recognitionRef = useRef<any>(null);
+
+  useEffect(() => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setSpeechSupported(false);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setSpeechError(null);
+    };
+
+    recognition.onresult = (event: any) => {
+      let currentTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        currentTranscript += event.results[i][0].transcript;
+      }
+
+      setPrompt((prev: string) => {
+        const separator = prev && !prev.endsWith(' ') ? ' ' : '';
+        return `${prev}${separator}${currentTranscript}`;
+      });
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error:', event.error);
+      if (event.error === 'not-allowed') {
+        setSpeechError('Microphone permission denied. Please allow access in browser settings.');
+      } else {
+        setSpeechError('Voice capture error occurred. Please try speaking again.');
+      }
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, [setPrompt]);
+
+  const toggleListening = () => {
+    if (!speechSupported) {
+      alert('Your browser does not support voice speech recognition. Please use Google Chrome or Microsoft Edge.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    } else {
+      setSpeechError(null);
+      try {
+        recognitionRef.current?.start();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
 
   const handleExampleClick = (text: string) => {
     setPrompt(text);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      onAnalyze();
+    }
   };
 
   return (
     <div className="space-y-6">
       {/* Input Card */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden border-t-4 border-t-[#0d7c7b]">
-        <div className="p-4">
-          <label className="block text-[11px] font-bold tracking-wider text-slate-400 uppercase mb-2">
-            DESCRIBE THE SITUATION
-          </label>
+        <div className="p-4 relative">
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-[11px] font-bold tracking-wider text-slate-400 uppercase">
+              DESCRIBE THE SITUATION
+            </label>
+
+            {/* Voice Input Button */}
+            <button
+              type="button"
+              onClick={toggleListening}
+              title={isListening ? 'Stop Recording' : 'Start Voice Input'}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold transition-all border shadow-2xs ${
+                isListening
+                  ? 'bg-rose-50 text-rose-600 border-rose-200 animate-pulse'
+                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              {isListening ? (
+                <>
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                  <MicOff className="w-3.5 h-3.5" />
+                  <span>Listening...</span>
+                </>
+              ) : (
+                <>
+                  <Mic className="w-3.5 h-3.5 text-[#0d7c7b]" />
+                  <span>Voice Input</span>
+                </>
+              )}
+            </button>
+          </div>
+
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="e.g. My mother is 75 and needs help with medication, walking, and daily activities after her hip replacement surgery..."
+            onKeyDown={handleKeyDown}
+            placeholder="Type or speak: e.g. My mother is 75 and needs help with medication, walking, and daily monitoring after hip surgery..."
             rows={6}
             className="w-full text-slate-700 text-sm placeholder-slate-300 resize-none focus:outline-none bg-transparent"
           />
@@ -38,14 +165,37 @@ export default function CareAssistantForm() {
           <span className="text-xs text-slate-400 flex items-center gap-1 font-mono">
             ⌘ Ctrl + Enter to analyze
           </span>
-          <button className="inline-flex items-center gap-1.5 bg-[#e6f4f4] hover:bg-[#d5eded] text-[#0d7c7b] px-4 py-2 rounded-xl text-xs font-semibold transition-colors">
-            <span>Analyze Needs</span>
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m11-16l1.5 6 6 1.5-6 1.5L17 21l-1.5-6-6-1.5 6-1.5L17 3z" />
-            </svg>
+          <button
+            type="button"
+            onClick={onAnalyze}
+            disabled={loading || !prompt.trim()}
+            className="inline-flex items-center gap-1.5 bg-[#e6f4f4] hover:bg-[#d5eded] text-[#0d7c7b] px-4 py-2 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50 shadow-2xs"
+          >
+            {loading ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5" />
+            )}
+            <span>{loading ? 'Analyzing...' : 'Analyze Needs'}</span>
           </button>
         </div>
       </div>
+
+      {/* Voice Recognition Error Alert */}
+      {speechError && (
+        <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
+          <span>{speechError}</span>
+        </div>
+      )}
+
+      {/* API / Server Error Alert */}
+      {error && (
+        <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
 
       {/* Try An Example Section */}
       <div>
@@ -56,6 +206,7 @@ export default function CareAssistantForm() {
           {examples.map((item, index) => (
             <button
               key={index}
+              type="button"
               onClick={() => handleExampleClick(item)}
               className="w-full text-left bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-3.5 transition-all text-xs text-slate-600 hover:text-slate-900 flex items-start gap-2.5 shadow-sm hover:shadow"
             >

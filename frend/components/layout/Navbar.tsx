@@ -262,7 +262,7 @@ const getProfileLink = () => {
 
           {/* ================= GET STARTED ================= */}
           <Button
-            href="/book"
+            href="/find-a-nurses"
             variant="solid"
             className="hidden md:inline-flex bg-[#00535B] text-sm text-white hover:bg-[#00737D] transition-colors"
           >

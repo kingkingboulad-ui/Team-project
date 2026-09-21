@@ -97,19 +97,22 @@ export default function DashboardShell({ children }: ShellProps) {
           </button>
 
           <div className="h-6 w-[1px] bg-slate-200 my-auto"></div>
-
-          <div className="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-slate-100 transition-colors">
-            <img 
-              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" 
-              alt="Profile" 
-              className="w-8 h-8 rounded-full object-cover border border-slate-200"
-            />
-            <div className="hidden sm:block text-left">
-              <p className="text-xs font-semibold text-slate-900 leading-none">Dr. Sarah Connor</p>
-              <p className="text-[11px] text-slate-500 mt-0.5">Admin</p>
-            </div>
-            <ChevronDown className="w-4 h-4 text-slate-400 hidden sm:block" />
-          </div>
+         
+<Link 
+  href="/admin/profile" 
+  className="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-slate-100 transition-colors"
+>
+  <img 
+    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" 
+    alt="Profile" 
+    className="w-8 h-8 rounded-full object-cover border border-slate-200"
+  />
+  <div className="hidden sm:block text-left">
+    <p className="text-xs font-semibold text-slate-900 leading-none">Dr. Sarah Connor</p>
+    <p className="text-[11px] text-slate-500 mt-0.5">Admin</p>
+  </div>
+  <ChevronDown className="w-4 h-4 text-slate-400 hidden sm:block" />
+</Link>
         </div>
       </header>
 
