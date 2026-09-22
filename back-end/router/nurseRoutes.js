@@ -11,7 +11,8 @@ import {
     getUserProfile,
     deleteNurseBooking,
     getLatestNurses,
-    rateNurse
+    rateNurse,
+    deleteNurse
 
 } from "../controllers/nurseController.js";
 
@@ -20,7 +21,7 @@ import {
     adminOnly
 } from "../middleware/authMiddleware.js";
 
-// import upload from "../middleware/UploadMiddleware.js";
+
 
 import upload from "../middleware/UploadMiddleware.js"
 
@@ -29,21 +30,12 @@ const router = express.Router();
 router.post(
     "/apply",
     protect,
-
     upload.fields([
-        {
-            name: "licenseFile",
-            maxCount: 1
-        },
-        {
-            name: "cvFile",
-            maxCount: 1
-        }
+      { name: "image", maxCount: 1 },
+      { name: "cvFile", maxCount: 1 }
     ]),
-
     applyAsNurse
-);
-
+  );
 
 
 
@@ -81,7 +73,7 @@ router.patch("/bookings/:id/status", protect, updateBookingStatus);
 
 
 
-
+router.delete('/:id', protect, deleteNurse);
 
 
 

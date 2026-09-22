@@ -21,17 +21,16 @@ export interface Nurse {
   rating?: string | number;
   reviews?: string | number;
   image?: string | null;
-  license_file?: string;
 }
 
 interface NurseCardProps {
   nurse: Nurse;
-  onRateClick?: () => void; // إضافة خاصية التقييم هنا
+  onRateClick?: () => void;
 }
 
 export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
   /* =========================
-     NAME
+      NAME
   ========================= */
   const nurseName =
     nurse.name ||
@@ -40,25 +39,33 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
     "Nurse Professional";
 
   /* =========================
-     ROLE
+      ROLE
   ========================= */
   const nurseRole =
     nurse.role || nurse.specialization || "General Healthcare";
 
   /* =========================
-     IMAGE
+      IMAGE HANDLING
   ========================= */
-  const nurseImage =
-    nurse.image && nurse.image.trim() !== ""
-      ? nurse.image.startsWith("http")
-        ? nurse.image
-        : `http://localhost:5000${nurse.image}`
-      : `https://ui-avatars.com/api/?name=${encodeURIComponent(
-          nurseName
-        )}&background=00535B&color=fff&size=300`;
+  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    nurseName
+  )}&background=00535B&color=fff&size=300`;
+
+  let nurseImage = fallbackAvatar;
+
+  if (nurse.image && typeof nurse.image === "string" && nurse.image.trim() !== "") {
+    const img = nurse.image.trim();
+    if (img.startsWith("http")) {
+      nurseImage = img; // رابط خارجي مثل Unsplash
+    } else if (img.startsWith("/uploads/")) {
+      nurseImage = `http://localhost:5000${img}`; // مرفوع من السيرفر
+    } else {
+      nurseImage = img.startsWith("/") ? img : `/${img}`; // مسار محلي من public داخل Next.js
+    }
+  }
 
   /* =========================
-     PRICE
+      PRICE
   ========================= */
   const nurseRate =
     nurse.price !== undefined && nurse.price !== null
@@ -227,7 +234,6 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
               ({nurse.reviews ?? 0})
             </span>
 
-            {/* زر التقييم لفتح المودال */}
             <button
               type="button"
               onClick={onRateClick}

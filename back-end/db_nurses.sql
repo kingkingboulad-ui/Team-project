@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 21, 2026 at 01:51 PM
+-- Generation Time: Sep 22, 2026 at 02:48 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -50,7 +50,7 @@ CREATE TABLE `care_requests` (
 INSERT INTO `care_requests` (`id`, `user_id`, `preferred_nurse_id`, `care_for`, `care_type`, `start_date`, `duration`, `address`, `latitude`, `longitude`, `notes`, `status`, `created_at`) VALUES
 (3, 37, 58, 'Myself', 'Daily Assistance', '2027-02-10', '4-hours', 'akkar', 34.55552720, 36.17595750, 'bonjour', 'pending', '2026-09-20 10:26:15'),
 (4, 37, 61, 'Spouse / Partner', 'Post-Surgery Care', '2027-02-08', '8-hours', 'ببنين', 34.50975610, 35.98909800, 'bonjour 2', 'pending', '2026-09-20 10:27:20'),
-(6, 37, 75, 'Person with disability', 'Mobility Assistance', '2028-02-03', '4-hours', 'حرار', 34.45717670, 36.12218020, 'sdfsdfsdfsfsf', 'pending', '2026-09-20 16:32:49');
+(6, 37, NULL, 'Person with disability', 'Mobility Assistance', '2028-02-03', '4-hours', 'حرار', 34.45717670, 36.12218020, 'sdfsdfsdfsfsf', 'pending', '2026-09-20 16:32:49');
 
 -- --------------------------------------------------------
 
@@ -121,9 +121,9 @@ INSERT INTO `nurse_categories` (`id`, `nurse_id`, `category`) VALUES
 (425, 66, 'Elderly Care'),
 (426, 66, 'Post-Surgery'),
 (427, 66, 'Medication Support'),
-(432, 75, 'Elderly Care'),
-(433, 75, 'IV Therapy & Injections'),
-(434, 75, 'Pediatric Care');
+(435, 76, 'ICU Support'),
+(436, 76, 'Palliative Care'),
+(437, 76, 'Pediatric Care');
 
 -- --------------------------------------------------------
 
@@ -137,7 +137,6 @@ CREATE TABLE `nurse_profiles` (
   `specialization` varchar(100) NOT NULL,
   `experience` varchar(20) NOT NULL,
   `location` varchar(255) NOT NULL,
-  `license_file` varchar(500) NOT NULL,
   `cv_file` varchar(500) NOT NULL,
   `image` varchar(500) DEFAULT NULL,
   `status` enum('pending','approved','rejected') DEFAULT 'pending',
@@ -152,35 +151,32 @@ CREATE TABLE `nurse_profiles` (
 -- Dumping data for table `nurse_profiles`
 --
 
-INSERT INTO `nurse_profiles` (`id`, `user_id`, `specialization`, `experience`, `location`, `license_file`, `cv_file`, `image`, `status`, `created_at`, `updated_at`, `price`, `rating`, `reviews`) VALUES
-(46, 5, 'Registered Nurse', '15 yrs', 'San Jose, CA', '', '', 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=600&auto=format&fit=crop', 'approved', '2026-09-16 12:29:43', '2026-09-19 12:11:01', 65.00, 5.00, 189),
-(47, 6, 'Registered Nurse', '8 yrs', 'San Francisco, CA', '', '', '/images/nurse2.png', 'pending', '2026-09-16 12:29:43', '2026-09-19 11:11:40', 45.00, 4.90, 127),
-(48, 7, 'Home Health Aide', '7 yrs', 'Palo Alto, CA', '', '', '/images/nurses1.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 65.00, 4.80, 112),
-(49, 8, 'Licensed Practical Nurse', '12 yrs', 'Oakland, CA', '', '', '/images/nurses3.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 52.00, 4.50, 99),
-(50, 9, 'Licensed Practical Nurse', '8 yrs', 'Oakland, CA', '', '', '/images/Aisha.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 52.00, 4.50, 99),
-(51, 10, 'Certified Nursing Assistant', '5 yrs', 'Berkeley, CA', '', '', '/images/sami.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 52.00, 4.50, 99),
-(52, 11, 'Registered Nurse', '10 yrs', 'San Jose, CA', '', '', '/images/emily.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 58.00, 4.90, 156),
-(53, 12, 'Registered Nurse', '11 yrs', 'San Francisco, CA', '', '', '/images/michel.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 60.00, 4.80, 143),
-(54, 13, 'Licensed Practical Nurse', '6 yrs', 'Palo Alto, CA', '', '', '/images/sophia.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 48.00, 4.70, 91),
-(55, 14, 'Certified Nursing Assistant', '5 yrs', 'Oakland, CA', '', '', 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=600&auto=format&fit=crop', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 42.00, 4.60, 78),
-(56, 15, 'Registered Nurse', '13 yrs', 'Berkeley, CA', '', '', '/images/olivia.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 62.00, 5.00, 201),
-(57, 16, 'Registered Nurse', '9 yrs', 'San Mateo, CA', '', '', '/images/james.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 55.00, 4.80, 134),
-(58, 17, 'Registered Nurse', '9 yrs', 'San Jose, CA', '', '', '/images/nora.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 59.00, 4.90, 145),
-(59, 18, 'Registered Nurse', '8 yrs', 'Oakland, CA', '', '', '/images/danielcarter.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 57.00, 4.80, 121),
-(60, 19, 'Home Health Aide', '6 yrs', 'Berkeley, CA', '', '', '/images/emma.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 46.00, 4.70, 88),
-(61, 20, 'Registered Nurse', '14 yrs', 'San Francisco, CA', '', '', '/images/Maya.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 68.00, 4.90, 176),
-(62, 21, 'Registered Nurse', '7 yrs', 'San Jose, CA', '', '', '/images/nowa.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 50.00, 4.60, 104),
-(63, 22, 'Licensed Practical Nurse', '10 yrs', 'Palo Alto, CA', '', '', '/images/lee.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 54.00, 4.80, 119),
-(64, 23, 'Certified Nursing Assistant', '4 yrs', 'Oakland, CA', '', '', '/images/ethan.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 44.00, 4.50, 67),
-(65, 24, 'Registered Nurse', '12 yrs', 'Berkeley, CA', '', '', '/images/chloe.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 63.00, 4.90, 162),
-(66, 25, 'Registered Nurse', '8 yrs', 'San Mateo, CA', '', '', '/images/Ayman.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 56.00, 4.70, 113),
-(67, 28, 'pediatric', '5-10', 'Tripoli,Abu Samra ', 'uploads/licenses/1789632141440-607501942.png', 'uploads/cvs/1789632141444-736483460.jpg', NULL, 'pending', '2026-09-17 08:02:21', '2026-09-17 08:02:21', 0.00, 0.00, 0),
-(68, 29, 'pediatric', '0-1', 'Tripoli,Abu Samra ', 'uploads/licenses/1789632250863-979543844.jpg', 'uploads/cvs/1789632250866-221387732.png', NULL, 'pending', '2026-09-17 08:04:10', '2026-09-17 08:04:10', 0.00, 0.00, 0),
-(69, 30, 'pediatric', '1-3', 'tripoli', 'uploads/licenses/1789636240159-108444241.png', 'uploads/cvs/1789636240159-967824817.png', NULL, 'pending', '2026-09-17 09:10:40', '2026-09-17 09:10:40', 0.00, 0.00, 0),
-(70, 32, 'pediatric', '1-3', 'bebnin', 'uploads/licenses/1789819975011-613376570.jpg', 'uploads/cvs/1789819975015-504384617.pdf', NULL, 'approved', '2026-09-19 12:12:55', '2026-09-19 12:31:53', 0.00, 0.00, 0),
-(71, 35, 'postop', '5-10', 'bebin', 'uploads/licenses/1789837410919-880510126.jpg', 'uploads/cvs/1789837410921-605566577.pdf', NULL, 'approved', '2026-09-19 17:03:31', '2026-09-19 17:04:59', 0.00, 0.00, 0),
-(72, 38, 'pediatric', '3-5', 'bbnin', 'uploads/licenses/1789901295827-859029006.jpg', 'uploads/cvs/1789901295837-363358703.pdf', NULL, 'approved', '2026-09-20 10:48:15', '2026-09-20 10:49:12', 0.00, 0.00, 0),
-(75, 41, 'geriatric', '5-10', 'bbnin', '/uploads/licenses/1789921081816-409364749.pdf', '/uploads/cvs/1789921081834-11777481.pdf', NULL, 'approved', '2026-09-20 16:18:01', '2026-09-20 16:32:21', 23.00, 5.00, 1);
+INSERT INTO `nurse_profiles` (`id`, `user_id`, `specialization`, `experience`, `location`, `cv_file`, `image`, `status`, `created_at`, `updated_at`, `price`, `rating`, `reviews`) VALUES
+(46, 5, 'Registered Nurse', '15 yrs', 'San Jose, CA', '', 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=600&auto=format&fit=crop', 'approved', '2026-09-16 12:29:43', '2026-09-19 12:11:01', 65.00, 5.00, 189),
+(47, 6, 'Registered Nurse', '8 yrs', 'San Francisco, CA', '', '/images/nurse2.png', 'pending', '2026-09-16 12:29:43', '2026-09-19 11:11:40', 45.00, 4.90, 127),
+(48, 7, 'Home Health Aide', '7 yrs', 'Palo Alto, CA', '', '/images/nurses1.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 65.00, 4.80, 112),
+(49, 8, 'Licensed Practical Nurse', '12 yrs', 'Oakland, CA', '', '/images/nurses3.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 52.00, 4.50, 99),
+(50, 9, 'Licensed Practical Nurse', '8 yrs', 'Oakland, CA', '', '/images/Aisha.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 52.00, 4.50, 99),
+(51, 10, 'Certified Nursing Assistant', '5 yrs', 'Berkeley, CA', '', '/images/sami.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 52.00, 4.50, 99),
+(52, 11, 'Registered Nurse', '10 yrs', 'San Jose, CA', '', '/images/emily.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 58.00, 4.90, 156),
+(53, 12, 'Registered Nurse', '11 yrs', 'San Francisco, CA', '', '/images/michel.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 60.00, 4.80, 143),
+(54, 13, 'Licensed Practical Nurse', '6 yrs', 'Palo Alto, CA', '', '/images/sophia.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 48.00, 4.70, 91),
+(55, 14, 'Certified Nursing Assistant', '5 yrs', 'Oakland, CA', '', 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=600&auto=format&fit=crop', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 42.00, 4.60, 78),
+(56, 15, 'Registered Nurse', '13 yrs', 'Berkeley, CA', '', '/images/olivia.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 62.00, 5.00, 201),
+(57, 16, 'Registered Nurse', '9 yrs', 'San Mateo, CA', '', '/images/james.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 55.00, 4.80, 134),
+(58, 17, 'Registered Nurse', '9 yrs', 'San Jose, CA', '', '/images/nora.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 59.00, 4.90, 145),
+(59, 18, 'Registered Nurse', '8 yrs', 'Oakland, CA', '', '/images/danielcarter.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 57.00, 4.80, 121),
+(60, 19, 'Home Health Aide', '6 yrs', 'Berkeley, CA', '', '/images/emma.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 46.00, 4.70, 88),
+(61, 20, 'Registered Nurse', '14 yrs', 'San Francisco, CA', '', '/images/Maya.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 68.00, 4.90, 176),
+(62, 21, 'Registered Nurse', '7 yrs', 'San Jose, CA', '', '/images/nowa.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 50.00, 4.60, 104),
+(63, 22, 'Licensed Practical Nurse', '10 yrs', 'Palo Alto, CA', '', '/images/lee.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 54.00, 4.80, 119),
+(64, 23, 'Certified Nursing Assistant', '4 yrs', 'Oakland, CA', '', '/images/ethan.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 44.00, 4.50, 67),
+(65, 24, 'Registered Nurse', '12 yrs', 'Berkeley, CA', '', '/images/chloe.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 63.00, 4.90, 162),
+(66, 25, 'Registered Nurse', '8 yrs', 'San Mateo, CA', '', '/images/Ayman.png', 'approved', '2026-09-16 12:29:43', '2026-09-16 12:29:43', 56.00, 4.70, 113),
+(67, 28, 'pediatric', '5-10', 'Tripoli,Abu Samra ', 'uploads/cvs/1789632141444-736483460.jpg', NULL, 'pending', '2026-09-17 08:02:21', '2026-09-17 08:02:21', 0.00, 0.00, 0),
+(68, 29, 'pediatric', '0-1', 'Tripoli,Abu Samra ', 'uploads/cvs/1789632250866-221387732.png', NULL, 'pending', '2026-09-17 08:04:10', '2026-09-17 08:04:10', 0.00, 0.00, 0),
+(69, 30, 'pediatric', '1-3', 'tripoli', 'uploads/cvs/1789636240159-967824817.png', NULL, 'pending', '2026-09-17 09:10:40', '2026-09-17 09:10:40', 0.00, 0.00, 0),
+(76, 42, 'pediatric', '1-3', 'bbnin', '/uploads/cvs/1790074891613-980150822.pdf', '/uploads/imagenurses/1790074891606-348826908.jpg', 'approved', '2026-09-22 11:01:31', '2026-09-22 11:05:41', 50.00, 3.00, 1);
 
 -- --------------------------------------------------------
 
@@ -202,7 +198,7 @@ CREATE TABLE `reviews` (
 --
 
 INSERT INTO `reviews` (`id`, `nurse_id`, `patient_id`, `rating`, `comment`, `created_at`) VALUES
-(4, 75, 37, 5.0, '4\n', '2026-09-20 16:32:21');
+(5, 76, 2, 3.0, NULL, '2026-09-22 11:05:41');
 
 -- --------------------------------------------------------
 
@@ -264,7 +260,7 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `password`, `phon
 (36, 'King ', 'Kingboulad', 'kingkingboulad@gmail.com', 'google_authenticated_oauth', NULL, 'patient', '2026-09-19 17:29:56', '2026-09-19 17:29:56'),
 (37, 'dora', 'sarrg', 'dora@gmail.com', '$2b$10$4YOxQrtprIVwX2TokOsI0OoMsOqyrcPmvdywifWD2LpF9to.Wv44W', '76986611', 'patient', '2026-09-19 17:32:49', '2026-09-19 17:32:49'),
 (38, 'boudi', 'boulad', 'boudi@gmail.com', '$2b$10$niy6DwQsc08aDx4dga7eteScEk4bvP.yzudmOFAviON5cyZtMsRCy', '76986611', 'nurse', '2026-09-20 10:48:15', '2026-09-20 10:48:15'),
-(41, 'jihan', 'eid', 'jihan@gmail.com', '$2b$10$gt4d7EDC9LIKI3fFC.GryOb9nAucNL3o7HZpWR6XxO.5aBltwazrO', '12345678', 'nurse', '2026-09-20 16:17:23', '2026-09-20 16:29:45');
+(42, 'jihan', 'eid', 'jihan@gmail.com', '$2b$10$40/2rrObwnQrq8dx/E.UX.mKoER.y7Ag.JqJ1E.QTAn0Od3EoF1UO', '76986611', 'nurse', '2026-09-22 10:55:35', '2026-09-22 11:05:22');
 
 --
 -- Indexes for dumped tables
@@ -321,25 +317,25 @@ ALTER TABLE `care_requests`
 -- AUTO_INCREMENT for table `nurse_categories`
 --
 ALTER TABLE `nurse_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=435;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=438;
 
 --
 -- AUTO_INCREMENT for table `nurse_profiles`
 --
 ALTER TABLE `nurse_profiles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- Constraints for dumped tables

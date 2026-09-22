@@ -3,19 +3,19 @@ import path from "path";
 import fs from "fs";
 
 // Upload directories
-const licenseDir = "uploads/licenses";
+const imageDir = "uploads/imagenurses";
 const cvDir = "uploads/cvs";
 
 // Create folders if they don't exist
-fs.mkdirSync(licenseDir, { recursive: true });
+fs.mkdirSync(imageDir, { recursive: true });
 fs.mkdirSync(cvDir, { recursive: true });
 
 // Storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // قبول license أو licenseFile
-    if (file.fieldname === "license" || file.fieldname === "licenseFile") {
-      cb(null, licenseDir);
+    // قبول image أو imageFile
+    if (file.fieldname === "image" || file.fieldname === "imageFile") {
+      cb(null, imageDir);
     // قبول cv أو cvFile
     } else if (file.fieldname === "cv" || file.fieldname === "cvFile") {
       cb(null, cvDir);
@@ -42,6 +42,7 @@ const fileFilter = (req, file, cb) => {
     "image/jpeg",
     "image/jpg",
     "image/png",
+    "image/webp"
   ];
 
   if (allowedTypes.includes(file.mimetype)) {
@@ -49,7 +50,7 @@ const fileFilter = (req, file, cb) => {
   } else {
     cb(
       new Error(
-        "Only PDF, JPG, JPEG and PNG files are allowed"
+        "Only PDF, JPG, JPEG, PNG and WEBP files are allowed"
       ),
       false
     );

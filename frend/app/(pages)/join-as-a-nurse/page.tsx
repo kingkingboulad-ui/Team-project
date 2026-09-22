@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check } from 'lucide-react';
+import { Check, Camera, FileText } from 'lucide-react';
 
 const AVAILABLE_CATEGORIES = [
   'Home Care',
@@ -32,10 +32,11 @@ export default function CreateNurseAccountPage() {
   const [yearsExperience, setYearsExperience] = useState('');
   const [location, setLocation] = useState('');
   const [price, setPrice] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // التصنيفات المتعددة
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  // Credential Upload
-  const [licenseFile, setLicenseFile] = useState<File | null>(null);
+  // Files Upload (Image & CV)
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
 
   const [loading, setLoading] = useState(false);
@@ -47,15 +48,33 @@ export default function CreateNurseAccountPage() {
     );
   };
 
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    setter: (file: File | null) => void
-  ) => {
-    setter(e.target.files?.[0] ?? null);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setImageFile(file);
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    } else {
+      setImagePreview(null);
+    }
   };
+
+  const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCvFile(e.target.files?.[0] ?? null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
+
+    if (!imageFile) {
+      setErrorMessage('Please upload a profile photo.');
+      return;
+    }
+
+    if (!cvFile) {
+      setErrorMessage('Please upload your CV.');
+      return;
+    }
 
     if (selectedCategories.length === 0) {
       setErrorMessage('Please select at least one care category / service.');
@@ -71,21 +90,20 @@ export default function CreateNurseAccountPage() {
       formData.append('phone', phone);
       formData.append('password', password);
       formData.append('specialization', specialization);
-      formData.append('experience', yearsExperience); // مطابقة الاسم مع دالة الباك إند
+      formData.append('experience', yearsExperience);
       formData.append('location', location);
       formData.append('price', price);
       formData.append('role', 'nurse');
 
-      // إرسال الـ Categories كـ JSON
+      // إرسال التصنيفات
       formData.append('categories', JSON.stringify(selectedCategories));
 
-      // مطابقة أسماء حقول الملفات تماماً مع ما ينتظره الباك إند
-      if (licenseFile) formData.append('licenseFile', licenseFile);
-      if (cvFile) formData.append('cvFile', cvFile);
+      // الحقول المرفوعة مطابقة لـ Multer: image و cvFile
+      formData.append('image', imageFile);
+      formData.append('cvFile', cvFile);
 
-      // تأكد هل الرابط هو /api/nurses/apply أم /api/auth/register
       const res = await axios.post(
-        'http://localhost:5000/api/nurses/apply', // أو /api/auth/register حسب المسار الذي توجد به الدالة
+        'http://localhost:5000/api/nurses/apply',
         formData,
         {
           withCredentials: true,
@@ -116,7 +134,7 @@ export default function CreateNurseAccountPage() {
             Join our network of trusted healthcare professionals.
           </p>
           <p className="text-[11px] text-slate-400 leading-relaxed">
-            Please provide your personal information, professional credentials, and documentation
+            Please provide your personal information, profile photo, and credentials
             for verification. Our team reviews all applications within 24–48 hours.
           </p>
         </div>
@@ -287,7 +305,7 @@ export default function CreateNurseAccountPage() {
                 </div>
               </div>
 
-              {/* اختيار التصنيفات المتعددة */}
+              {/* اختيار التصنيفات */}
               <div className="space-y-2 pt-2 border-t border-slate-100">
                 <div className="flex items-center justify-between">
                   <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
@@ -321,46 +339,50 @@ export default function CreateNurseAccountPage() {
               </div>
             </section>
 
-            {/* 03 Credential Upload */}
+            {/* 03 Profile Photo & CV Upload */}
             <section className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-4 shadow-sm">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-bold text-[#0d7c7b]">03 / Credential Upload</h2>
-                <span className="text-[10px] text-slate-400">Accepted formats: PDF, JPG, PNG (Max 5MB per file)</span>
+                <h2 className="text-sm font-bold text-[#0d7c7b]">03 / Profile Photo & CV Upload</h2>
+                <span className="text-[10px] text-slate-400">Accepted formats: JPG, PNG, WEBP, PDF (Max 5MB)</span>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* License Upload */}
-                <label className="cursor-pointer">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Profile Image Upload */}
+                <label className="cursor-pointer block">
                   <span className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide mb-1.5">
-                    Nursing License / Certificate
+                    Profile Picture (Photo)
                   </span>
-                  <div className="flex flex-col items-center justify-center gap-1.5 border-2 border-dashed border-slate-200 rounded-xl py-6 bg-[#fafcfc] hover:bg-[#e8f8f8] transition-colors text-center">
-                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.9A5.5 5.5 0 0117 9a3.5 3.5 0 01.5 6.97M12 12v6m0-6l-2 2m2-2l2 2" />
-                    </svg>
-                    <span className="text-[11px] text-slate-500">
-                      {licenseFile ? licenseFile.name : 'Click to upload license'}
+                  <div className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-200 rounded-xl p-4 bg-[#fafcfc] hover:bg-[#e8f8f8] transition-colors text-center min-h-[140px]">
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-16 h-16 rounded-full object-cover border-2 border-[#0d7c7b]"
+                      />
+                    ) : (
+                      <Camera className="w-6 h-6 text-slate-400" />
+                    )}
+                    <span className="text-[11px] text-slate-600 font-medium truncate max-w-[180px]">
+                      {imageFile ? imageFile.name : 'Click to upload photo'}
                     </span>
                   </div>
                   <input
                     type="file"
                     required
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) => handleFileChange(e, setLicenseFile)}
+                    accept="image/*"
+                    onChange={handleImageChange}
                     className="hidden"
                   />
                 </label>
 
                 {/* CV Upload */}
-                <label className="cursor-pointer">
+                <label className="cursor-pointer block">
                   <span className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide mb-1.5">
                     Curriculum Vitae (CV)
                   </span>
-                  <div className="flex flex-col items-center justify-center gap-1.5 border-2 border-dashed border-slate-200 rounded-xl py-6 bg-[#fafcfc] hover:bg-[#e8f8f8] transition-colors text-center">
-                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m-7 5h8a2 2 0 002-2V7.41a2 2 0 00-.59-1.41l-3.41-3.41A2 2 0 0012.59 2H6a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                    <span className="text-[11px] text-slate-500">
+                  <div className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-200 rounded-xl p-4 bg-[#fafcfc] hover:bg-[#e8f8f8] transition-colors text-center min-h-[140px]">
+                    <FileText className="w-6 h-6 text-slate-400" />
+                    <span className="text-[11px] text-slate-600 font-medium truncate max-w-[180px]">
                       {cvFile ? cvFile.name : 'Click to upload CV'}
                     </span>
                   </div>
@@ -368,7 +390,7 @@ export default function CreateNurseAccountPage() {
                     type="file"
                     required
                     accept=".pdf,.jpg,.jpeg,.png"
-                    onChange={(e) => handleFileChange(e, setCvFile)}
+                    onChange={handleCvChange}
                     className="hidden"
                   />
                 </label>
