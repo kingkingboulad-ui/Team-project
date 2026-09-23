@@ -4,6 +4,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GoogleLogin } from '@react-oauth/google';
+import Image from 'next/image';
 
 type LoginType = 'patient' | 'nurse';
 
@@ -33,20 +34,14 @@ export default function SignInPage() {
           role: loginType,
         },
         {
-          withCredentials: true,
+          withCredentials: true, // استقبال وتثبيت الـ Cookie في المتصفح تلقائياً
         }
       );
 
       if (res.status === 200) {
         const user = res.data?.user;
-        if (res.data?.token) {
-          localStorage.setItem('token', res.data.token);
-        }
-        if (user) {
-          localStorage.setItem('user', JSON.stringify(user));
-        }
 
-        // التوجيه بحسب الدور
+        // التوجيه المباشر عبر window.location لتحديث حالة الكوكيز في الـ Middleware
         if (user?.role === 'admin') {
           window.location.href = '/admin';
         } else if (user?.role === 'nurse') {
@@ -71,21 +66,16 @@ export default function SignInPage() {
       const res = await axios.post(
         'http://localhost:5000/api/auth/google',
         { credential: credentialResponse.credential },
-        { withCredentials: true }
+        { withCredentials: true } // استقبال وتثبيت الـ Cookie في المتصفح تلقائياً
       );
 
       if (res.data?.success) {
         const user = res.data?.user;
-        if (res.data?.token) {
-          localStorage.setItem('token', res.data.token);
-        }
-        if (user) {
-          localStorage.setItem('user', JSON.stringify(user));
-        }
 
-        // التوجيه بحسب الدور
         if (user?.role === 'admin') {
           window.location.href = '/admin';
+        } else if (user?.role === 'nurse') {
+          window.location.href = '/profile';
         } else {
           window.location.href = '/';
         }
@@ -102,10 +92,13 @@ export default function SignInPage() {
       <main className="flex-1 grid grid-cols-1 lg:grid-cols-2">
         {/* Left Side: Hero Image with Overlay Content */}
         <div className="relative min-h-[320px] lg:min-h-full w-full bg-slate-900 overflow-hidden flex items-end p-8 sm:p-12 lg:p-16">
-          <img
+          <Image
             src="/images/signin.jpg"
             alt="Medical staff collaborating"
-            className="absolute inset-0 w-full h-full object-cover object-center opacity-85"
+            fill
+            priority
+            className="object-cover object-center opacity-85"
+            sizes="(max-width: 1024px) 100vw, 50vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
 
@@ -134,22 +127,20 @@ export default function SignInPage() {
               <button
                 type="button"
                 onClick={() => setLoginType('patient')}
-                className={`py-2 rounded-lg text-xs font-semibold transition-colors ${
-                  loginType === 'patient'
+                className={`py-2 rounded-lg text-xs font-semibold transition-colors ${loginType === 'patient'
                     ? 'bg-[#0f5454] text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-800'
-                }`}
+                  }`}
               >
                 Patient Login
               </button>
               <button
                 type="button"
                 onClick={() => setLoginType('nurse')}
-                className={`py-2 rounded-lg text-xs font-semibold transition-colors ${
-                  loginType === 'nurse'
+                className={`py-2 rounded-lg text-xs font-semibold transition-colors ${loginType === 'nurse'
                     ? 'bg-[#0f5454] text-white shadow-sm'
                     : 'text-slate-600 hover:text-slate-800'
-                }`}
+                  }`}
               >
                 Nurse Login
               </button>

@@ -1,13 +1,11 @@
 'use client';
-import "@/app/globals.css"
+import "@/app/globals.css";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { ShieldCheck, Lock, Mail, Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,16 +21,12 @@ export default function AdminLoginPage() {
       const res = await axios.post(
         "http://localhost:5000/api/auth/admin/login",
         { email, password },
-        { withCredentials: true }
+        { withCredentials: true } // يستقبل ويحفظ الكوكيز القادمة من الباك إند تلقائياً
       );
 
       if (res.data.success) {
-        if (typeof window !== "undefined") {
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("user", JSON.stringify(res.data.user));
-        }
-        // التوجيه فوراً إلى لوحة تحكم الإدارة
-        router.push("/admin");
+        // التوجيه مع إعادة تحميل الصفحة لضمان قراءة الكوكيز الجديدة مباشرة في كل المكونات والـ Middleware
+        window.location.href = "/admin";
       }
     } catch (err: any) {
       setErrorMessage(
@@ -66,7 +60,7 @@ export default function AdminLoginPage() {
         <div className="bg-slate-900/90 border border-slate-800 backdrop-blur-xl py-8 px-6 shadow-2xl rounded-3xl sm:px-10 space-y-6">
           
           {errorMessage && (
-            <div className="p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-start gap-2.5 text-rose-400 text-xs animate-shake">
+            <div className="p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-start gap-2.5 text-rose-400 text-xs">
               <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
               <span>{errorMessage}</span>
             </div>

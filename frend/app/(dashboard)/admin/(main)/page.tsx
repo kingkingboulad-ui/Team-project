@@ -68,13 +68,9 @@ export default function AdminDashboardPage() {
       }
       setError(null);
 
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
+      // يعتمد كلياً على الكوكي المرسل تلقائياً من المتصفح
       const response = await axios.get('http://localhost:5000/api/dashboard/stats', {
-        withCredentials: true,
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        }
+        withCredentials: true
       });
 
       if (response.data?.success !== false) {
@@ -367,7 +363,7 @@ export default function AdminDashboardPage() {
                   </div>
                   {selectedRequest.patient_phone && (
                     <div className="text-xs text-slate-500 flex items-center gap-1 font-mono">
-                      <Phone className="w-3 h-3 text-slate-400" /> {selectedRequest.patient_phone}
+                      <Phone className="w-3.5 h-3.5 text-slate-400" /> {selectedRequest.patient_phone}
                     </div>
                   )}
                 </div>

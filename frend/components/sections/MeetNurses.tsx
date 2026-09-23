@@ -31,9 +31,10 @@ export default function MeetNurses() {
   useEffect(() => {
     const fetchLatestNurses = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/nurses/latest");
+        const res = await axios.get("http://localhost:5000/api/nurses/latest", {
+          withCredentials: true,
+        });
         const data = res.data.nurses || res.data || [];
-        // أخذ أحدث 10 ممرضين
         setNursesList(data.slice(0, 10));
       } catch (error) {
         console.error("Failed to load latest nurses:", error);
@@ -79,12 +80,11 @@ export default function MeetNurses() {
         ) : (
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
             {nursesList.map((nurse) => {
-              // معالجة رابط الصورة سواء كانت مرفوعة على السيرفر، رابط خارجي، أو صورة افتراضية
               const imageSource = nurse.photo || nurse.image
                 ? (nurse.photo || nurse.image)!.startsWith("http")
                   ? (nurse.photo || nurse.image)!
-                  : `http://localhost:5000${nurse.photo || nurse.image}`
-                : `https://ui-avatars.com/api/?name=${encodeURIComponent(nurse.name)}&background=00535B&color=fff&size=300`;
+                  : `http://localhost:5000${(nurse.photo || nurse.image)!.startsWith('/') ? '' : '/'}${nurse.photo || nurse.image}`
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(nurse.name || 'Nurse')}&background=00535B&color=fff&size=300`;
 
               const tags = nurse.tags && nurse.tags.length > 0 
                 ? nurse.tags 
@@ -95,13 +95,15 @@ export default function MeetNurses() {
                   key={nurse.id}
                   className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm"
                 >
-                  <div className="relative h-48 w-full">
-                    <img
+                  <div className="relative h-48 w-full overflow-hidden">
+                    <Image
                       src={imageSource}
-                      alt={nurse.name}
-                      className="h-full w-full object-cover"
+                      alt={nurse.name || "Nurse"}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover"
                     />
-                    <span className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-teal-700">
+                    <span className="absolute left-3 top-3 z-10 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-teal-700 shadow-sm">
                       {nurse.available || (nurse.price ? `$${nurse.price}/hr` : "Available")}
                     </span>
                   </div>

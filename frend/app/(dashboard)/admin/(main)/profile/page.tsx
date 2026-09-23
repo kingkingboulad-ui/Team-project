@@ -1,20 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  ShieldCheck, 
-  KeyRound, 
-  Camera, 
-  Save, 
-  CheckCircle2, 
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  ShieldCheck,
+  KeyRound,
+  Camera,
+  Save,
+  CheckCircle2,
   AlertCircle,
   Loader2
 } from 'lucide-react';
 import axios from 'axios';
+import Image from 'next/image';
 
 interface AdminProfileData {
   firstName: string;
@@ -26,20 +27,28 @@ interface AdminProfileData {
   location: string;
 }
 
+// دالة مساعدة لاستخراج الكوكي بالاسم من المتصفح
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+  return match ? decodeURIComponent(match[3]) : null;
+}
+
 export default function AdminProfilePage() {
   const [loading, setLoading] = useState(false);
+  const [fetchingData, setFetchingData] = useState(true);
   const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // بيانات المسؤول
+  // الحالة الأولية لبيانات الأدمن
   const [profile, setProfile] = useState<AdminProfileData>({
-    firstName: 'Sarah',
-    lastName: 'Connor',
-    email: 'admin.sarah@nurseconnect.com',
-    phone: '+1 555-019-8834',
-    role: 'Super Administrator',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
-    location: 'Beirut, Lebanon',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    role: 'Admin',
+    avatarUrl: '',
+    location: '',
   });
 
   // حقول تغيير كلمة المرور
@@ -49,26 +58,62 @@ export default function AdminProfilePage() {
     confirmPassword: '',
   });
 
-  // تحميل بيانات البروفايل إن وجدت في LocalStorage أو طلبها من الـ API
+  // جلب بيانات الأدمن من الـ Cookies أو استعلام الخادم بالكوكي الموثق
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
+    const loadProfile = async () => {
       try {
-        const parsed = JSON.parse(savedUser);
-        setProfile((prev) => ({
-          ...prev,
-          firstName: parsed.firstName || parsed.first_name || prev.firstName,
-          lastName: parsed.lastName || parsed.last_name || prev.lastName,
-          email: parsed.email || prev.email,
-          phone: parsed.phone || prev.phone,
-        }));
-      } catch (e) {
-        console.error('Error parsing stored user', e);
+        setFetchingData(true);
+
+        // 1. محاولة قراءة البيانات المخزنة كـ Cookie
+        const userCookie = getCookie('user') || getCookie('admin_user');
+        if (userCookie) {
+          try {
+            const parsed = JSON.parse(userCookie);
+            setProfile((prev) => ({
+              ...prev,
+              firstName: parsed.first_name || parsed.firstName || '',
+              lastName: parsed.last_name || parsed.lastName || '',
+              email: parsed.email || '',
+              phone: parsed.phone || '',
+              role: parsed.role || 'Admin',
+              location: parsed.location || 'Lebanon',
+              avatarUrl: parsed.image || ''
+            }));
+            setFetchingData(false);
+            return;
+          } catch (e) {
+            console.error('Error parsing cookie:', e);
+          }
+        }
+
+        // 2. إذا كانت الكوكي HttpOnly (token)، نطلب بيانات المستخدم مباشرة عبر الـ Session
+        const res = await axios.get('http://localhost:5000/api/auth/me', {
+          withCredentials: true,
+        });
+
+        const userData = res.data?.user || res.data;
+        if (userData) {
+          setProfile({
+            firstName: userData.first_name || userData.firstName || '',
+            lastName: userData.last_name || userData.lastName || '',
+            email: userData.email || '',
+            phone: userData.phone || '',
+            role: userData.role || 'Admin',
+            location: userData.location || 'Lebanon',
+            avatarUrl: userData.image || ''
+          });
+        }
+      } catch (err: any) {
+        console.error('Error fetching admin profile from cookie auth:', err);
+      } finally {
+        setFetchingData(false);
       }
-    }
+    };
+
+    loadProfile();
   }, []);
 
-  // حفظ التعديلات العامة
+  // حفظ التعديلات الشخصية
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -76,11 +121,29 @@ export default function AdminProfilePage() {
     setErrorMessage(null);
 
     try {
-      // استدعاء الـ API لحفظ البيانات
-      // await axios.put('http://localhost:5000/api/admin/profile', profile, { withCredentials: true });
+      // إرسال البيانات المحدثة مع الكوكيز الخاصة بالتحقق
+      await axios.put(
+        'http://localhost:5000/api/admin/profile',
+        {
+          first_name: profile.firstName,
+          last_name: profile.lastName,
+          phone: profile.phone,
+          location: profile.location
+        },
+        { withCredentials: true }
+      );
 
-      // محاكاة استجابة الخادم
-      await new Promise((res) => setTimeout(res, 600));
+      // تحديث كوكي الـ user محلياً إن وُجد
+      const updatedUserCookie = {
+        first_name: profile.firstName,
+        last_name: profile.lastName,
+        email: profile.email,
+        phone: profile.phone,
+        role: profile.role,
+        location: profile.location,
+        image: profile.avatarUrl
+      };
+      document.cookie = `user=${encodeURIComponent(JSON.stringify(updatedUserCookie))}; path=/; max-age=604800; SameSite=Lax`;
 
       setSaveSuccess('Profile updated successfully!');
       setTimeout(() => setSaveSuccess(null), 3500);
@@ -108,8 +171,14 @@ export default function AdminProfilePage() {
 
     setLoading(true);
     try {
-      // await axios.put('http://localhost:5000/api/admin/change-password', passwordData, { withCredentials: true });
-      await new Promise((res) => setTimeout(res, 600));
+      await axios.put(
+        'http://localhost:5000/api/admin/change-password',
+        {
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        },
+        { withCredentials: true }
+      );
 
       setSaveSuccess('Password changed successfully!');
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
@@ -120,6 +189,20 @@ export default function AdminProfilePage() {
       setLoading(false);
     }
   };
+
+  const fullName = `${profile.firstName} ${profile.lastName}`.trim() || 'Admin User';
+  const displayAvatar = profile.avatarUrl
+    ? (profile.avatarUrl.startsWith('http') ? profile.avatarUrl : `http://localhost:5000/${profile.avatarUrl.replace(/^\/+/, '')}`)
+    : `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=0d6e6e&color=fff&size=128`;
+
+  if (fetchingData) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
+        <Loader2 className="w-8 h-8 text-[#0d6e6e] animate-spin" />
+        <p className="text-sm font-medium text-slate-500">Loading admin profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
@@ -150,10 +233,12 @@ export default function AdminProfilePage() {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
         <div className="flex flex-col sm:flex-row items-center gap-6">
           <div className="relative group">
-            <img
-              src={profile.avatarUrl}
+            <Image
+              width={96}
+              height={96}
+              src={displayAvatar}
               alt="Admin Avatar"
-              className="w-24 h-24 rounded-2xl object-cover border-2 border-slate-100 shadow-inner"
+              className="w-24 h-24 rounded-2xl object-cover border-2 border-slate-100 shadow-inner bg-slate-50"
             />
             <button
               type="button"
@@ -166,15 +251,15 @@ export default function AdminProfilePage() {
 
           <div className="text-center sm:text-left flex-1">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <h2 className="text-xl font-bold text-slate-900">
-                {profile.firstName} {profile.lastName}
+              <h2 className="text-xl font-bold text-slate-900 capitalize">
+                {fullName}
               </h2>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-50 text-[#0d6e6e] border border-teal-200 w-fit mx-auto sm:mx-0">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-50 text-[#0d6e6e] border border-teal-200 w-fit mx-auto sm:mx-0 capitalize">
                 <ShieldCheck className="w-3.5 h-3.5" /> {profile.role}
               </span>
             </div>
             <p className="text-sm text-slate-500 mt-1 flex items-center justify-center sm:justify-start gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-slate-400" /> {profile.email}
+              <Mail className="w-3.5 h-3.5 text-slate-400" /> {profile.email || 'No email provided'}
             </p>
           </div>
         </div>
@@ -219,10 +304,9 @@ export default function AdminProfilePage() {
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
                   <input
                     type="email"
+                    disabled
                     value={profile.email}
-                    onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                    className="w-full pl-9 pr-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:border-[#0d6e6e] focus:outline-none transition-all"
-                    required
+                    className="w-full pl-9 pr-3.5 py-2 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-500 cursor-not-allowed"
                   />
                 </div>
               </div>

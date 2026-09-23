@@ -1,21 +1,39 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { 
-  Home, Users, Calendar, Settings, 
+import {
+  Home, Users, Calendar, Settings,
   Bell, Search, Menu, X, LogOut, ChevronDown, UserCheck, Loader2
 } from 'lucide-react';
 import axios from 'axios';
+import Image from 'next/image';
 
 interface ShellProps {
   children: React.ReactNode;
 }
 
+interface AdminUser {
+  id?: number;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  role?: string;
+  image?: string;
+}
+
+// دالة مساعدة لقراءة أي Cookie بالاسم
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  const match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+  return match ? decodeURIComponent(match[3]) : null;
+}
+
 export default function DashboardShell({ children }: ShellProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -26,12 +44,48 @@ export default function DashboardShell({ children }: ShellProps) {
     { name: 'Appointments', href: '/admin/appointments', icon: Calendar },
   ];
 
-  // دالة تسجيل الخروج ومسح التوكن من الكوكيز والتخزين المحلي
+  useEffect(() => {
+    // 1. محاولة قراءة بيانات المستخدم من الـ Cookies مباشرة (مثل كوكي اسمه user أو admin)
+    const userCookie = getCookie('user') || getCookie('admin_user');
+
+    if (userCookie) {
+      try {
+        const parsed = JSON.parse(userCookie);
+        setAdminUser(parsed);
+        return;
+      } catch (err) {
+        // إذا كان الكوكي مجرد اسم نصي بسيط
+        setAdminUser({ first_name: userCookie });
+        return;
+      }
+    }
+
+    // 2. إذا كان الـ Token مخزن في httpOnly Cookie، نطلب البيانات من الـ Backend عبر إرسال الكوكي
+    const fetchAdminFromCookieAuth = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/auth/me', {
+          withCredentials: true, // يرسل الـ cookies تلقائياً مع الطلب
+        });
+
+        if (res.data?.user) {
+          setAdminUser(res.data.user);
+        } else if (res.data) {
+          setAdminUser(res.data);
+        }
+      } catch (error) {
+        console.error('Could not fetch admin from cookie auth session:', error);
+      }
+    };
+
+    fetchAdminFromCookieAuth();
+  }, []);
+
+  // دالة تسجيل الخروج ومسح الكوكيز
   const handleLogout = async () => {
     try {
       setLoggingOut(true);
 
-      // 1. استدعاء السيرفر لحذف كوكي token
+      // استدعاء السيرفر لحذف الكوكي
       await axios.post(
         'http://localhost:5000/api/auth/logout',
         {},
@@ -40,31 +94,35 @@ export default function DashboardShell({ children }: ShellProps) {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      // 2. تنظيف التخزين المحلي كإجراء أمان إضافي
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        sessionStorage.clear();
-
-        // 3. حذف الكوكي يدوياً من جانب العميل احتياطياً في حال كان غير محمي بـ httpOnly
+      if (typeof document !== 'undefined') {
+        // تفريغ أي كوكي موجود يدوياً
         document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        document.cookie = 'user=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        document.cookie = 'admin_user=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
       }
 
       setLoggingOut(false);
       setIsSidebarOpen(false);
-
-      // 4. إعادة التوجيه إلى صفحة تسجيل دخول الأدمن مع تحديث الصفحة لتفعيل Middleware
       window.location.href = '/admin/login';
     }
   };
 
+  // استخراج الاسم الكامل
+  const adminName = adminUser?.first_name
+    ? `${adminUser.first_name} ${adminUser.last_name || ''}`.trim()
+    : 'Admin';
+
+  const avatarUrl = adminUser?.image
+    ? (adminUser.image.startsWith('http') ? adminUser.image : `http://localhost:5000/${adminUser.image.replace(/^\/+/, '')}`)
+    : `https://ui-avatars.com/api/?name=${encodeURIComponent(adminName)}&background=0d6e6e&color=fff&size=128`;
+
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans">
-      
+
       {/* 1. FIXED HEADER */}
       <header className="h-16 bg-white border-b border-slate-200 fixed top-0 left-0 right-0 z-50 px-4 md:px-6 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-4">
-          <button 
+          <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
           >
@@ -83,9 +141,9 @@ export default function DashboardShell({ children }: ShellProps) {
 
         <div className="hidden md:flex items-center relative max-w-md w-full mx-4">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
-          <input 
-            type="text" 
-            placeholder="Search patients, nurses..." 
+          <input
+            type="text"
+            placeholder="Search patients, nurses..."
             className="w-full pl-9 pr-4 py-2 text-sm bg-slate-100 border border-transparent rounded-xl focus:bg-white focus:border-[#0d6e6e] focus:outline-none transition-all"
           />
         </div>
@@ -97,32 +155,39 @@ export default function DashboardShell({ children }: ShellProps) {
           </button>
 
           <div className="h-6 w-[1px] bg-slate-200 my-auto"></div>
-         
-<Link 
-  href="/admin/profile" 
-  className="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-slate-100 transition-colors"
->
-  <img 
-    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" 
-    alt="Profile" 
-    className="w-8 h-8 rounded-full object-cover border border-slate-200"
-  />
-  <div className="hidden sm:block text-left">
-    <p className="text-xs font-semibold text-slate-900 leading-none">Dr. Sarah Connor</p>
-    <p className="text-[11px] text-slate-500 mt-0.5">Admin</p>
-  </div>
-  <ChevronDown className="w-4 h-4 text-slate-400 hidden sm:block" />
-</Link>
+
+          {/* اسم الأدمن المقروء من الـ Cookies */}
+          <Link
+            href="/admin/profile"
+            className="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-slate-100 transition-colors"
+          >
+            <Image
+              src={avatarUrl}
+              alt={adminName || "Admin"}
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-full object-cover border border-slate-200"
+            />
+            <div className="hidden sm:block text-left">
+              <p className="text-xs font-semibold text-slate-900 leading-none capitalize">
+                {adminName}
+              </p>
+              <p className="text-[11px] text-slate-500 mt-0.5 capitalize">
+                {adminUser?.role || 'Admin'}
+              </p>
+            </div>
+            <ChevronDown className="w-4 h-4 text-slate-400 hidden sm:block" />
+          </Link>
         </div>
       </header>
 
       {/* BODY WRAPPER */}
       <div className="flex pt-16 h-screen overflow-hidden">
-        
+
         {/* Overlay for mobile view */}
         {isSidebarOpen && (
-          <div 
-            onClick={() => setIsSidebarOpen(false)} 
+          <div
+            onClick={() => setIsSidebarOpen(false)}
             className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 lg:hidden"
           />
         )}
@@ -136,7 +201,7 @@ export default function DashboardShell({ children }: ShellProps) {
         `}>
           <div className="p-4 space-y-1 overflow-y-auto">
             <p className="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Main Menu</p>
-            
+
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href));
@@ -146,11 +211,10 @@ export default function DashboardShell({ children }: ShellProps) {
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                    isActive 
-                      ? 'bg-[#0d6e6e] text-white shadow-sm' 
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${isActive
+                      ? 'bg-[#0d6e6e] text-white shadow-sm'
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4 h-4" />
                   <span>{item.name}</span>
@@ -160,15 +224,14 @@ export default function DashboardShell({ children }: ShellProps) {
 
             <div className="pt-4 mt-4 border-t border-slate-100">
               <p className="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">System</p>
-              
-              <Link 
-                href="/admin/Settings"
+
+              <Link
+                href="/admin/settings"
                 onClick={() => setIsSidebarOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                  pathname.startsWith('/admin/settings') || pathname.startsWith('/admin/Settings')
-                    ? 'bg-[#0d6e6e] text-white shadow-sm' 
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${pathname.toLowerCase().startsWith('/admin/settings')
+                    ? 'bg-[#0d6e6e] text-white shadow-sm'
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
+                  }`}
               >
                 <Settings className="w-4 h-4" />
                 <span>Settings</span>
@@ -176,9 +239,9 @@ export default function DashboardShell({ children }: ShellProps) {
             </div>
           </div>
 
-          {/* زر تسجيل الخروج مع الربط البرمجي الكامل */}
+          {/* زر تسجيل الخروج */}
           <div className="p-4 border-t border-slate-100 bg-white">
-            <button 
+            <button
               type="button"
               disabled={loggingOut}
               onClick={handleLogout}

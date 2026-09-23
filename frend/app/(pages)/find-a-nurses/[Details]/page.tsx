@@ -38,7 +38,8 @@ interface Nurse {
   rating?: string | number;
   reviews?: string | number;
 
-  image?: string;
+  image?: string | null;
+  photo?: string | null;
   license_file?: string;
 
   bio?: string;
@@ -102,7 +103,7 @@ export default function NurseDetailsPage() {
   }, [detailsId]);
 
   /* =========================
-     LOADING
+      LOADING
   ========================= */
 
   if (loading) {
@@ -123,7 +124,7 @@ export default function NurseDetailsPage() {
   }
 
   /* =========================
-     ERROR
+      ERROR
   ========================= */
 
   if (error || !nurse) {
@@ -158,7 +159,7 @@ export default function NurseDetailsPage() {
   }
 
   /* =========================
-     DATA
+      DATA
   ========================= */
 
   const nurseName =
@@ -172,8 +173,13 @@ export default function NurseDetailsPage() {
     nurse.specialization ||
     "Registered Nurse";
 
-  const nurseImage =
-    nurse.image || "/placeholder-nurse.jpg";
+  // معالجة رابط الصورة سواء كان image أو photo ومعالجة مسار السيرفر localhost
+  const rawImage = nurse.image || nurse.photo;
+  const nurseImage = rawImage
+    ? rawImage.startsWith("http")
+      ? rawImage
+      : `http://localhost:5000${rawImage.startsWith("/") ? "" : "/"}${rawImage}`
+    : `https://ui-avatars.com/api/?name=${encodeURIComponent(nurseName)}&background=00535B&color=fff&size=300`;
 
   const nursePrice =
     nurse.price !== undefined &&
@@ -211,8 +217,8 @@ export default function NurseDetailsPage() {
         ];
 
   /* =========================
-     AVAILABILITY
-     ========================= */
+      AVAILABILITY
+  ========================= */
 
   const availability = [
     {
@@ -247,12 +253,6 @@ export default function NurseDetailsPage() {
 
   return (
     <main className="min-h-screen bg-[#F5FAFA]">
-
-      {/* ==================================================
-          NAVBAR
-      ================================================== */}
-
-   
 
       {/* ==================================================
           PAGE
@@ -291,17 +291,18 @@ export default function NurseDetailsPage() {
 
             {/* IMAGE */}
 
-            <div className="relative h-[230px] w-full bg-slate-100 sm:h-[250px] lg:h-[190px]">
+            <div className="relative h-[230px] w-full overflow-hidden bg-slate-100 sm:h-[250px] lg:h-[190px]">
 
               <Image
                 src={nurseImage}
                 alt={nurseName}
                 fill
+                priority
                 sizes="(max-width: 1024px) 100vw, 270px"
                 className="object-cover"
               />
 
-              <div className="absolute left-3 top-3 flex items-center gap-1 rounded bg-white px-2.5 py-1.5 text-[9px] font-semibold text-[#00535B] shadow-sm">
+              <div className="absolute left-3 top-3 z-10 flex items-center gap-1 rounded bg-white px-2.5 py-1.5 text-[9px] font-semibold text-[#00535B] shadow-sm">
                 <ShieldCheck size={11} />
                 Verified Nurse
               </div>
@@ -940,12 +941,6 @@ export default function NurseDetailsPage() {
           </section>
         </div>
       </div>
-
-      {/* ==================================================
-          FOOTER
-      ================================================== */}
-
-    
 
     </main>
   );

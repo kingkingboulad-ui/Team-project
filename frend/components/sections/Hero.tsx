@@ -134,7 +134,7 @@ export default function Hero() {
             </Button>
 
             <Button
-              href="/I'm-a-nurse"
+              href="/join-as-a-nurse"
               variant="outline"
               className="w-full sm:w-auto"
             >

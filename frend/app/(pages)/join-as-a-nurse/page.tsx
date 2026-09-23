@@ -4,6 +4,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Check, Camera, FileText } from 'lucide-react';
+import Image from 'next/image';
 
 const AVAILABLE_CATEGORIES = [
   'Home Care',
@@ -354,11 +355,14 @@ export default function CreateNurseAccountPage() {
                   </span>
                   <div className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-200 rounded-xl p-4 bg-[#fafcfc] hover:bg-[#e8f8f8] transition-colors text-center min-h-[140px]">
                     {imagePreview ? (
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-16 h-16 rounded-full object-cover border-2 border-[#0d7c7b]"
-                      />
+                    <Image
+                    src={imagePreview}
+                    alt="Preview"
+                    width={64}
+                    height={64}
+                    unoptimized // ضرورية لروابط المعاينة blob: حتى يقبلها Next.js مباشرة
+                    className="w-16 h-16 rounded-full object-cover border-2 border-[#0d7c7b]"
+                  />
                     ) : (
                       <Camera className="w-6 h-6 text-slate-400" />
                     )}

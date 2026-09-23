@@ -2,27 +2,28 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
-import { 
-  Search, 
-  Filter, 
-  Plus, 
-  Star, 
-  CheckCircle, 
-  Clock, 
-  UserX, 
-  Mail, 
-  Award, 
-  Loader2, 
-  AlertCircle, 
-  X, 
-  Phone, 
-  MapPin, 
-  FileText, 
-  DollarSign, 
+import {
+  Search,
+  Filter,
+  Plus,
+  Star,
+  CheckCircle,
+  Clock,
+  UserX,
+  Mail,
+  Award,
+  Loader2,
+  AlertCircle,
+  X,
+  Phone,
+  MapPin,
+  FileText,
+  DollarSign,
   ExternalLink,
   Trash2
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface NurseItem {
   id: number;
@@ -337,7 +338,9 @@ export default function NursesManagementPage() {
                         {/* Nurse Info */}
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <img
+                            <Image
+                              width={40}
+                              height={40}
                               src={avatarUrl}
                               alt={displayName}
                               className="w-10 h-10 rounded-full object-cover border border-slate-200"
@@ -460,11 +463,11 @@ export default function NursesManagementPage() {
           NURSE PROFILE MODAL (POP-UP)
       ========================================================= */}
       {selectedNurse && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 overflow-y-auto"
           onClick={() => setSelectedNurse(null)}
         >
-          <div 
+          <div
             className="bg-white rounded-2xl shadow-2xl border border-slate-100 w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
@@ -478,7 +481,9 @@ export default function NursesManagementPage() {
               </button>
 
               <div className="flex items-center gap-4">
-                <img
+                <Image
+                  width={64}
+                  height={64}
                   src={getFullImageUrl(
                     selectedNurse.image,
                     selectedNurse.fullName || selectedNurse.name || 'Nurse'
@@ -486,6 +491,7 @@ export default function NursesManagementPage() {
                   alt="Avatar"
                   className="w-16 h-16 rounded-full object-cover border-2 border-white/80 shadow-md"
                 />
+
                 <div>
                   <h2 className="text-xl font-bold">
                     {selectedNurse.fullName || selectedNurse.name || `${selectedNurse.first_name || ''} ${selectedNurse.last_name || ''}`}
@@ -499,7 +505,7 @@ export default function NursesManagementPage() {
 
             {/* Modal Body */}
             <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
-              
+
               {/* Quick Details Badges */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">

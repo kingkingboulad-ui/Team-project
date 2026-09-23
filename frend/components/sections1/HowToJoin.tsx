@@ -61,11 +61,12 @@ export default function HowToJoin() {
         <div className="mt-16 overflow-hidden rounded-2xl bg-white shadow-xl shadow-teal-900/5">
           <div className="grid grid-cols-1 lg:grid-cols-12 items-center">
             {/* Left Nurse Image */}
-            <div className="relative h-64 w-full sm:h-72 lg:col-span-5 lg:h-full min-h-[260px]">
+            <div className="relative h-64 w-full sm:h-72 lg:col-span-5 lg:h-full min-h-[260px] overflow-hidden rounded-2xl">
               <Image
-                src="/images/emma.png" // Replace with your image path
+                src="/images/emma.png"
                 alt="Nurse Testimonial"
                 fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 40vw"
                 className="object-cover"
               />
             </div>

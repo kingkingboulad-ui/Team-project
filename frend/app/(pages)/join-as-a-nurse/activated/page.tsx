@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 
 export default function ActivatedPage() {
   const router = useRouter();
@@ -186,7 +187,7 @@ export default function ActivatedPage() {
 
                 <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-white/20">
 
-                  <img
+                  <Image
                     src="/images/nurse1.png"
                     alt="Nurse"
                     className="h-full w-full object-contain"

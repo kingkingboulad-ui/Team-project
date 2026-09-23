@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { Search, MapPin, Star, Award, Loader2, Filter } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Nurse {
   id: number;
@@ -127,7 +128,9 @@ function FindCareContent() {
                 className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-3">
-                  <img
+                  <Image
+                  width={56} 
+                  height={56}
                     src={
                       nurse.image ||
                       `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -166,7 +169,7 @@ function FindCareContent() {
 
                 <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
                   <Link
-                    href={`/book-appointment?nurseId=${nurse.id}`}
+                    href={`/book?nurseId=${nurse.id}`}
                     className="w-full py-2 bg-[#00535B] hover:bg-[#003d42] text-white text-center rounded-xl text-xs font-semibold transition-colors shadow-sm"
                   >
                     Book Appointment

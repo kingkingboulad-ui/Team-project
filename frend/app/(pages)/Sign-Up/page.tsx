@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { HeartPulse } from "lucide-react";
+import Image from "next/image";
 
 export default function CreatePatientAccountPage() {
   const router = useRouter();
@@ -61,10 +62,13 @@ export default function CreatePatientAccountPage() {
     <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f8fafc]">
       {/* ================= LEFT SIDE ================= */}
       <div className="relative min-h-[320px] lg:min-h-screen w-full bg-slate-900 overflow-hidden flex items-end p-8 sm:p-12 lg:p-16">
-        <img
+        <Image
           src="/images/signin.jpg"
           alt="Medical staff collaborating"
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-85"
+          fill
+          priority
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          className="object-cover object-center opacity-85"
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />

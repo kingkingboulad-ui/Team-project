@@ -12,7 +12,8 @@ import {
     deleteNurseBooking,
     getLatestNurses,
     rateNurse,
-    deleteNurse
+    deleteNurse,
+    updateNurseProfile
 
 } from "../controllers/nurseController.js";
 
@@ -81,7 +82,15 @@ router.delete('/:id', protect, deleteNurse);
 router.get("/users/:id", getUserProfile);
 
 router.delete("/bookings/:id", protect, deleteNurseBooking);
-
+router.put(
+    "/me/update",
+    protect,
+    upload.fields([
+      { name: "image", maxCount: 1 },
+      { name: "cvFile", maxCount: 1 }
+    ]),
+    updateNurseProfile
+  );
 export default router;
 
 

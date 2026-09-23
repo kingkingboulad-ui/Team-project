@@ -45,14 +45,12 @@ export default function SettingsPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // جلب بيانات الحساب الحالية
+  // جلب بيانات الحساب الحالية بالاعتماد التام على الكوكيز
   useEffect(() => {
     const fetchAdminData = async () => {
       try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         const res = await axios.get('http://localhost:5000/api/auth/me', {
-          withCredentials: true,
-          headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          withCredentials: true, // يرسل الكوكي تلقائياً
         });
 
         const user = res.data?.user || res.data;
@@ -65,12 +63,12 @@ export default function SettingsPage() {
           });
         }
       } catch (err) {
-        // قيم افتراضية للتجربة في حال عدم تشغيل السيرفر بعد
+        // قيم افتراضية احتياطية في حال تعذر الاتصال
         setProfile({
           firstName: 'Sarah',
           lastName: 'Connor',
           email: 'admin@nurseconnect.com',
-          phone: '+1 555-019-2831',
+          phone: '+961 70 000 000',
         });
       }
     };
@@ -85,7 +83,6 @@ export default function SettingsPage() {
     setErrorMessage(null);
 
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       await axios.put(
         'http://localhost:5000/api/auth/update-profile',
         {
@@ -94,8 +91,7 @@ export default function SettingsPage() {
           phone: profile.phone,
         },
         {
-          withCredentials: true,
-          headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          withCredentials: true, // يرسل الكوكي تلقائياً
         }
       );
 
@@ -125,7 +121,6 @@ export default function SettingsPage() {
     setLoading(true);
 
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       await axios.put(
         'http://localhost:5000/api/auth/change-password',
         {
@@ -133,8 +128,7 @@ export default function SettingsPage() {
           newPassword: passwords.newPassword,
         },
         {
-          withCredentials: true,
-          headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          withCredentials: true, // يرسل الكوكي تلقائياً
         }
       );
 

@@ -165,7 +165,7 @@ export const getMyNurseProfile = async (req, res) => {
                 np.rating,
                 np.reviews,
                 np.image,
-                np.license_file,
+          
                 np.cv_file,
                 np.status,
                 np.created_at,
@@ -281,7 +281,7 @@ export const getNurseById = async (req, res) => {
                 np.experience,
                 np.location,
                 np.image,
-                np.license_file,
+               
                 np.cv_file,
                 np.status,
                 np.price,
@@ -553,7 +553,7 @@ export const getUserProfile = async (req, res) => {
 
                 np.image,
 
-                np.license_file,
+        
                 np.location,
                 np.cv_file,
 
@@ -907,3 +907,121 @@ export const getNurseBookings = async (req, res) => {
       return res.status(500).json({ message: "Server error deleting nurse" });
     }
   };
+
+
+
+
+
+
+/* =========================================================
+   UPDATE MY NURSE PROFILE (Text + Files + Categories)
+========================================================= */
+export const updateNurseProfile = async (req, res) => {
+  let connection;
+  try {
+    const userId = req.user?.id || req.user?.userId || req.userId;
+    const { specialization, experience, location, price, phone, categories } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized." });
+    }
+
+    const imageFile = req.files?.image?.[0] || req.files?.imageFile?.[0];
+    const cvFile = req.files?.cvFile?.[0] || req.files?.cv?.[0];
+
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    // 1. جلب الملف الحالي للتأكد من وجوده
+    const [existing] = await connection.query(
+      `SELECT id, image, cv_file FROM nurse_profiles WHERE user_id = ?`,
+      [userId]
+    );
+
+    if (existing.length === 0) {
+      await connection.rollback();
+      return res.status(404).json({ success: false, message: "Nurse profile not found." });
+    }
+
+    const nurseId = existing[0].id;
+    const newImagePath = imageFile ? `/uploads/imagenurses/${imageFile.filename}` : existing[0].image;
+    const newCvPath = cvFile ? `/uploads/cvs/${cvFile.filename}` : existing[0].cv_file;
+
+    // 2. تحديث جدول nurse_profiles
+    await connection.query(
+      `
+      UPDATE nurse_profiles 
+      SET 
+        specialization = COALESCE(?, specialization),
+        experience = COALESCE(?, experience),
+        location = COALESCE(?, location),
+        price = COALESCE(?, price),
+        image = ?,
+        cv_file = ?
+      WHERE id = ?
+      `,
+      [
+        specialization !== undefined ? specialization : null,
+        experience !== undefined ? experience : null,
+        location !== undefined ? location : null,
+        price !== undefined ? price : null,
+        newImagePath,
+        newCvPath,
+        nurseId
+      ]
+    );
+
+    // 3. تحديث رقم الهاتف في جدول users
+    if (phone !== undefined) {
+      await connection.query(
+        `UPDATE users SET phone = ? WHERE id = ?`,
+        [phone, userId]
+      );
+    }
+
+    // 4. تحديث التصنيفات إذا تم إرسالها
+    if (categories !== undefined) {
+      let parsedCategories = [];
+      try {
+        parsedCategories = typeof categories === "string" ? JSON.parse(categories) : categories;
+      } catch (e) {
+        parsedCategories = Array.isArray(categories) ? categories : [categories];
+      }
+
+      if (Array.isArray(parsedCategories)) {
+        await connection.query(`DELETE FROM nurse_categories WHERE nurse_id = ?`, [nurseId]);
+        for (const cat of parsedCategories) {
+          if (cat && typeof cat === "string" && cat.trim() !== "") {
+            await connection.query(
+              `INSERT INTO nurse_categories (nurse_id, category) VALUES (?, ?)`,
+              [nurseId, cat.trim()]
+            );
+          }
+        }
+      }
+    }
+
+    await connection.commit();
+
+    // إرجاع البيانات المحدثة
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully.",
+      updated: {
+        specialization,
+        experience,
+        location,
+        price: Number(price),
+        image: newImagePath,
+        cv_file: newCvPath
+      }
+    });
+
+  } catch (error) {
+    if (connection) await connection.rollback();
+    console.error("Update nurse profile error:", error);
+    return res.status(500).json({ success: false, message: "Server error updating profile." });
+  } finally {
+    if (connection) connection.release();
+  }
+};

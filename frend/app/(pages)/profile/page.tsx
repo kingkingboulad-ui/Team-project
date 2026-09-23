@@ -1,21 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Award, 
-  DollarSign, 
-  Star, 
-  FileText, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle, 
-  Edit3, 
-  Save, 
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Award,
+  DollarSign,
+  Star,
+  FileText,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  Edit3,
+  Save,
   X,
   Loader2,
   ShieldCheck,
@@ -25,9 +25,12 @@ import {
   Trash2,
   ExternalLink,
   Eye,
-  FileCheck
+  FileCheck,
+  Camera,
+  UploadCloud
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Booking {
   id: number;
@@ -61,7 +64,6 @@ interface NurseProfile {
   rating: string | number;
   reviews: number;
   image?: string | null;
-  license_file?: string;
   cv_file?: string;
   status: 'pending' | 'approved' | 'rejected' | string;
   categories: string[];
@@ -77,35 +79,45 @@ export default function NurseProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
-  
+
   // حالة نافذة معاينة الـ CV
   const [showCvModal, setShowCvModal] = useState(false);
 
+  // حقول النموذج
   const [editFormData, setEditFormData] = useState({
     location: '',
     price: '',
     specialization: '',
+    experience: '',
     phone: '',
   });
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [cvFile, setCvFile] = useState<File | null>(null);
+
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const cvInputRef = useRef<HTMLInputElement>(null);
 
   const fetchData = async () => {
     try {
       setLoading(true);
       setError(null);
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
+      // يعتمد حصراً على الكوكيز لإثبات الهوية
       const [profileRes, bookingsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/nurses/me', { withCredentials: true, headers }),
-        axios.get('http://localhost:5000/api/nurses/my-bookings', { withCredentials: true, headers })
+        axios.get('http://localhost:5000/api/nurses/me', { withCredentials: true }),
+        axios.get('http://localhost:5000/api/nurses/my-bookings', { withCredentials: true })
       ]);
 
-      setProfile(profileRes.data);
+      const data = profileRes.data;
+      setProfile(data);
       setEditFormData({
-        location: profileRes.data.location || '',
-        price: profileRes.data.price ? String(profileRes.data.price) : '',
-        specialization: profileRes.data.specialization || '',
-        phone: profileRes.data.phone || '',
+        location: data.location || '',
+        price: data.price ? String(data.price) : '',
+        specialization: data.specialization || '',
+        experience: data.experience ? String(data.experience) : '',
+        phone: data.phone || '',
       });
 
       setBookings(bookingsRes.data.bookings || []);
@@ -121,17 +133,27 @@ export default function NurseProfilePage() {
     fetchData();
   }, []);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setCvFile(e.target.files[0]);
+    }
+  };
+
   const handleStatusChange = async (bookingId: number, newStatus: string) => {
     try {
       setActionLoading(bookingId);
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       await axios.patch(
         `http://localhost:5000/api/nurses/bookings/${bookingId}/status`,
         { status: newStatus },
-        {
-          withCredentials: true,
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        }
+        { withCredentials: true }
       );
 
       setBookings((prev) =>
@@ -151,10 +173,8 @@ export default function NurseProfilePage() {
 
     try {
       setActionLoading(bookingId);
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
       await axios.delete(`http://localhost:5000/api/nurses/bookings/${bookingId}`, {
-        withCredentials: true,
-        headers: token ? { Authorization: `Bearer ${token}` } : {}
+        withCredentials: true
       });
 
       setBookings((prev) => prev.filter((b) => b.id !== bookingId));
@@ -169,21 +189,38 @@ export default function NurseProfilePage() {
     e.preventDefault();
     setSaving(true);
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-      await axios.put(
+      const formData = new FormData();
+      formData.append('location', editFormData.location);
+      formData.append('price', editFormData.price);
+      formData.append('specialization', editFormData.specialization);
+      formData.append('experience', editFormData.experience);
+      formData.append('phone', editFormData.phone);
+
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+      if (cvFile) {
+        formData.append('cvFile', cvFile);
+      }
+
+      const res = await axios.put(
         'http://localhost:5000/api/nurses/me/update',
-        editFormData,
-        { withCredentials: true, headers: token ? { Authorization: `Bearer ${token}` } : {} }
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        }
       );
 
-      if (profile) {
-        setProfile({
-          ...profile,
-          ...editFormData,
-          price: Number(editFormData.price)
-        });
+      if (res.data.success) {
+        await fetchData();
+        setIsEditing(false);
+        setImageFile(null);
+        setImagePreview(null);
+        setCvFile(null);
       }
-      setIsEditing(false);
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to update profile details.');
     } finally {
@@ -218,12 +255,14 @@ export default function NurseProfilePage() {
   }
 
   const fullName = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Nurse Member';
-  const avatarUrl = profile.image 
+
+  const currentAvatarUrl = profile.image
     ? (profile.image.startsWith('http') ? profile.image : `http://localhost:5000/${profile.image.replace(/^\/+/, '')}`)
     : `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=00535B&color=fff&size=160`;
 
-  // رابط الـ CV المحسوب
-  const cvUrl = profile.cv_file 
+  const displayAvatar = imagePreview || currentAvatarUrl;
+
+  const cvUrl = profile.cv_file
     ? (profile.cv_file.startsWith('http') ? profile.cv_file : `http://localhost:5000/${profile.cv_file.replace(/^\/+/, '')}`)
     : null;
 
@@ -250,7 +289,14 @@ export default function NurseProfilePage() {
             <div className="absolute right-4 top-4 flex gap-2">
               <button
                 type="button"
-                onClick={() => setIsEditing(!isEditing)}
+                onClick={() => {
+                  setIsEditing(!isEditing);
+                  if (isEditing) {
+                    setImagePreview(null);
+                    setImageFile(null);
+                    setCvFile(null);
+                  }
+                }}
                 className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/15 backdrop-blur hover:bg-white/25 text-white rounded-xl text-xs font-semibold transition-all border border-white/20 shadow-sm"
               >
                 {isEditing ? <X className="w-3.5 h-3.5" /> : <Edit3 className="w-3.5 h-3.5" />}
@@ -262,11 +308,30 @@ export default function NurseProfilePage() {
           <div className="px-6 sm:px-8 pb-8 pt-0 relative">
             <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between -mt-16 sm:-mt-20 gap-4 mb-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-end gap-5 text-center sm:text-left">
-                <img 
-                  src={avatarUrl} 
-                  alt={fullName}
-                  className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-white shadow-lg bg-white"
-                />
+
+                {/* Image & Camera overlay */}
+                <div className="relative group">
+                  <Image
+                    src={displayAvatar}
+                    alt={fullName || 'User Profile'}
+                    width={128}
+                    height={128}
+                    unoptimized={displayAvatar.startsWith('blob:')} // يدعم معاينة الصورة المرفوعة فوراً دون أخطاء
+                    className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl object-cover border-4 border-white shadow-lg bg-white"
+                  />
+                  {isEditing && (
+                    <button
+                      type="button"
+                      onClick={() => imageInputRef.current?.click()}
+                      className="absolute inset-0 bg-black/40 rounded-3xl flex flex-col items-center justify-center text-white backdrop-blur-[2px] transition-all hover:bg-black/50 border-4 border-white"
+                      title="Upload new profile photo"
+                    >
+                      <Camera className="w-6 h-6 mb-1" />
+                      <span className="text-[10px] font-bold tracking-wide">Change</span>
+                    </button>
+                  )}
+                </div>
+
                 <div className="sm:pb-2">
                   <div className="flex items-center justify-center sm:justify-start gap-2">
                     <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{fullName}</h1>
@@ -279,12 +344,13 @@ export default function NurseProfilePage() {
                   </p>
                   <div className="flex items-center justify-center sm:justify-start gap-4 text-xs text-slate-500 mt-2">
                     <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {profile.location || 'Lebanon'}</span>
+                    <span className="flex items-center gap-1"><Phone className="w-3.5 h-3.5" /> {profile.phone || 'No phone'}</span>
                     <span className="flex items-center gap-1"><Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" /> {Number(profile.rating || 0).toFixed(1)}</span>
                   </div>
                 </div>
               </div>
 
-              {/* زر عرض الـ CV في رأس الصفحة */}
+              {/* View CV Button */}
               {cvUrl && (
                 <button
                   type="button"
@@ -325,7 +391,7 @@ export default function NurseProfilePage() {
               </div>
             </div>
 
-            {/* قسم الملفات والـ Documents المرفقة */}
+            {/* Curriculum Vitae Section */}
             <div className="mt-6 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50/70 p-4 rounded-2xl">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-teal-50 text-[#00535B] flex items-center justify-center">
@@ -369,10 +435,68 @@ export default function NurseProfilePage() {
           </div>
         </div>
 
-        {/* Edit Form */}
+        {/* Edit Form with Inputs and File Uploads */}
         {isEditing && (
           <form onSubmit={handleSaveChanges} className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
-            <h2 className="text-lg font-bold text-slate-900">Edit Profile Details</h2>
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">Edit Profile Details</h2>
+                <p className="text-xs text-slate-500">Update your clinical qualifications, contact details and documents.</p>
+              </div>
+            </div>
+
+            {/* Hidden inputs for files */}
+            <input
+              type="file"
+              ref={imageInputRef}
+              onChange={handleImageChange}
+              accept="image/*"
+              className="hidden"
+            />
+            <input
+              type="file"
+              ref={cvInputRef}
+              onChange={handleCvChange}
+              accept=".pdf,.png,.jpg,.jpeg"
+              className="hidden"
+            />
+
+            {/* Document Upload Area */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-200/60">
+              {/* Photo Box */}
+              <div
+                onClick={() => imageInputRef.current?.click()}
+                className="cursor-pointer border-2 border-dashed border-slate-200 hover:border-[#00535B] bg-white rounded-2xl p-4 flex items-center gap-3 transition-colors"
+              >
+                <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center text-[#00535B] shrink-0">
+                  <Camera className="w-6 h-6" />
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-xs font-bold text-slate-800">Profile Image</p>
+                  <p className="text-[11px] text-slate-500 truncate">
+                    {imageFile ? imageFile.name : 'Click to select new image'}
+                  </p>
+                </div>
+              </div>
+
+              {/* CV Box */}
+              <div
+                onClick={() => cvInputRef.current?.click()}
+                className="cursor-pointer border-2 border-dashed border-slate-200 hover:border-[#00535B] bg-white rounded-2xl p-4 flex items-center gap-3 transition-colors"
+              >
+                <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center text-[#00535B] shrink-0">
+                  <UploadCloud className="w-6 h-6" />
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-xs font-bold text-slate-800">Replace CV / Resume</p>
+                  <p className="text-[11px] text-slate-500 truncate">
+                    {cvFile ? cvFile.name : 'Click to upload PDF/Image'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Inputs Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1.5">Specialization</label>
@@ -381,9 +505,21 @@ export default function NurseProfilePage() {
                   required
                   value={editFormData.specialization}
                   onChange={(e) => setEditFormData({ ...editFormData, specialization: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00535B]"
                 />
               </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Experience (e.g. 5 yrs, 1-3)</label>
+                <input
+                  type="text"
+                  required
+                  value={editFormData.experience}
+                  onChange={(e) => setEditFormData({ ...editFormData, experience: e.target.value })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00535B]"
+                />
+              </div>
+
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1.5">Rate ($ / hr)</label>
                 <input
@@ -391,43 +527,58 @@ export default function NurseProfilePage() {
                   required
                   value={editFormData.price}
                   onChange={(e) => setEditFormData({ ...editFormData, price: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00535B]"
                 />
               </div>
+
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Location</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Location / City</label>
                 <input
                   type="text"
                   required
                   value={editFormData.location}
                   onChange={(e) => setEditFormData({ ...editFormData, location: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00535B]"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Phone</label>
+
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">Phone Number</label>
                 <input
                   type="text"
                   value={editFormData.phone}
                   onChange={(e) => setEditFormData({ ...editFormData, phone: e.target.value })}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00535B]"
                 />
               </div>
             </div>
-            <div className="flex justify-end gap-3">
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setImagePreview(null);
+                  setImageFile(null);
+                  setCvFile(null);
+                }}
+                className="px-5 py-2.5 border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="px-5 py-2.5 bg-[#00535B] text-white rounded-xl text-xs font-semibold flex items-center gap-2"
+                className="px-5 py-2.5 bg-[#00535B] hover:bg-[#00737D] text-white rounded-xl text-xs font-semibold flex items-center gap-2 transition-colors disabled:opacity-50"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                Save Changes
+                Save All Changes
               </button>
             </div>
           </form>
         )}
 
-        {/* ================= BOOKINGS SECTION ================= */}
+        {/* Bookings Section */}
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
@@ -463,12 +614,11 @@ export default function NurseProfilePage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
-                        booking.status === 'accepted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
-                        booking.status === 'rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
-                        booking.status === 'completed' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                        'bg-amber-50 text-amber-700 border border-amber-200'
-                      }`}>
+                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${booking.status === 'accepted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                          booking.status === 'rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                            booking.status === 'completed' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                              'bg-amber-50 text-amber-700 border border-amber-200'
+                        }`}>
                         {booking.status}
                       </span>
 
@@ -567,11 +717,10 @@ export default function NurseProfilePage() {
 
       </div>
 
-      {/* ================= MODAL PREVIEW FOR CV ================= */}
+      {/* CV Modal */}
       {showCvModal && cvUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-4xl h-[85vh] rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden">
-            {/* Modal Header */}
             <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-[#00535B]" />
@@ -599,10 +748,9 @@ export default function NurseProfilePage() {
               </div>
             </div>
 
-            {/* Modal Content */}
             <div className="flex-1 bg-slate-100 p-4 overflow-auto flex items-center justify-center">
               {isCvImage ? (
-                <img
+                <Image
                   src={cvUrl}
                   alt="Nurse CV Document"
                   className="max-h-full max-w-full rounded-xl object-contain shadow-md bg-white"

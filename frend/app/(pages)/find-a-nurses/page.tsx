@@ -43,13 +43,12 @@ function RateNurseModal({
     setErrorMsg("");
 
     try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      // يعتمد حصراً على الـ Cookies لنقل جلسة المستخدم وتوثيقه
       const res = await axios.post(
         `http://localhost:5000/api/nurses/${nurseId}/rate`,
         { rating: selectedRating, comment },
         {
           withCredentials: true,
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
         }
       );
 
@@ -452,7 +451,7 @@ export default function NurseSearchPage() {
                 <div key={nurse.id} className="relative group">
                   <NurseCard nurse={nurse} />
 
-                  {/* زر التقييم يظهر بأعلى الكارت أو بجانب البيانات */}
+                  {/* زر التقييم يظهر بأعلى الكارت */}
                   <button
                     type="button"
                     onClick={() => setRatingNurse(nurse)}
@@ -508,28 +507,28 @@ export default function NurseSearchPage() {
         )}
       </div>
 
-      {/* MODAL التقييم وربطه مع الـ State لتحديث التقييم لحظياً */}
+      {/* MODAL التقييم */}
       {ratingNurse && (
-    <RateNurseModal
-    nurseId={Number(ratingNurse.id)}
-    nurseName={
-      ratingNurse.name ||
-      (ratingNurse as any).fullName ||
-      `${(ratingNurse as any).first_name || ""} ${(ratingNurse as any).last_name || ""}`.trim() ||
-      "Nurse"
-    }
-    isOpen={Boolean(ratingNurse)}
-    onClose={() => setRatingNurse(null)}
-    onSuccess={(newRating, newReviewsCount) => {
-      setNurses((prev) =>
-        prev.map((n) =>
-          n.id === ratingNurse.id
-            ? { ...n, rating: newRating, reviews: newReviewsCount }
-            : n
-        )
-      );
-    }}
-  />
+        <RateNurseModal
+          nurseId={Number(ratingNurse.id)}
+          nurseName={
+            ratingNurse.name ||
+            (ratingNurse as any).fullName ||
+            `${(ratingNurse as any).first_name || ""} ${(ratingNurse as any).last_name || ""}`.trim() ||
+            "Nurse"
+          }
+          isOpen={Boolean(ratingNurse)}
+          onClose={() => setRatingNurse(null)}
+          onSuccess={(newRating, newReviewsCount) => {
+            setNurses((prev) =>
+              prev.map((n) =>
+                n.id === ratingNurse.id
+                  ? { ...n, rating: newRating, reviews: newReviewsCount }
+                  : n
+              )
+            );
+          }}
+        />
       )}
     </main>
   );

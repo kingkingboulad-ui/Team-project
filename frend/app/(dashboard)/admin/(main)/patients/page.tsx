@@ -6,14 +6,12 @@ import {
   Search, 
   Filter, 
   Plus, 
-  MoreVertical, 
   Phone, 
   Mail, 
   HeartPulse, 
   Calendar,
   AlertCircle,
   CheckCircle2,
-  UserCheck,
   Loader2,
   Trash2
 } from 'lucide-react';
@@ -28,7 +26,6 @@ interface Patient {
   phone: string | null;
   role: string;
   created_at: string;
-  // حقول إضافية مع قيم احتياطية للواجهة
   careType?: string;
   assignedNurse?: string;
   condition?: string;
@@ -43,22 +40,16 @@ export default function PatientsManagementPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
 
-  // جلب المرضى من الـ Backend
+  // جلب المرضى من الـ Backend بالاعتماد فقط على Cookies
   const fetchPatients = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
       const response = await axios.get('http://localhost:5000/api/patients', {
         withCredentials: true,
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        }
       });
 
-      // استخراج المرضى من الاستجابة
       const data = response.data?.patients || response.data || [];
       setPatients(Array.isArray(data) ? data : []);
     } catch (err: any) {
@@ -78,13 +69,8 @@ export default function PatientsManagementPage() {
     if (!confirm('Are you sure you want to delete this patient?')) return;
 
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-
       await axios.delete(`http://localhost:5000/api/patients/${id}`, {
         withCredentials: true,
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
-        }
       });
 
       setPatients((prev) => prev.filter((p) => p.id !== id));
@@ -286,7 +272,7 @@ export default function PatientsManagementPage() {
                             </Link>
                             <button 
                               onClick={() => handleDeletePatient(patient.id)}
-                              className="p-1.5 text-rose-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
+                              className="p-1.5 text-rose-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
                               title="Delete Patient"
                             >
                               <Trash2 className="w-4 h-4" />

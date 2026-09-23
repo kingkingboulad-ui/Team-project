@@ -16,6 +16,7 @@ import {
   UserCheck
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // واجهات البيانات المحدثة لتطابق الـ Backend الذكي
 export interface AIAnalysis {
@@ -182,7 +183,7 @@ export default function ResultsPlaceholder({ loading, result }: ResultsPlacehold
         </div>
 
         <div className="flex items-center gap-3.5 pt-1">
-          <img
+          <Image
             src={result.nurse.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(result.nurse.full_name)}&background=0d7c7b&color=fff`}
             alt={result.nurse.full_name}
             className="w-14 h-14 rounded-2xl object-cover border border-slate-100 shadow-sm"
