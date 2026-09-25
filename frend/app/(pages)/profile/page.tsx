@@ -369,7 +369,7 @@ export default function NurseProfilePage() {
           </p>
 
           <a
-            href="/sign-in"
+            href="/Sign-in"
             className="inline-block mt-6 px-6 py-3 rounded-xl bg-[#00535B] text-white font-semibold hover:bg-[#00464d] transition"
           >
             {t("nurse.signIn")}

@@ -1708,10 +1708,10 @@ supportAvailable: "Support Available",
     // ACTIVATED
     // =======================================================
     "activated.registrationSubmitted":
-      "REGISTRATION SUBMITTED",
+      "REGISTRATION COMPLETE",
 
     "activated.title":
-      "Account Activated",
+      "Your Application Is Under Review",
 
     "activated.profile":
       "PROFILE",
@@ -1726,10 +1726,10 @@ supportAvailable: "Support Available",
       "ACTIVATION",
 
     "activated.successTitle":
-      "Account Activated & Ready for Work!",
+      "Please Wait for Approval",
 
     "activated.successDescription":
-      "Welcome to the team. Your clinical credentials have been verified, and your profile is now active on NurseConnect.",
+"Your nurse registration process is complete. Our team is currently reviewing your application. Once your application is approved, you’ll be able to start receiving care requests.",
 
     "activated.firstSteps":
       "Your First Steps",
@@ -1762,7 +1762,7 @@ supportAvailable: "Support Available",
       "Your profile is ready.",
 
     "activated.profileReadyDescription":
-      "Patients can now discover your profile and send care requests.",
+      "After your application is approved, patients will be able to discover your profile and send care requests to you.",
 
     "activated.goToProfile":
       "Go to Profile",
@@ -3655,7 +3655,7 @@ nurse: "ممرضة", admin: "مسؤول", myProfile: "الملف الشخصي", 
       "تم إرسال التسجيل",
 
     "activated.title":
-      "تم تفعيل الحساب",
+      "طلبك قيد المراجعة",
 
     "activated.profile":
       "الملف الشخصي",
@@ -3670,11 +3670,9 @@ nurse: "ممرضة", admin: "مسؤول", myProfile: "الملف الشخصي", 
       "التفعيل",
 
     "activated.successTitle":
-      "تم تفعيل الحساب وأصبح جاهزًا للعمل!",
-
+    "لقد اكتملت عملية تسجيلك كممرض . يقوم فريقنا حالياً بمراجعة طلبك. بعد الموافقة على طلبك، ستتمكنين من البدء باستقبال طلبات الرعاية.",
     "activated.successDescription":
-      "مرحبًا بك في فريقنا. تم التحقق من مؤهلاتك السريرية، وأصبح ملفك الشخصي الآن نشطًا على NurseConnect.",
-
+        "تم إرسال ملفك وهو بانتظار الموافقة. سيتم إعلامك عند انتهاء عملية المراجعة.",
     "activated.firstSteps":
       "خطواتك الأولى",
 
@@ -3706,7 +3704,7 @@ nurse: "ممرضة", admin: "مسؤول", myProfile: "الملف الشخصي", 
       "ملفك الشخصي جاهز.",
 
     "activated.profileReadyDescription":
-      "يمكن للمرضى الآن اكتشاف ملفك الشخصي وإرسال طلبات الرعاية إليك.",
+      "بعد الموافقة على طلبك، سيتمكن المرضى من اكتشاف ملفك الشخصي وإرسال طلبات الرعاية إليك.",
 
     "activated.goToProfile":
       "الانتقال إلى الملف الشخصي",

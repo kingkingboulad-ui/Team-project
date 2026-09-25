@@ -8,18 +8,18 @@ const columns = [
   {
     title: "FOR PATIENTS",
     links: [
-      { href: "/find-nurse", label: "Find a Nurse" },
-      { href: "/request-care", label: "Request Care" },
-      { href: "/ai-care-assistant", label: "AI Care Assistant" },
-      { href: "/how-it-works", label: "How It Works" },
+      { href: "/find-a-nurses", label: "Find a Nurse" },
+      { href: "/book", label: "Request Care" },
+      { href: "/Ai-care-assistant", label: "AI Care Assistant" },
+      { href: "/#HowItWorks", label: "How It Works" },
     ],
   },
 
   {
     title: "FOR NURSES",
     links: [
-      { href: "/join-as-nurse", label: "Join as a Nurse" },
-      { href: "/nurse-dashboard", label: "Nurse Dashboard" },
+      { href: "/join-as-a-nurse", label: "Join as a Nurse" },
+      { href: "/profile", label: "Nurse Dashboard" },
       { href: "/how-to-apply", label: "How to Apply" },
       { href: "/nurse-resources", label: "Nurse Resources" },
     ],

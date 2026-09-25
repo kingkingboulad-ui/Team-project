@@ -164,7 +164,7 @@ export default function BackgroundCheckPage() {
                   {t("backgroundCheck.informationDescription")}
                 </p>
 
-                <button className="mt-4 rounded-md bg-[#006D77] px-5 py-2 text-[10px] font-semibold text-white">
+                <button   onClick={() => router.push("/profile")}  className="mt-4 rounded-md bg-[#006D77] px-5 py-2 text-[10px] font-semibold text-white">
                   {t("backgroundCheck.reviewInformation")}
                 </button>
 

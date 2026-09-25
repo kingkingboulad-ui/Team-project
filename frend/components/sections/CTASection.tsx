@@ -17,7 +17,7 @@ export default function CTASection() {
           {t("readyToFindDescription")}
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
-          <Button href="/get-started" variant="primary">
+          <Button href="/find-a-nurses" variant="primary">
             {t("getStartedToday")}
           </Button>
           <Button href="/for-nurses" variant="outline">
