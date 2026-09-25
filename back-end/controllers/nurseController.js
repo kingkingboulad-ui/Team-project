@@ -1,6 +1,7 @@
 
 import pool from "../config/DBConnect.js";
-
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 /* =========================================================
    CATEGORIES
 ========================================================= */
@@ -20,129 +21,135 @@ const NURSE_CATEGORIES = [
    APPLY AS NURSE
 ========================================================= */
 
-export const applyAsNurse = async (req, res) => {
-  try {
-    const userId = req.user.id;
+export const registerNurseAccount = async (req, res) => {
+  const connection = await pool.getConnection();
 
+  try {
     const {
+      fullName,
+      email,
+      phone,
+      password,
       specialization,
       experience,
       location,
       price,
-      categories // 1. استقبال التصنيفات من الفرونت إند
+      categories
     } = req.body;
 
     const imageFile = req.files?.image?.[0] || req.files?.imageFile?.[0];
     const cvFile = req.files?.cvFile?.[0] || req.files?.cv?.[0];
 
+    // التحقق من الحقول الأساسية
+    if (!fullName || !email || !password || !phone) {
+      return res.status(400).json({ message: "All account fields are required" });
+    }
+
     if (!specialization || !experience || !location || !price) {
-      return res.status(400).json({
-        message: "All nurse information is required"
-      });
+      return res.status(400).json({ message: "All professional fields are required" });
     }
 
     if (!imageFile || !cvFile) {
-      return res.status(400).json({
-        message: "Profile image and CV are required"
-      });
+      return res.status(400).json({ message: "Profile image and CV are required" });
     }
 
-    // 2. التحقق من التصنيفات وفكها
+    // تجهيز التصنيفات
     let selectedCategories = [];
     if (categories) {
       try {
-        selectedCategories = typeof categories === "string" 
-          ? JSON.parse(categories) 
-          : categories;
+        selectedCategories = typeof categories === "string" ? JSON.parse(categories) : categories;
       } catch (err) {
         selectedCategories = Array.isArray(categories) ? categories : [categories];
       }
     }
 
     if (!Array.isArray(selectedCategories) || selectedCategories.length === 0) {
-      return res.status(400).json({
-        message: "Please select at least one category"
-      });
+      return res.status(400).json({ message: "Please select at least one category" });
     }
 
-    // 3. فحص هل المستخدم قدم مسبقاً
-    const [existing] = await pool.execute(
-      `
-      SELECT id, status
-      FROM nurse_profiles
-      WHERE user_id = ?
-      `,
-      [userId]
+    await connection.beginTransaction();
+
+    // 1. فحص وجود البريد مسبقاً
+    const [existingUsers] = await connection.execute(
+      "SELECT id FROM users WHERE email = ?",
+      [email.trim().toLowerCase()]
     );
 
-    if (existing.length > 0) {
-      return res.status(409).json({
-        message: "You already submitted a nurse application",
-        status: existing[0].status
-      });
+    if (existingUsers.length > 0) {
+      await connection.rollback();
+      return res.status(409).json({ message: "Email is already registered" });
     }
 
-    // المسارات الجديدة
+    // 2. تقسيم الاسم إلى First Name و Last Name ليتوافق مع قاعدة البيانات
+    const nameParts = fullName.trim().split(" ");
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(" ") || firstName;
+
+    // تشفير كلمة المرور
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // 3. إنشاء المستخدم في جدول users
+    const [userResult] = await connection.execute(
+      `INSERT INTO users (first_name, last_name, email, password, phone, role)
+       VALUES (?, ?, ?, ?, ?, 'nurse')`,
+      [firstName, lastName, email.trim().toLowerCase(), hashedPassword, phone.trim()]
+    );
+
+    const newUserId = userResult.insertId;
+
+    // مسارات الملفات
     const imagePath = `/uploads/imagenurses/${imageFile.filename}`;
     const cvPath = `/uploads/cvs/${cvFile.filename}`;
 
-    // 4. إنشاء ملف الممرض مع عمود image بدلاً من license_file
-    const [result] = await pool.execute(
-      `
-      INSERT INTO nurse_profiles
-      (
-        user_id,
-        specialization,
-        experience,
-        location,
-        image,
-        cv_file,
-        price
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-      `,
-      [
-        userId,
-        specialization,
-        experience,
-        location,
-        imagePath,
-        cvPath,
-        price
-      ]
+    // 4. إنشاء ملف الممرض في nurse_profiles
+    const [profileResult] = await connection.execute(
+      `INSERT INTO nurse_profiles 
+       (user_id, specialization, experience, location, image, cv_file, price, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')`,
+      [newUserId, specialization, experience, location, imagePath, cvPath, price]
     );
 
-    const nurseId = result.insertId;
+    const nurseId = profileResult.insertId;
 
-    // 5. حفظ التصنيفات
+    // 5. حفظ التصنيفات في nurse_categories
     for (const category of selectedCategories) {
       if (category && typeof category === "string" && category.trim() !== "") {
-        await pool.execute(
-          `
-          INSERT INTO nurse_categories
-          (
-            nurse_id,
-            category
-          )
-          VALUES (?, ?)
-          `,
+        await connection.execute(
+          `INSERT INTO nurse_categories (nurse_id, category) VALUES (?, ?)`,
           [nurseId, category.trim()]
         );
       }
     }
 
+    await connection.commit();
+
+    // 6. إنشاء الـ Token وتسجيل الدخول تلقائياً (عبر الكوكيز)
+    const token = jwt.sign(
+      { id: newUserId, role: "nurse", email },
+      process.env.JWT_SECRET || JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
     return res.status(201).json({
       success: true,
-      message: "Nurse application submitted successfully",
-      nurseId
+      message: "Nurse account created and application submitted successfully",
+      nurseId,
+      userId: newUserId
     });
 
   } catch (error) {
-    console.error("Apply nurse error:", error);
-
-    return res.status(500).json({
-      message: "Server error"
-    });
+    await connection.rollback();
+    console.error("Nurse registration error:", error);
+    return res.status(500).json({ message: "Server error during registration" });
+  } finally {
+    connection.release();
   }
 };
 
@@ -1023,5 +1030,41 @@ export const updateNurseProfile = async (req, res) => {
     return res.status(500).json({ success: false, message: "Server error updating profile." });
   } finally {
     if (connection) connection.release();
+  }
+};
+
+
+
+
+
+export const getCurrentNurseProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const [rows] = await pool.execute(
+      `
+      SELECT 
+        u.first_name, 
+        u.last_name, 
+        np.specialization, 
+        np.image 
+      FROM users u
+      LEFT JOIN nurse_profiles np ON u.id = np.user_id
+      WHERE u.id = ?
+      `,
+      [userId]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({ message: "Nurse not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      nurse: rows[0]
+    });
+  } catch (error) {
+    console.error("Get nurse profile error:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };

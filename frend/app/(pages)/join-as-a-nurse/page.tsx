@@ -158,7 +158,7 @@ export default function CreateNurseAccountPage() {
       formData.append("cvFile", cvFile);
 
       const res = await axios.post(
-        "http://localhost:5000/api/nurses/apply",
+        "http://localhost:5000/api/nurses/register-nurse",
         formData,
         {
           withCredentials: true,

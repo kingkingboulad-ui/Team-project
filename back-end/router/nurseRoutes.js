@@ -1,7 +1,7 @@
 import express from "express";
 
 import {
-    applyAsNurse,
+  registerNurseAccount,
     getMyNurseProfile,
     getAllNurses,
     getNurseById,
@@ -29,15 +29,13 @@ import upload from "../middleware/UploadMiddleware.js"
 const router = express.Router();
 
 router.post(
-    "/apply",
-    protect,
-    upload.fields([
-      { name: "image", maxCount: 1 },
-      { name: "cvFile", maxCount: 1 }
-    ]),
-    applyAsNurse
-  );
-
+  "/register-nurse", // أو الإبقاء على /apply بدون protect
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "cvFile", maxCount: 1 }
+  ]),
+  registerNurseAccount
+);
 
 
 router.get(
