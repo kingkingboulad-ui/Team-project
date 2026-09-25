@@ -196,14 +196,17 @@ export default function Hero() {
 
           {/* STATS */}
           <dl className="mt-10 grid grid-cols-2 gap-6 sm:mt-12 sm:grid-cols-4">
-            {stats.map((stat) => (
-              <div key={stat.label}>
-                <dt className="text-2xl font-bold">{stat.value}</dt>
-                <dd className="mt-1 text-xs text-teal-100/70">
-                  {stat.label}
-                </dd>
-              </div>
-            ))}
+        {stats.map((stat) => (
+  <div key={stat.key}>
+    <dt className="text-2xl font-bold">
+      {stat.value}
+    </dt>
+
+    <dd className="mt-1 text-xs text-teal-100/70">
+      {t(stat.key)}
+    </dd>
+  </div>
+))}
           </dl>
         </div>
 

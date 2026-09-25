@@ -59,9 +59,9 @@ export const trustFeatures = [
 ];
 
 export const stats = [
-  { value: "10,000+", label: "Families Served" },
-  { value: "2,500+", label: "Verified Nurses" },
-  { value: "4.9/5", label: "Average Rating" },
-  { value: "24/7", label: "Support Available" },
+  { value: "10,000+", key: "familiesServed" },
+  { value: "2,500+", key: "verifiedNurses" },
+  { value: "4.9/5", key: "averageRating" },
+  { value: "24/7", key: "supportAvailable" },
 ];
 

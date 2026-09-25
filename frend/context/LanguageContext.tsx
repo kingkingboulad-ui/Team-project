@@ -16,7 +16,7 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-const translations: Record<Lang, Record<string, string>> = {
+const translations: Record<Lang, Record<string, any>> = {
   // =========================================================
   // ENGLISH
   // =========================================================
@@ -916,6 +916,195 @@ const translations: Record<Lang, Record<string, string>> = {
       "Nurse CV",
 
     // =======================================================
+    // NURSE PROFILE / DASHBOARD
+    // =======================================================
+    "nurse.registeredNurse":
+      "Registered Nurse",
+
+    "nurse.loadingData":
+      "Loading nurse data...",
+
+    "nurse.profileNotAccessible":
+      "Profile Not Accessible",
+
+    "nurse.pleaseLogin":
+      "Please log in.",
+
+    "nurse.signIn":
+      "Sign In",
+
+    "nurse.applicationUnderReview":
+      "Nurse Application Under Review",
+
+    "nurse.waitingApproval":
+      "Your profile is currently waiting for admin approval.",
+
+    "nurse.cancel":
+      "Cancel",
+
+    "nurse.editProfile":
+      "Edit Profile",
+
+    "nurse.change":
+      "Change",
+
+    "nurse.uploadNewPhoto":
+      "Upload new profile photo",
+
+    "nurse.viewMyCV":
+      "View My CV",
+
+    "nurse.hourlyRate":
+      "Hourly Rate",
+
+    "nurse.totalBookings":
+      "Total Bookings",
+
+    "nurse.experience":
+      "Experience",
+
+    "nurse.years":
+      "yrs",
+
+    "nurse.reviews":
+      "Reviews",
+
+    "nurse.curriculumVitae":
+      "Curriculum Vitae (CV)",
+
+    "nurse.verifiedSubmitted":
+      "Verified and submitted to the administration",
+
+    "nurse.noCV":
+      "No CV uploaded yet",
+
+    "nurse.previewCV":
+      "Preview CV",
+
+    "nurse.openNewTab":
+      "Open in new tab",
+
+    "nurse.notProvided":
+      "Not Provided",
+
+    "nurse.editProfileDetails":
+      "Edit Profile Details",
+
+    "nurse.updateQualifications":
+      "Update your clinical qualifications, contact details and documents.",
+
+    "nurse.profileImage":
+      "Profile Image",
+
+    "nurse.replaceCV":
+      "Replace CV / Resume",
+
+    "nurse.uploadPDFImage":
+      "Click to upload PDF/Image",
+
+    "nurse.specialization":
+      "Specialization",
+
+    "nurse.experienceExample":
+      "e.g. 5 yrs, 1-3",
+
+    "nurse.rate":
+      "Rate ($ / hr)",
+
+    "nurse.locationCity":
+      "Location / City",
+
+    "nurse.phoneNumber":
+      "Phone Number",
+
+    "nurse.saveAllChanges":
+      "Save All Changes",
+
+    "nurse.allPatientBookings":
+      "All Patient Bookings",
+
+    "nurse.manageBookings":
+      "Manage, update, and remove incoming care requests.",
+
+    "nurse.total":
+      "Total",
+
+    "nurse.noBookings":
+      "No bookings assigned to you yet.",
+
+    "nurse.request":
+      "Request",
+
+    "nurse.bookedOn":
+      "Booked on",
+
+    "nurse.careType":
+      "Care Type",
+
+    "nurse.for":
+      "For",
+
+    "nurse.dateDuration":
+      "Date & Duration",
+
+    "nurse.patientContact":
+      "Patient Contact",
+
+    "nurse.noPhone":
+      "No phone",
+
+    "nurse.location":
+      "Location",
+
+    "nurse.viewMap":
+      "View Map",
+
+    "nurse.notes":
+      "Notes",
+
+    "nurse.pending":
+      "Pending",
+
+    "nurse.accepted":
+      "Accepted",
+
+    "nurse.rejected":
+      "Rejected",
+
+    "nurse.completed":
+      "Completed",
+
+    "nurse.decline":
+      "Decline",
+
+    "nurse.acceptBooking":
+      "Accept Booking",
+
+    "nurse.markCompleted":
+      "Mark as Completed",
+
+    "nurse.cvPreview":
+      "Curriculum Vitae Preview",
+
+    "nurse.open":
+      "Open",
+
+    "nurse.confirmDelete":
+      "Are you sure you want to delete this booking record?",
+
+    "nurse.failedUpdateStatus":
+      "Failed to update status.",
+
+    "nurse.failedDelete":
+      "Failed to delete booking.",
+
+    "nurse.failedUpdateProfile":
+      "Failed to update profile details.",
+
+    "nurse.couldNotLoad":
+      "Could not load your profile and bookings.",
+
+    // =======================================================
     // LOGIN
     // =======================================================
     welcomeBack:
@@ -1076,6 +1265,12 @@ const translations: Record<Lang, Record<string, string>> = {
 
     lessThanOneYear:
       "Less than 1 year",
+
+    oneToThreeYears:
+      "1 - 3 years",
+
+    threeToFiveYears:
+      "3 - 5 years",
 
     fiveToTenYears:
       "5–10 years",
@@ -1271,7 +1466,15 @@ const translations: Record<Lang, Record<string, string>> = {
 
     selectCareDuration:
       "Please select the care duration.",
-	  continue: "Continue",
+	joinAsANurse:
+	"Join as a Nurse",
+	   patient: "Patient", nurse: "Nurse", admin: "Admin", myProfile: "My Profile", nurseWorkspace: "Nurse Workspace", adminDashboard: "Admin Dashboard", systemSettings: "System Settings", signOut: "Sign Out", signedInAs: "Signed in as",
+
+	// English
+familiesServed: "Families Served",
+verifiedNurses: "Verified Nurses",
+averageRating: "Average Rating",
+supportAvailable: "Support Available",
 
     // =======================================================
     // DESCRIBE NEEDS
@@ -1564,37 +1767,114 @@ const translations: Record<Lang, Record<string, string>> = {
     "activated.goToProfile":
       "Go to Profile",
 
-    "activated.startFindingRequests":  "Start Finding Care Requests",
-// EN
-"patientProfile.loading": "Loading your profile & bookings...",
-"patientProfile.accessDenied": "Access Denied",
-"patientProfile.loginToContinue": "Please sign in to continue.",
-"patientProfile.signIn": "Sign In",
-"patientProfile.memberSince": "Member since",
-"patientProfile.noPhone": "No phone provided",
-"patientProfile.bookNewCare": "Book New Care",
-"patientProfile.careRequestsStatus": "Your Care Requests & Status",
-"patientProfile.followUp":
-  "Follow up on your bookings and check whether your request is approved.",
-"patientProfile.requests": "Requests",
-"patientProfile.noCareRequests": "No care requests yet",
-"patientProfile.noCareRequestsDescription":
-  "You have not booked any healthcare provider yet. Choose a qualified nurse for your family.",
-"patientProfile.findNurse": "Find a Nurse",
-"patientProfile.booking": "Booking",
-"patientProfile.createdOn": "Created on",
-"patientProfile.accepted": "Accepted",
-"patientProfile.pending": "Pending",
-"patientProfile.rejected": "Declined",
-"patientProfile.completed": "Completed",
-"patientProfile.serviceType": "Service Type",
-"patientProfile.for": "For",
-"patientProfile.schedule": "Schedule",
-"patientProfile.selectedNurse": "Selected Nurse",
-"patientProfile.generalBooking": "General Booking",
-"patientProfile.careAddress": "Care Address",
-"patientProfile.specialNotes": "Special Notes",
-	
+    "activated.startFindingRequests":
+      "Start Finding Care Requests",
+
+    // =======================================================
+    // PATIENT PROFILE
+    // =======================================================
+    "patientProfile.loading":
+      "Loading your profile & bookings...",
+
+    "patientProfile.accessDenied":
+      "Access Denied",
+
+    "patientProfile.loginToContinue":
+      "Please sign in to continue.",
+
+    "patientProfile.signIn":
+      "Sign In",
+
+    "patientProfile.memberSince":
+      "Member since",
+
+    "patientProfile.noPhone":
+      "No phone provided",
+
+    "patientProfile.bookNewCare":
+      "Book New Care",
+
+    "patientProfile.careRequestsStatus":
+      "Your Care Requests & Status",
+
+    "patientProfile.followUp":
+      "Follow up on your bookings and check whether your request is approved.",
+
+    "patientProfile.requests":
+      "Requests",
+
+    "patientProfile.noCareRequests":
+      "No care requests yet",
+
+    "patientProfile.noCareRequestsDescription":
+      "You have not booked any healthcare provider yet. Choose a qualified nurse for your family.",
+
+    "patientProfile.findNurse":
+      "Find a Nurse",
+
+    "patientProfile.booking":
+      "Booking",
+
+    "patientProfile.createdOn":
+      "Created on",
+
+    "patientProfile.accepted":
+      "Accepted",
+
+    "patientProfile.pending":
+      "Pending",
+
+    "patientProfile.rejected":
+      "Declined",
+
+    "patientProfile.completed":
+      "Completed",
+
+    "patientProfile.serviceType":
+      "Service Type",
+
+
+    "patientProfile.for":
+      "For",
+
+    "patientProfile.schedule":
+      "Schedule",
+
+    "patientProfile.selectedNurse":
+      "Selected Nurse",
+
+    "patientProfile.generalBooking":
+      "General Booking",
+
+    "patientProfile.careAddress":
+      "Care Address",
+
+    "patientProfile.specialNotes":
+      "Special Notes",
+	"common.back":
+	"Back" ,
+	"common.continue":
+	"Continue",
+	"confirmation.title": "Care Request Submitted!",
+"confirmation.description":
+  "We're matching you with the best suitable nurse in your area. You'll receive a confirmation shortly.",
+
+"confirmation.preferredNurse": "Preferred Nurse",
+"confirmation.careFor": "Care For",
+"confirmation.careType": "Care Type",
+"confirmation.startDate": "Start Date",
+"confirmation.duration": "Duration",
+"confirmation.location": "Location",
+
+"confirmation.oneHour": "1 Hour",
+"confirmation.twoHours": "2 Hours",
+"confirmation.fourHours": "4 Hours",
+"confirmation.eightHours": "8 Hours",
+"confirmation.twelveHours": "12 Hours",
+"confirmation.twentyFourHours": "24 Hours",
+
+"confirmation.dashboard": "View My Dashboard",
+"confirmation.browseNurses": "Browse Nurses",
   },
 
   // =========================================================
@@ -1648,7 +1928,7 @@ const translations: Record<Lang, Record<string, string>> = {
 
     expertNursesTitle:
       "ممرضون متخصصون،",
-continue: "متابعة",
+
     rightAtHome:
       "مباشرة في منزلك.",
 
@@ -1723,7 +2003,15 @@ continue: "متابعة",
 
     allCareTypes:
       "جميع أنواع الرعاية",
-
+// Arabic
+familiesServed: "عائلات تمت خدمتها",
+verifiedNurses: "ممرضون موثّقون",
+averageRating: "متوسط التقييم",
+supportAvailable: "دعم متوفر على مدار الساعة",
+common: {
+  back: "رجوع",
+  continue: "متابعة",
+},
     careSchedule:
       "جدول الرعاية",
 
@@ -1792,7 +2080,8 @@ continue: "متابعة",
     // =======================================================
     simpleProcess:
       "خطوات بسيطة",
-
+	joinAsANurse:
+	"انضمي كممرضة 🩺",
     howNurseConnectWorks:
       "كيف تعمل NurseConnect؟",
 
@@ -1846,35 +2135,7 @@ continue: "متابعة",
 
     dailyMorningsPreferred:
       "يوميًا، ويفضل في الصباح",
-// AR
-"patientProfile.loading": "جارٍ تحميل ملفك الشخصي والحجوزات...",
-"patientProfile.accessDenied": "الوصول مرفوض",
-"patientProfile.loginToContinue": "يرجى تسجيل الدخول للمتابعة.",
-"patientProfile.signIn": "تسجيل الدخول",
-"patientProfile.memberSince": "عضو منذ",
-"patientProfile.noPhone": "لم يتم توفير رقم هاتف",
-"patientProfile.bookNewCare": "احجز رعاية جديدة",
-"patientProfile.careRequestsStatus": "طلبات الرعاية وحالتها",
-"patientProfile.followUp":
-  "تابع حجوزاتك وتحقق مما إذا تمت الموافقة على طلبك.",
-"patientProfile.requests": "طلبات",
-"patientProfile.noCareRequests": "لا توجد طلبات رعاية بعد",
-"patientProfile.noCareRequestsDescription":
-  "لم تقم بحجز أي مقدم رعاية صحية بعد. اختر ممرضة مؤهلة لرعاية عائلتك.",
-"patientProfile.findNurse": "ابحث عن ممرضة",
-"patientProfile.booking": "الحجز",
-"patientProfile.createdOn": "تم الإنشاء في",
-"patientProfile.accepted": "تم قبول الطلب",
-"patientProfile.pending": "قيد المراجعة",
-"patientProfile.rejected": "تم رفض الطلب",
-"patientProfile.completed": "تم الإنجاز",
-"patientProfile.serviceType": "نوع الخدمة",
-"patientProfile.for": "لـ",
-"patientProfile.schedule": "الموعد",
-"patientProfile.selectedNurse": "الممرضة المختارة",
-"patientProfile.generalBooking": "حجز عام",
-"patientProfile.careAddress": "عنوان الرعاية",
-"patientProfile.specialNotes": "ملاحظات خاصة",
+
     matchesNearby:
       "المطابقات القريبة",
 
@@ -2285,7 +2546,9 @@ continue: "متابعة",
 
     book:
       "احجز",
-
+// Profile 
+patient: "مريض",
+nurse: "ممرضة", admin: "مسؤول", myProfile: "الملف الشخصي", nurseWorkspace: "مساحة عمل الممرضة", adminDashboard: "لوحة تحكم المسؤول", systemSettings: "إعدادات النظام", signOut: "تسجيل الخروج", signedInAs: "مسجل الدخول باسم",
     // =======================================================
     // FOR NURSES
     // =======================================================
@@ -2602,6 +2865,195 @@ continue: "متابعة",
       "السيرة الذاتية للممرض",
 
     // =======================================================
+    // NURSE PROFILE / DASHBOARD
+    // =======================================================
+    "nurse.registeredNurse":
+      "ممرّض/ة مسجّل/ة",
+
+    "nurse.loadingData":
+      "جارٍ تحميل بيانات الممرّض/ة...",
+
+    "nurse.profileNotAccessible":
+      "الملف الشخصي غير متاح",
+
+    "nurse.pleaseLogin":
+      "يرجى تسجيل الدخول.",
+
+    "nurse.signIn":
+      "تسجيل الدخول",
+
+    "nurse.applicationUnderReview":
+      "طلب الانضمام كممرّض/ة قيد المراجعة",
+
+    "nurse.waitingApproval":
+      "ملفك الشخصي بانتظار موافقة المسؤول.",
+
+    "nurse.cancel":
+      "إلغاء",
+
+    "nurse.editProfile":
+      "تعديل الملف الشخصي",
+
+    "nurse.change":
+      "تغيير",
+
+    "nurse.uploadNewPhoto":
+      "اضغط لاختيار صورة شخصية جديدة",
+
+    "nurse.viewMyCV":
+      "عرض سيرتي الذاتية",
+
+    "nurse.hourlyRate":
+      "الأجر بالساعة",
+
+    "nurse.totalBookings":
+      "إجمالي الحجوزات",
+
+    "nurse.experience":
+      "الخبرة",
+
+    "nurse.years":
+      "سنة",
+
+    "nurse.reviews":
+      "التقييمات",
+
+    "nurse.curriculumVitae":
+      "السيرة الذاتية (CV)",
+
+    "nurse.verifiedSubmitted":
+      "تم التحقق منها وإرسالها إلى الإدارة",
+
+    "nurse.noCV":
+      "لم يتم رفع السيرة الذاتية بعد",
+
+    "nurse.previewCV":
+      "معاينة السيرة الذاتية",
+
+    "nurse.openNewTab":
+      "فتح في علامة تبويب جديدة",
+
+    "nurse.notProvided":
+      "غير متوفرة",
+
+    "nurse.editProfileDetails":
+      "تعديل تفاصيل الملف الشخصي",
+
+    "nurse.updateQualifications":
+      "حدّث مؤهلاتك السريرية وبيانات الاتصال والمستندات.",
+
+    "nurse.profileImage":
+      "الصورة الشخصية",
+
+    "nurse.replaceCV":
+      "استبدال السيرة الذاتية",
+
+    "nurse.uploadPDFImage":
+      "اضغط لرفع PDF أو صورة",
+
+    "nurse.specialization":
+      "التخصص",
+
+    "nurse.experienceExample":
+      "مثال: 5 سنوات، 1-3",
+
+    "nurse.rate":
+      "السعر ($ / ساعة)",
+
+    "nurse.locationCity":
+      "الموقع / المدينة",
+
+    "nurse.phoneNumber":
+      "رقم الهاتف",
+
+    "nurse.saveAllChanges":
+      "حفظ جميع التغييرات",
+
+    "nurse.allPatientBookings":
+      "جميع حجوزات المرضى",
+
+    "nurse.manageBookings":
+      "إدارة وتحديث وحذف طلبات الرعاية الواردة.",
+
+    "nurse.total":
+      "الإجمالي",
+
+    "nurse.noBookings":
+      "لا توجد حجوزات مخصصة لك حتى الآن.",
+
+    "nurse.request":
+      "الطلب",
+
+    "nurse.bookedOn":
+      "تم الحجز في",
+
+    "nurse.careType":
+      "نوع الرعاية",
+
+    "nurse.for":
+      "لـ",
+
+    "nurse.dateDuration":
+      "التاريخ والمدة",
+
+    "nurse.patientContact":
+      "بيانات اتصال المريض",
+
+    "nurse.noPhone":
+      "لا يوجد رقم هاتف",
+
+    "nurse.location":
+      "الموقع",
+
+    "nurse.viewMap":
+      "عرض الخريطة",
+
+    "nurse.notes":
+      "ملاحظات",
+
+    "nurse.pending":
+      "قيد الانتظار",
+
+    "nurse.accepted":
+      "مقبول",
+
+    "nurse.rejected":
+      "مرفوض",
+
+    "nurse.completed":
+      "مكتمل",
+
+    "nurse.decline":
+      "رفض",
+
+    "nurse.acceptBooking":
+      "قبول الحجز",
+
+    "nurse.markCompleted":
+      "تحديد كمكتمل",
+
+    "nurse.cvPreview":
+      "معاينة السيرة الذاتية",
+
+    "nurse.open":
+      "فتح",
+
+    "nurse.confirmDelete":
+      "هل أنت متأكد أنك تريد حذف سجل الحجز هذا؟",
+
+    "nurse.failedUpdateStatus":
+      "فشل تحديث الحالة.",
+
+    "nurse.failedDelete":
+      "فشل حذف الحجز.",
+
+    "nurse.failedUpdateProfile":
+      "فشل تحديث تفاصيل الملف الشخصي.",
+
+    "nurse.couldNotLoad":
+      "تعذّر تحميل ملفك الشخصي وحجوزاتك.",
+
+    // =======================================================
     // LOGIN
     // =======================================================
     welcomeBack:
@@ -2781,9 +3233,6 @@ continue: "متابعة",
     currentLocation:
       "الموقع الحالي / المنطقة",
 
-    locationExample:
-      "مثال: بيروت",
-
     selectCareCategories:
       "اختر فئات الرعاية / الخدمات المقدمة",
 
@@ -2819,6 +3268,12 @@ continue: "متابعة",
 
     other:
       "أخرى",
+
+    back:
+      "Back",
+
+    continue:
+      "متابعة",
 
     profilePhotoCvUpload:
       "03 / رفع صورة الملف الشخصي والسيرة الذاتية",
@@ -2963,7 +3418,8 @@ continue: "متابعة",
 
     selectCareDuration:
       "يرجى اختيار مدة الرعاية.",
-
+	  // Profile
+	
     // =======================================================
     // DESCRIBE NEEDS
     // =======================================================
@@ -3257,12 +3713,118 @@ continue: "متابعة",
 
     "activated.startFindingRequests":
       "ابدأ بالبحث عن طلبات الرعاية",
+
+    // =======================================================
+    // PATIENT PROFILE
+    // =======================================================
+    "patientProfile.loading":
+      "جارٍ تحميل ملفك الشخصي والحجوزات...",
+
+    "patientProfile.accessDenied":
+      "الوصول مرفوض",
+
+    "patientProfile.loginToContinue":
+      "يرجى تسجيل الدخول للمتابعة.",
+
+    "patientProfile.signIn":
+      "تسجيل الدخول",
+
+    "patientProfile.memberSince":
+      "عضو منذ",
+
+    "patientProfile.noPhone":
+      "لم يتم توفير رقم هاتف",
+
+    "patientProfile.bookNewCare":
+      "احجز رعاية جديدة",
+
+    "patientProfile.careRequestsStatus":
+      "طلبات الرعاية وحالتها",
+
+    "patientProfile.followUp":
+      "تابع حجوزاتك وتحقق مما إذا تمت الموافقة على طلبك.",
+
+    "patientProfile.requests":
+      "طلبات",
+
+    "patientProfile.noCareRequests":
+      "لا توجد طلبات رعاية بعد",
+
+    "patientProfile.noCareRequestsDescription":
+      "لم تقم بحجز أي مقدم رعاية صحية بعد. اختر ممرضة مؤهلة لرعاية عائلتك.",
+
+    "patientProfile.findNurse":
+      "ابحث عن ممرضة",
+
+    "patientProfile.booking":
+      "الحجز",
+
+    "patientProfile.createdOn":
+      "تم الإنشاء في",
+
+    "patientProfile.accepted":
+      "تم قبول الطلب",
+
+    "patientProfile.pending":
+      "قيد المراجعة",
+
+    "patientProfile.rejected":
+      "تم رفض الطلب",
+
+    "patientProfile.completed":
+      "تم الإنجاز",
+
+    "patientProfile.serviceType":
+      "نوع الخدمة",
+
+    "patientProfile.for":
+      "لـ",
+
+    "patientProfile.schedule":
+      "الموعد",
+
+    "patientProfile.selectedNurse":
+      "الممرضة المختارة",
+
+    "patientProfile.generalBooking":
+      "حجز عام",
+
+    "patientProfile.careAddress":
+      "عنوان الرعاية",
+
+    "patientProfile.specialNotes":
+      "ملاحظات خاصة",
+	"common.back":
+	"رجوع" ,
+	"common.continue":
+	"متابعة",
+	"confirmation.title": "تم إرسال طلب الرعاية!",
+"confirmation.description":
+  "نحن نبحث لك عن الممرضة الأنسب في منطقتك. ستتلقى تأكيدًا قريبًا.",
+
+"confirmation.preferredNurse": "الممرضة المفضلة",
+"confirmation.careFor": "الرعاية لـ",
+"confirmation.careType": "نوع الرعاية",
+"confirmation.startDate": "تاريخ البدء",
+"confirmation.duration": "المدة",
+"confirmation.location": "الموقع",
+
+"confirmation.oneHour": "ساعة واحدة",
+"confirmation.twoHours": "ساعتان",
+"confirmation.fourHours": "4 ساعات",
+"confirmation.eightHours": "8 ساعات",
+"confirmation.twelveHours": "12 ساعة",
+"confirmation.twentyFourHours": "24 ساعة",
+
+"confirmation.dashboard": "عرض لوحة التحكم",
+"confirmation.browseNurses": "تصفح الممرضات",
   },
 };
 
 // =========================================================
 // CONTEXT
 // =========================================================
+
 const LanguageContext = createContext<LanguageContextType>({
   lang: "en",
   toggleLang: () => {},
@@ -3273,6 +3835,7 @@ const LanguageContext = createContext<LanguageContextType>({
 // =========================================================
 // PROVIDER
 // =========================================================
+
 export const LanguageProvider = ({
   children,
 }: {
@@ -3332,5 +3895,6 @@ export const LanguageProvider = ({
 // =========================================================
 // HOOK
 // =========================================================
+
 export const useLanguage = () =>
   useContext(LanguageContext);

@@ -3,18 +3,20 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  HeartPulse, 
-  Menu, 
-  X, 
-  User, 
-  LogOut, 
-  LayoutDashboard, 
+
+import {
+  HeartPulse,
+  Menu,
+  X,
+  User,
+  LogOut,
+  LayoutDashboard,
   ChevronDown,
   Stethoscope,
   Settings,
-  Globe
+  Globe,
 } from "lucide-react";
+
 import Button from "@/components/ui/Button";
 import axios from "axios";
 import { useLanguage } from "@/context/LanguageContext";
@@ -35,28 +37,59 @@ export default function Navbar() {
 
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
+
   const { lang, toggleLang, t } = useLanguage();
 
+  // =========================
+  // NAVBAR LINKS
+  // =========================
+
   const links = [
-    { href: "/", label: t("home") || "Home" },
-    { href: "/find-a-nurses", label: t("findNurse") || "Find A Nurses" },
-    { href: "/for-nurses", label: t("forNurses") || "For Nurses" },
-    { href: "/Ai-care-assistant", label: t("aiAssistant") || "AI Care Assistant" },
+    {
+      href: "/",
+      label: t("home") || "Home",
+    },
+    {
+      href: "/find-a-nurses",
+      label: t("findNurse") || "Find A Nurses",
+    },
+    {
+      href: "/for-nurses",
+      label: t("forNurses") || "For Nurses",
+    },
+    {
+      href: "/Ai-care-assistant",
+      label: t("aiAssistant") || "AI Care Assistant",
+    },
   ];
 
-  // التحقق من حالة المصادقة
+  // =========================
+  // CHECK AUTH
+  // =========================
+
   const checkAuth = useCallback(async () => {
     try {
-      const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-      
-      const res = await axios.get("http://localhost:5000/api/auth/me", {
-        withCredentials: true,
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {})
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("token")
+          : null;
+
+      const res = await axios.get(
+        "http://localhost:5000/api/auth/me",
+        {
+          withCredentials: true,
+          headers: {
+            ...(token
+              ? {
+                  Authorization: `Bearer ${token}`,
+                }
+              : {}),
+          },
         }
-      });
+      );
 
       const currentUser = res.data?.user || res.data;
+
       if (currentUser && currentUser.id) {
         setUser(currentUser);
       } else {
@@ -69,54 +102,127 @@ export default function Navbar() {
     }
   }, []);
 
+  // =========================
+  // AUTH EFFECT
+  // =========================
+
   useEffect(() => {
     checkAuth();
 
     const handleStorageChange = () => checkAuth();
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+
+    window.addEventListener(
+      "storage",
+      handleStorageChange
+    );
+
+    return () =>
+      window.removeEventListener(
+        "storage",
+        handleStorageChange
+      );
   }, [checkAuth, pathname]);
 
-  // إغلاق القائمة المنسدلة عند الضغط في الخارج
+  // =========================
+  // CLOSE DROPDOWN
+  // =========================
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(
+          event.target as Node
+        )
+      ) {
         setProfileDropdown(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () =>
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
   }, []);
 
-  // تسجيل الخروج
+  // =========================
+  // LOGOUT
+  // =========================
+
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/api/auth/logout", 
-        {}, 
-        { withCredentials: true }
+        "http://localhost:5000/api/auth/logout",
+        {},
+        {
+          withCredentials: true,
+        }
       );
     } catch {
-      // المتابعة حتى عند حدوث خطأ
+      // Continue logout even if API fails
     } finally {
       if (typeof window !== "undefined") {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+
         localStorage.clear();
         sessionStorage.clear();
       }
+
       setUser(null);
       setProfileDropdown(false);
       setOpen(false);
+
       window.location.href = "/Sign-in";
     }
   };
 
-  // رابط الملف الشخصي
+  // =========================
+  // PROFILE LINK
+  // =========================
+
   const getProfileLink = () => {
-    if (user?.role === "admin") return "/admin";
-    if (user?.role === "nurse") return "/profile";
+    if (user?.role === "admin") {
+      return "/admin";
+    }
+
+    if (user?.role === "nurse") {
+      return "/profile";
+    }
+
     return "/patient-profile";
+  };
+
+  // =========================
+  // ROLE TRANSLATION
+  // =========================
+
+  const getRoleLabel = () => {
+    if (!user) return "";
+
+    if (user.role === "patient") {
+      return t("patient") || "مريض";
+    }
+
+    if (user.role === "user") {
+      return t("patient") || "مريض";
+    }
+
+    if (user.role === "nurse") {
+      return t("nurse") || "ممرضة";
+    }
+
+    if (user.role === "admin") {
+      return t("admin") || "مسؤول";
+    }
+
+    return user.role;
   };
 
   return (
@@ -124,6 +230,7 @@ export default function Navbar() {
       <div className="container-content flex h-16 items-center justify-between">
 
         {/* ================= LOGO ================= */}
+
         <Link
           href="/"
           onClick={() => setOpen(false)}
@@ -132,10 +239,12 @@ export default function Navbar() {
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#00535B] text-white transition-colors duration-200 hover:bg-[#00737D]">
             <HeartPulse size={18} />
           </span>
+
           <span>NurseConnect</span>
         </Link>
 
         {/* ================= DESKTOP NAV ================= */}
+
         <nav className="hidden items-center gap-2 md:flex">
           {links.map((link) => {
             const isActive = pathname === link.href;
@@ -157,107 +266,209 @@ export default function Navbar() {
         </nav>
 
         {/* ================= RIGHT SIDE ================= */}
+
         <div className="flex items-center gap-2 sm:gap-3">
-          
-          {/* ================= LANGUAGE SWITCHER (DESKTOP & TABLET) ================= */}
+
+          {/* LANGUAGE SWITCHER */}
+
           <button
             type="button"
             onClick={toggleLang}
             className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-100 hover:text-[#00535B]"
-            title={lang === "en" ? "تبديل إلى العربية" : "Switch to English"}
+            title={
+              lang === "en"
+                ? "تبديل إلى العربية"
+                : "Switch to English"
+            }
           >
-            <Globe size={14} className="text-[#00535B]" />
-            <span>{lang === "en" ? "عربي" : "EN"}</span>
+            <Globe
+              size={14}
+              className="text-[#00535B]"
+            />
+
+            <span>
+              {lang === "en" ? "عربي" : "EN"}
+            </span>
           </button>
 
           {!loading && (
             <>
               {user ? (
-                /* إذا كان المستخدم مسجلاً */
-                <div className="relative hidden md:block" ref={dropdownRef}>
+
+                /* ================= LOGGED IN ================= */
+
+                <div
+                  className="relative hidden md:block"
+                  ref={dropdownRef}
+                >
                   <button
                     type="button"
-                    onClick={() => setProfileDropdown((prev) => !prev)}
-                    className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-slate-50 py-1.5 pl-2.5 pr-3 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition-colors shadow-sm"
+                    onClick={() =>
+                      setProfileDropdown(
+                        (prev) => !prev
+                      )
+                    }
+                    className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-slate-50 py-1.5 pl-2.5 pr-3 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-100"
                   >
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#00535B] text-xs font-bold text-white uppercase">
-                      {user.first_name ? user.first_name[0] : <User size={14} />}
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#00535B] text-xs font-bold uppercase text-white">
+                      {user.first_name ? (
+                        user.first_name[0]
+                      ) : (
+                        <User size={14} />
+                      )}
                     </div>
-                    <span className="max-w-[110px] truncate">{user.first_name}</span>
-                    <ChevronDown size={14} className="text-slate-400" />
+
+                    <span className="max-w-[110px] truncate">
+                      {user.first_name}
+                    </span>
+
+                    <ChevronDown
+                      size={14}
+                      className="text-slate-400"
+                    />
                   </button>
 
                   {profileDropdown && (
-                    <div className="absolute right-0 mt-2 w-60 rounded-2xl border border-slate-100 bg-white p-2 shadow-2xl ring-1 ring-black/5 animate-in fade-in zoom-in-95 duration-150">
-                      <div className="px-3 py-2.5 border-b border-slate-100">
-                        <p className="text-sm font-bold text-slate-900 truncate">
-                          {user.first_name} {user.last_name}
+                    <div
+                      className={`absolute right-0 mt-2 w-60 rounded-2xl border border-slate-100 bg-white p-2 shadow-2xl ring-1 ring-black/5 animate-in fade-in zoom-in-95 duration-150 ${
+                        lang === "ar"
+                          ? "text-right"
+                          : "text-left"
+                      }`}
+                    >
+
+                      {/* USER INFO */}
+
+                      <div className="border-b border-slate-100 px-3 py-2.5">
+                        <p className="truncate text-sm font-bold text-slate-900">
+                          {user.first_name}{" "}
+                          {user.last_name}
                         </p>
-                        <p className="text-xs text-slate-400 truncate mt-0.5">{user.email}</p>
-                        <span className="mt-1.5 inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-teal-50 text-[#00535B] border border-teal-100">
-                          {user.role}
+
+                        <p className="mt-0.5 truncate text-xs text-slate-400">
+                          {user.email}
+                        </p>
+
+                        <span className="mt-1.5 inline-block rounded border border-teal-100 bg-teal-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#00535B]">
+                          {getRoleLabel()}
                         </span>
                       </div>
 
+                      {/* MENU */}
+
                       <div className="py-1">
+
+                        {/* ADMIN DASHBOARD */}
+
                         {user.role === "admin" && (
                           <Link
                             href="/admin"
-                            onClick={() => setProfileDropdown(false)}
-                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                            onClick={() =>
+                              setProfileDropdown(false)
+                            }
+                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
                           >
-                            <LayoutDashboard size={15} className="text-[#00535B]" />
-                            <span>{t("adminDashboard") || "Admin Dashboard"}</span>
+                            <LayoutDashboard
+                              size={15}
+                              className="text-[#00535B]"
+                            />
+
+                            <span>
+                              {t("adminDashboard") ||
+                                "لوحة تحكم المسؤول"}
+                            </span>
                           </Link>
                         )}
 
+                        {/* MY PROFILE */}
+
                         <Link
                           href={getProfileLink()}
-                          onClick={() => setProfileDropdown(false)}
-                          className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                          onClick={() =>
+                            setProfileDropdown(false)
+                          }
+                          className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
                         >
-                          <User size={15} className="text-[#00535B]" />
-                          <span>{t("myProfile") || "My Profile"}</span>
+                          <User
+                            size={15}
+                            className="text-[#00535B]"
+                          />
+
+                          <span>
+                            {t("myProfile") ||
+                              "الملف الشخصي"}
+                          </span>
                         </Link>
+
+                        {/* NURSE WORKSPACE */}
 
                         {user.role === "nurse" && (
                           <Link
                             href="/profile"
-                            onClick={() => setProfileDropdown(false)}
-                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                            onClick={() =>
+                              setProfileDropdown(false)
+                            }
+                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
                           >
-                            <Stethoscope size={15} className="text-[#00535B]" />
-                            <span>{t("nurseWorkspace") || "Nurse Workspace"}</span>
+                            <Stethoscope
+                              size={15}
+                              className="text-[#00535B]"
+                            />
+
+                            <span>
+                              {t("nurseWorkspace") ||
+                                "مساحة عمل الممرضة"}
+                            </span>
                           </Link>
                         )}
+
+                        {/* SYSTEM SETTINGS */}
 
                         {user.role === "admin" && (
                           <Link
                             href="/admin/settings"
-                            onClick={() => setProfileDropdown(false)}
-                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                            onClick={() =>
+                              setProfileDropdown(false)
+                            }
+                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
                           >
-                            <Settings size={15} className="text-[#00535B]" />
-                            <span>{t("systemSettings") || "System Settings"}</span>
+                            <Settings
+                              size={15}
+                              className="text-[#00535B]"
+                            />
+
+                            <span>
+                              {t("systemSettings") ||
+                                "إعدادات النظام"}
+                            </span>
                           </Link>
                         )}
                       </div>
+
+                      {/* SIGN OUT */}
 
                       <div className="border-t border-slate-100 pt-1">
                         <button
                           type="button"
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors"
+                          className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 transition-colors hover:bg-rose-50"
                         >
                           <LogOut size={15} />
-                          <span>{t("signOut") || "Sign Out"}</span>
+
+                          <span>
+                            {t("signOut") ||
+                              "تسجيل الخروج"}
+                          </span>
                         </button>
                       </div>
                     </div>
                   )}
                 </div>
+
               ) : (
-                /* إذا لم يكن مسجل دخوله */
+
+                /* ================= NOT LOGGED IN ================= */
+
                 <Link
                   href="/Sign-in"
                   className={`hidden rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 md:block ${
@@ -273,39 +484,64 @@ export default function Navbar() {
           )}
 
           {/* ================= GET STARTED ================= */}
+
           <Button
             href="/find-a-nurses"
             variant="solid"
-            className="hidden md:inline-flex bg-[#00535B] text-sm text-white hover:bg-[#00737D] transition-colors"
+            className="hidden bg-[#00535B] text-sm text-white transition-colors hover:bg-[#00737D] md:inline-flex"
           >
             {t("getStarted") || "Get Started"}
           </Button>
 
-          {/* ================= MOBILE MENU BUTTON ================= */}
+          {/* ================= MOBILE BUTTON ================= */}
+
           <button
             type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() =>
+              setOpen((v) => !v)
+            }
+            aria-label={
+              open
+                ? "Close menu"
+                : "Open menu"
+            }
             aria-expanded={open}
             className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-700 transition-colors duration-200 hover:bg-[#E6F7F8] hover:text-[#00535B] md:hidden"
           >
-            {open ? <X size={22} /> : <Menu size={22} />}
+            {open ? (
+              <X size={22} />
+            ) : (
+              <Menu size={22} />
+            )}
           </button>
         </div>
       </div>
 
       {/* ================= MOBILE MENU ================= */}
+
       {open && (
-        <div className="border-t border-black/5 bg-white md:hidden animate-in slide-in-from-top-2 duration-150">
-          <nav className="container-content flex flex-col gap-1 py-4">
+        <div className="animate-in slide-in-from-top-2 border-t border-black/5 bg-white duration-150 md:hidden">
+          <nav
+            className={`container-content flex flex-col gap-1 py-4 ${
+              lang === "ar"
+                ? "text-right"
+                : "text-left"
+            }`}
+          >
+
+            {/* NAV LINKS */}
+
             {links.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive =
+                pathname === link.href;
 
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setOpen(false)}
+                  onClick={() =>
+                    setOpen(false)
+                  }
                   className={`rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 ${
                     isActive
                       ? "bg-[#E6F7F8] text-[#00535B]"
@@ -317,65 +553,139 @@ export default function Navbar() {
               );
             })}
 
+            {/* MOBILE USER */}
+
             {user ? (
               <>
-                <div className="my-2 border-t border-slate-100 pt-3 px-4">
-                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{t("signedInAs") || "Signed in as"}</p>
-                  <p className="text-sm font-bold text-slate-900">{user.first_name} {user.last_name}</p>
-                  <span className="text-[10px] font-semibold text-[#00535B]">{user.email}</span>
+                <div className="my-2 border-t border-slate-100 px-4 pt-3">
+
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                    {t("signedInAs") ||
+                      "مسجل الدخول باسم"}
+                  </p>
+
+                  <p className="text-sm font-bold text-slate-900">
+                    {user.first_name}{" "}
+                    {user.last_name}
+                  </p>
+
+                  <p className="text-[10px] font-semibold text-[#00535B]">
+                    {user.email}
+                  </p>
+
+                  <span className="mt-1 inline-block rounded bg-teal-50 px-2 py-0.5 text-[10px] font-bold text-[#00535B]">
+                    {getRoleLabel()}
+                  </span>
                 </div>
+
+                {/* ADMIN */}
 
                 {user.role === "admin" && (
                   <Link
                     href="/admin"
-                    onClick={() => setOpen(false)}
-                    className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-[#E6F7F8] hover:text-[#00535B] flex items-center gap-2"
+                    onClick={() =>
+                      setOpen(false)
+                    }
+                    className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-[#E6F7F8] hover:text-[#00535B]"
                   >
-                    <LayoutDashboard size={16} className="text-[#00535B]" />
-                    <span>{t("adminDashboard") || "Admin Dashboard"}</span>
+                    <LayoutDashboard
+                      size={16}
+                      className="text-[#00535B]"
+                    />
+
+                    <span>
+                      {t("adminDashboard") ||
+                        "لوحة تحكم المسؤول"}
+                    </span>
                   </Link>
                 )}
 
+                {/* MY PROFILE */}
+
                 <Link
                   href={getProfileLink()}
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-[#E6F7F8] hover:text-[#00535B] flex items-center gap-2"
+                  onClick={() =>
+                    setOpen(false)
+                  }
+                  className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-[#E6F7F8] hover:text-[#00535B]"
                 >
-                  <User size={16} className="text-[#00535B]" />
-                  <span>{t("myProfile") || "My Profile"}</span>
+                  <User
+                    size={16}
+                    className="text-[#00535B]"
+                  />
+
+                  <span>
+                    {t("myProfile") ||
+                      "الملف الشخصي"}
+                  </span>
                 </Link>
+
+                {/* NURSE */}
+
+                {user.role === "nurse" && (
+                  <Link
+                    href="/profile"
+                    onClick={() =>
+                      setOpen(false)
+                    }
+                    className="flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-[#E6F7F8] hover:text-[#00535B]"
+                  >
+                    <Stethoscope
+                      size={16}
+                      className="text-[#00535B]"
+                    />
+
+                    <span>
+                      {t("nurseWorkspace") ||
+                        "مساحة عمل الممرضة"}
+                    </span>
+                  </Link>
+                )}
+
+                {/* SIGN OUT */}
 
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="w-full text-left rounded-lg px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors"
+                  className="flex w-full items-center gap-2 rounded-lg px-4 py-2.5 text-left text-sm font-semibold text-rose-600 transition-colors hover:bg-rose-50"
                 >
                   <LogOut size={16} />
-                  <span>{t("signOut") || "Sign Out"}</span>
+
+                  <span>
+                    {t("signOut") ||
+                      "تسجيل الخروج"}
+                  </span>
                 </button>
               </>
             ) : (
               <Link
                 href="/Sign-in"
-                onClick={() => setOpen(false)}
+                onClick={() =>
+                  setOpen(false)
+                }
                 className={`rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 ${
                   pathname === "/Sign-in"
                     ? "bg-[#E6F7F8] text-[#00535B]"
                     : "text-slate-700 hover:bg-[#E6F7F8] hover:text-[#00535B]"
                 }`}
               >
-                {t("signIn") || "Sign In"}
+                {t("signIn") || "تسجيل الدخول"}
               </Link>
             )}
+
+            {/* GET STARTED */}
 
             <div className="pt-2">
               <Button
                 href="/find-a-nurses"
                 variant="solid"
                 className="w-full bg-[#00535B] text-sm text-white hover:bg-[#00737D]"
-                onClick={() => setOpen(false)}
+                onClick={() =>
+                  setOpen(false)
+                }
               >
-                {t("getStarted") || "Get Started"}
+                {t("getStarted") ||
+                  "ابدأ الآن"}
               </Button>
             </div>
           </nav>

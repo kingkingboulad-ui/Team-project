@@ -1,38 +1,60 @@
-
 "use client";
 
 import { useEffect } from "react";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import { useLanguage } from "@/context/LanguageContext";
 import { useBooking } from "../BookingContext";
-
-const durationLabels: Record<string, string> = {
-  "1-hour": "1 Hour",
-  "2-hours": "2 Hours",
-  "4-hours": "4 Hours",
-  "8-hours": "8 Hours",
-  "12-hours": "12 Hours",
-  "24-hours": "24 Hours",
-};
 
 export default function ConfirmationPage() {
   const { data, reset } = useBooking();
+  const { t } = useLanguage();
+
+  const durationLabels: Record<string, string> = {
+    "1-hour": t("confirmation.oneHour"),
+    "2-hours": t("confirmation.twoHours"),
+    "4-hours": t("confirmation.fourHours"),
+    "8-hours": t("confirmation.eightHours"),
+    "12-hours": t("confirmation.twelveHours"),
+    "24-hours": t("confirmation.twentyFourHours"),
+  };
 
   const summaryRows = [
     ...(data.preferredNurseName
-      ? [{ label: "Preferred nurse", value: data.preferredNurseName }]
+      ? [
+          {
+            label: t("confirmation.preferredNurse"),
+            value: data.preferredNurseName,
+          },
+        ]
       : []),
-    { label: "Care for", value: data.careForLabel },
-    { label: "Care type", value: data.careTypeLabel },
-    { label: "Start date", value: data.startDate },
+
     {
-      label: "Duration",
-      value: durationLabels[data.careDuration] ?? data.careDuration,
+      label: t("confirmation.careFor"),
+      value: data.careForLabel,
     },
-    { label: "Location", value: data.careAddress },
+
+    {
+      label: t("confirmation.careType"),
+      value: data.careTypeLabel,
+    },
+
+    {
+      label: t("confirmation.startDate"),
+      value: data.startDate,
+    },
+
+    {
+      label: t("confirmation.duration"),
+      value:
+        durationLabels[data.careDuration] ?? data.careDuration,
+    },
+
+    {
+      label: t("confirmation.location"),
+      value: data.careAddress,
+    },
   ];
 
   // Clear the booking draft when leaving the confirmation page.
@@ -44,30 +66,29 @@ export default function ConfirmationPage() {
 
   return (
     <div className="min-h-screen bg-[#F1F8FB]">
-    
-
       <main className="flex min-h-[650px] items-center justify-center px-4 py-8 sm:px-6 sm:py-10">
         <section className="w-full max-w-[560px] rounded-xl bg-white px-4 py-6 text-center shadow-[0_4px_20px_rgba(0,0,0,0.06)] sm:px-8 sm:py-9">
 
           {/* Success Icon */}
           <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 sm:h-14 sm:w-14">
-            <CheckCircle2 size={25} className="sm:h-7 sm:w-7" />
+            <CheckCircle2
+              size={25}
+              className="sm:h-7 sm:w-7"
+            />
           </span>
 
           {/* Title */}
           <h1 className="text-[20px] font-bold leading-7 text-[#092F35] sm:text-xl">
-            Care Request Submitted!
+            {t("confirmation.title")}
           </h1>
 
           {/* Description */}
           <p className="mx-auto mt-2 max-w-[390px] text-[11px] leading-5 text-gray-500 sm:text-sm">
-            We&apos;re matching you with the best suitable nurse in your
-            area. You&apos;ll receive a confirmation shortly.
+            {t("confirmation.description")}
           </p>
 
           {/* Summary */}
           <dl className="mt-6 space-y-2 rounded-xl bg-[#F8FAFC] p-3 text-left sm:space-y-2.5 sm:p-4">
-
             {summaryRows.map((row) => (
               <div
                 key={row.label}
@@ -94,7 +115,7 @@ export default function ConfirmationPage() {
               href="/patient-profile"
               className="flex h-10 w-full items-center justify-center rounded-lg bg-[#006D77] px-4 text-[11px] font-semibold text-white transition hover:bg-[#00535B] sm:h-auto sm:flex-1 sm:py-2.5 sm:text-sm"
             >
-              View My Dashboard
+              {t("confirmation.dashboard")}
             </Link>
 
             {/* Browse Nurses */}
@@ -102,13 +123,11 @@ export default function ConfirmationPage() {
               href="/find-a-nurses"
               className="flex h-10 w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-4 text-[11px] font-semibold text-gray-700 transition hover:bg-gray-50 sm:h-auto sm:flex-1 sm:py-2.5 sm:text-sm"
             >
-              Browse Nurses
+              {t("confirmation.browseNurses")}
             </Link>
           </div>
         </section>
       </main>
-
-      
     </div>
   );
 }
