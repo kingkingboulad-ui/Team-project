@@ -5,9 +5,11 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { HeartPulse } from "lucide-react";
 import Image from "next/image";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function CreatePatientAccountPage() {
   const router = useRouter();
+  const { t, dir } = useLanguage();
 
   // State Management
   const [firstName, setFirstName] = useState("");
@@ -50,7 +52,7 @@ export default function CreatePatientAccountPage() {
 
       const message =
         error.response?.data?.message ||
-        "حدث خطأ أثناء إنشاء الحساب، يرجى المحاولة لاحقاً.";
+        t("registrationError");
 
       setErrorMessage(message);
     } finally {
@@ -59,12 +61,15 @@ export default function CreatePatientAccountPage() {
   };
 
   return (
-    <main className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f8fafc]">
+    <main
+      dir={dir}
+      className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-[#f8fafc]"
+    >
       {/* ================= LEFT SIDE ================= */}
       <div className="relative min-h-[320px] lg:min-h-screen w-full bg-slate-900 overflow-hidden flex items-end p-8 sm:p-12 lg:p-16">
         <Image
           src="/images/signin.jpg"
-          alt="Medical staff collaborating"
+          alt={t("medicalStaffAlt")}
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"
@@ -77,16 +82,15 @@ export default function CreatePatientAccountPage() {
           {/* Trusted & Secure */}
           <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-emerald-200 bg-white/10 border border-white/20 rounded-full px-3 py-1">
             <HeartPulse className="w-3 h-3" />
-            Trusted &amp; Secure
+            {t("trustedSecure")}
           </span>
 
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
-            Empowering your healthcare journey.
+            {t("empoweringHealthcareJourney")}
           </h1>
 
           <p className="text-slate-200 text-xs sm:text-sm leading-relaxed opacity-90">
-            Access verified, compassionate nursing care directly from your
-            home. We&apos;re here to support your family&apos;s health.
+            {t("healthcareJourneyDescription")}
           </p>
         </div>
       </div>
@@ -102,12 +106,11 @@ export default function CreatePatientAccountPage() {
             </span>
 
             <h2 className="text-2xl font-bold text-[#0f3d3e] leading-snug">
-              Find the care your family deserves.
+              {t("findCareFamilyDeserves")}
             </h2>
 
             <p className="text-slate-500 text-xs leading-relaxed">
-              Join NurseConnect to connect with verified, compassionate nurses
-              in your area.
+              {t("joinNurseConnectDescription")}
             </p>
           </div>
 
@@ -129,7 +132,7 @@ export default function CreatePatientAccountPage() {
                 {/* First Name */}
                 <div className="space-y-1.5">
                   <label className="block text-[11px] font-medium text-slate-600">
-                    First Name
+                    {t("firstName")}
                   </label>
 
                   <input
@@ -137,7 +140,7 @@ export default function CreatePatientAccountPage() {
                     required
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    placeholder="Jane"
+                    placeholder={t("firstNamePlaceholder")}
                     className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
                   />
                 </div>
@@ -145,7 +148,7 @@ export default function CreatePatientAccountPage() {
                 {/* Last Name */}
                 <div className="space-y-1.5">
                   <label className="block text-[11px] font-medium text-slate-600">
-                    Last Name
+                    {t("lastName")}
                   </label>
 
                   <input
@@ -153,7 +156,7 @@ export default function CreatePatientAccountPage() {
                     required
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    placeholder="Doe"
+                    placeholder={t("lastNamePlaceholder")}
                     className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
                   />
                 </div>
@@ -162,11 +165,17 @@ export default function CreatePatientAccountPage() {
               {/* Email */}
               <div className="space-y-1.5">
                 <label className="block text-[11px] font-medium text-slate-600">
-                  Email Address
+                  {t("emailAddress")}
                 </label>
 
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <div
+                    className={`absolute inset-y-0 ${
+                      dir === "rtl"
+                        ? "right-0 pr-3.5"
+                        : "left-0 pl-3.5"
+                    } flex items-center pointer-events-none text-slate-400`}
+                  >
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -188,7 +197,12 @@ export default function CreatePatientAccountPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@example.com"
-                    className="w-full pl-10 pr-4 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
+                    dir="ltr"
+                    className={`w-full ${
+                      dir === "rtl"
+                        ? "pr-10 pl-4"
+                        : "pl-10 pr-4"
+                    } py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all`}
                   />
                 </div>
               </div>
@@ -196,11 +210,17 @@ export default function CreatePatientAccountPage() {
               {/* Phone */}
               <div className="space-y-1.5">
                 <label className="block text-[11px] font-medium text-slate-600">
-                  Phone Number
+                  {t("phoneNumber")}
                 </label>
 
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <div
+                    className={`absolute inset-y-0 ${
+                      dir === "rtl"
+                        ? "right-0 pr-3.5"
+                        : "left-0 pl-3.5"
+                    } flex items-center pointer-events-none text-slate-400`}
+                  >
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -221,8 +241,13 @@ export default function CreatePatientAccountPage() {
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="(555) 000-0000"
-                    className="w-full pl-10 pr-4 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
+                    placeholder={t("phonePlaceholder")}
+                    dir="ltr"
+                    className={`w-full ${
+                      dir === "rtl"
+                        ? "pr-10 pl-4"
+                        : "pl-10 pr-4"
+                    } py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all`}
                   />
                 </div>
               </div>
@@ -230,11 +255,17 @@ export default function CreatePatientAccountPage() {
               {/* Password */}
               <div className="space-y-1.5">
                 <label className="block text-[11px] font-medium text-slate-600">
-                  Password
+                  {t("password")}
                 </label>
 
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <div
+                    className={`absolute inset-y-0 ${
+                      dir === "rtl"
+                        ? "right-0 pr-3.5"
+                        : "left-0 pl-3.5"
+                    } flex items-center pointer-events-none text-slate-400`}
+                  >
                     <svg
                       className="w-4 h-4"
                       fill="none"
@@ -256,13 +287,22 @@ export default function CreatePatientAccountPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
+                    dir="ltr"
+                    className={`w-full ${
+                      dir === "rtl"
+                        ? "pr-10 pl-10"
+                        : "pl-10 pr-10"
+                    } py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all`}
                   />
 
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600"
+                    className={`absolute inset-y-0 ${
+                      dir === "rtl"
+                        ? "left-0 pl-3.5"
+                        : "right-0 pr-3.5"
+                    } flex items-center text-slate-400 hover:text-slate-600`}
                   >
                     <svg
                       className="w-4 h-4"
@@ -295,12 +335,14 @@ export default function CreatePatientAccountPage() {
                 className="w-full py-2.5 bg-[#0f5454] hover:bg-[#0b4242] disabled:opacity-50 text-white text-xs font-medium rounded-xl transition-colors shadow-sm mt-2 flex items-center justify-center gap-2"
               >
                 {loading
-                  ? "Creating Account..."
-                  : "Create Patient Account"}
+                  ? t("creatingAccount")
+                  : t("createPatientAccount")}
 
                 {!loading && (
                   <svg
-                    className="w-3.5 h-3.5"
+                    className={`w-3.5 h-3.5 ${
+                      dir === "rtl" ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -318,6 +360,7 @@ export default function CreatePatientAccountPage() {
 
             {/* Secure & Private Notice */}
             <div className="bg-[#e8f8f8] border border-[#d2f0f0] rounded-xl p-3.5 flex items-start gap-2.5">
+
               <span className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full bg-[#0d7c7b] flex items-center justify-center">
                 <svg
                   className="w-2.5 h-2.5 text-white"
@@ -329,30 +372,32 @@ export default function CreatePatientAccountPage() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="3"
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002-2zm10-10V7a4 4 0 00-8 0v4h8z"
                   />
                 </svg>
               </span>
 
               <p className="text-[11px] text-slate-600 leading-relaxed">
                 <span className="font-semibold text-slate-700">
-                  Secure &amp; Private.
+                  {t("securePrivate")}
                 </span>{" "}
-                HIPAA compliant platform with 256-bit encryption ensuring your
-                data remains completely private.
+                {t("securePrivateDescription")}
               </p>
+
             </div>
 
             {/* Sign In */}
             <p className="text-center text-xs text-slate-500">
-              Already have an account?{" "}
+              {t("alreadyHaveAccount")}{" "}
+
               <a
                 href="/Sign-in"
                 className="font-semibold text-[#0d7c7b] hover:underline"
               >
-                Sign In
+                {t("signIn")}
               </a>
             </p>
+
           </div>
         </div>
       </div>

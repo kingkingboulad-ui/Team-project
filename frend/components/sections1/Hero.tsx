@@ -8,41 +8,41 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { useLanguage } from "@/context/LanguageContext";
 
 const nurseSlides = [
   {
     image: "/images/profile0.png",
     background: "#00535B",
     highlightColor: "#9FF0FB",
-    eyebrow: "Join Our Nursing Community",
-    title: "Make a Difference.",
-    highlight: "Care for Others.",
-    description:
-      "Connect with patients who need professional nursing care and make a real difference in their lives.",
+    eyebrow: "joinOurNursingCommunity",
+    title: "makeADifference",
+    highlight: "careForOthers",
+    description: "connectWithPatients",
   },
   {
     image: "/images/prf.png",
     background: "#1E5F8A",
     highlightColor: "#B9E6FF",
-    eyebrow: "Professional Nursing Opportunities",
-    title: "Your Skills,",
-    highlight: "Their Care.",
-    description:
-      "Find meaningful nursing opportunities and provide compassionate care to patients and families.",
+    eyebrow: "professionalNursingOpportunities",
+    title: "yourSkills",
+    highlight: "theirCare",
+    description: "findMeaningfulOpportunities",
   },
   {
     image: "/images/profile1.png",
     background: "#063B5C",
     highlightColor: "#FF8FA3",
-    eyebrow: "Grow With NurseConnect",
-    title: "Care With Purpose.",
-    highlight: "Grow Your Career.",
-    description:
-      "Build your nursing career while helping people get the quality care they deserve.",
+    eyebrow: "growWithNurseConnect",
+    title: "careWithPurpose",
+    highlight: "growYourCareer",
+    description: "buildYourNursingCareer",
   },
 ];
 
 export default function NurseHero() {
+  const { t, dir } = useLanguage();
+
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slide = nurseSlides[currentSlide];
@@ -72,6 +72,7 @@ export default function NurseHero() {
 
   return (
     <section
+      dir={dir}
       className="relative overflow-hidden text-white transition-colors duration-700"
       style={{ backgroundColor: slide.background }}
     >
@@ -83,23 +84,23 @@ export default function NurseHero() {
           className="animate-fadeIn"
         >
           <span className="eyebrow">
-            {slide.eyebrow}
+            {t(slide.eyebrow)}
           </span>
 
           <h1 className="mt-4 text-3xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-            {slide.title}
+            {t(slide.title)}
             <br />
 
             <span
               className="mt-1 inline-block"
               style={{ color: slide.highlightColor }}
             >
-              {slide.highlight}
+              {t(slide.highlight)}
             </span>
           </h1>
 
           <p className="mt-5 max-w-lg text-sm leading-relaxed text-white/90 sm:text-base lg:text-lg">
-            {slide.description}
+            {t(slide.description)}
           </p>
 
           {/* BUTTONS */}
@@ -109,7 +110,7 @@ export default function NurseHero() {
               variant="primary"
               className="w-full sm:w-auto"
             >
-              Join as a Nurse
+              {t("joinAsANurse")}
             </Button>
 
             <Button
@@ -117,7 +118,7 @@ export default function NurseHero() {
               variant="outline"
               className="w-full sm:w-auto"
             >
-              Find Opportunities
+              {t("findOpportunities")}
             </Button>
           </div>
 
@@ -128,34 +129,34 @@ export default function NurseHero() {
                 10,000+
               </dt>
               <dd className="mt-1 text-xs text-white/60">
-                Families
+                {t("familiesServed")}
               </dd>
             </div>
 
             <div>
               <dt className="text-xl font-bold sm:text-2xl">
-                500+
+                2,500+
               </dt>
               <dd className="mt-1 text-xs text-white/60">
-                Nurses
+                {t("verifiedNurses")}
               </dd>
             </div>
 
             <div>
               <dt className="text-xl font-bold sm:text-2xl">
-                4.9★
+                4.9/5
               </dt>
               <dd className="mt-1 text-xs text-white/60">
-                Average Rating
+                {t("averageRating")}
               </dd>
             </div>
 
             <div>
               <dt className="text-xl font-bold sm:text-2xl">
-                95%
+                24/7
               </dt>
               <dd className="mt-1 text-xs text-white/60">
-                Satisfaction
+                {t("supportAvailable")}
               </dd>
             </div>
           </dl>
@@ -169,7 +170,7 @@ export default function NurseHero() {
             <Image
               key={slide.image}
               src={slide.image}
-              alt="Professional nurse"
+              alt={t("professionalNurse")}
               width={560}
               height={460}
               priority={currentSlide === 0}
@@ -182,7 +183,7 @@ export default function NurseHero() {
             <button
               type="button"
               onClick={previousSlide}
-              aria-label="Previous slide"
+              aria-label={t("previousSlide")}
               className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#00535B] shadow-md transition hover:scale-105 sm:left-4 sm:h-10 sm:w-10"
             >
               <ChevronLeft size={20} />
@@ -192,7 +193,7 @@ export default function NurseHero() {
             <button
               type="button"
               onClick={nextSlide}
-              aria-label="Next slide"
+              aria-label={t("nextSlide")}
               className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#00535B] shadow-md transition hover:scale-105 sm:right-4 sm:h-10 sm:w-10"
             >
               <ChevronRight size={20} />
@@ -205,7 +206,7 @@ export default function NurseHero() {
                   key={index}
                   type="button"
                   onClick={() => setCurrentSlide(index)}
-                  aria-label={`Go to slide ${index + 1}`}
+                  aria-label={`${t("goToSlide")} ${index + 1}`}
                   className={`h-2.5 rounded-full transition-all duration-300 ${
                     currentSlide === index
                       ? "w-7 bg-white"
@@ -224,11 +225,11 @@ export default function NurseHero() {
 
             <div className="min-w-0 leading-tight">
               <p className="truncate text-xs font-semibold sm:text-sm">
-                Verified Nurse
+                {t("verifiedNurse")}
               </p>
 
               <p className="truncate text-[9px] text-slate-900/60 sm:text-xs">
-                Professional Caregiver
+                {t("professionalCaregiver")}
               </p>
             </div>
           </div>
@@ -236,11 +237,11 @@ export default function NurseHero() {
           {/* OPPORTUNITY CARD */}
           <div className="absolute bottom-2 right-2 rounded-xl bg-white px-2.5 py-2 text-slate-900 shadow-lg sm:bottom-4 sm:right-4 sm:rounded-2xl sm:px-4 sm:py-3">
             <p className="text-[9px] font-semibold sm:text-xs">
-              New Opportunity
+              {t("newOpportunity")}
             </p>
 
             <p className="text-[9px] text-slate-900/60 sm:text-xs">
-              Find your next patient
+              {t("findYourNextPatient")}
             </p>
           </div>
         </div>

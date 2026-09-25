@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { HeartPulse, Mail, Phone } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 const columns = [
   {
@@ -35,6 +38,30 @@ const columns = [
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
+
+  const footerTitleKeys: Record<string, string> = {
+    "FOR PATIENTS": "forPatients",
+    "FOR NURSES": "forNursesFooter",
+    COMPANY: "company",
+  };
+
+  const footerLabelKeys: Record<string, string> = {
+    "Find a Nurse": "findNurse",
+    "Request Care": "requestCare",
+    "AI Care Assistant": "aiAssistant",
+    "How It Works": "howItWorks",
+    "Join as a Nurse": "joinAsNurse",
+    "Nurse Dashboard": "nurseDashboard",
+    "How to Apply": "howToApply",
+    "Nurse Resources": "nurseResources",
+    "About Us": "aboutUs",
+    "Safety & Trust": "safetyTrust",
+    "Privacy Policy": "privacyPolicy",
+    "Terms of Service": "termsOfService",
+    "Contact Us": "contactUs",
+  };
+
   return (
     <footer className="bg-[#1C2E4A] text-white">
 
@@ -52,8 +79,7 @@ export default function Footer() {
           </div>
 
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
-            Connecting families with trusted, licensed nurses for compassionate
-            in-home care — whenever and wherever it&apos;s needed.
+            {t("footerDescription")}
           </p>
 
           {/* Contact Information */}
@@ -76,7 +102,7 @@ export default function Footer() {
 
             {/* Column Title */}
             <h3 className="text-sm font-semibold uppercase tracking-wide text-[#9FF0FB]">
-              {col.title}
+              {t(footerTitleKeys[col.title])}
             </h3>
 
             {/* Links */}
@@ -87,7 +113,7 @@ export default function Footer() {
                     href={link.href}
                     className="transition-colors hover:text-[#9FF0FB]"
                   >
-                    {link.label}
+                    {t(footerLabelKeys[link.label])}
                   </Link>
                 </li>
               ))}
@@ -98,7 +124,7 @@ export default function Footer() {
               <div className="mt-8 rounded-xl bg-white p-5">
 
                 <p className="text-sm font-semibold text-gray-900">
-                  Emergency Support
+                  {t("emergencySupport")}
                 </p>
 
                 <p className="mt-2 text-xl font-bold text-[#9FF0FB]">
@@ -106,7 +132,7 @@ export default function Footer() {
                 </p>
 
                 <p className="mt-1 text-xs text-gray-900">
-                  AVAILABLE 24/7
+                  {t("available247")}
                 </p>
 
               </div>
@@ -122,7 +148,7 @@ export default function Footer() {
         <div className="container-content flex flex-col items-center justify-between gap-4 py-6 text-xs text-white sm:flex-row">
 
           <p>
-            © {new Date().getFullYear()} NurseConnect. All rights reserved.
+            © {new Date().getFullYear()} NurseConnect. {t("allRightsReserved")}
           </p>
 
           <div className="flex gap-6">
@@ -131,14 +157,14 @@ export default function Footer() {
               href="/terms"
               className="hover:text-[#9FF0FB]"
             >
-              Terms of Service
+              {t("termsOfService")}
             </Link>
 
             <Link
               href="/privacy"
               className="hover:text-[#9FF0FB]"
             >
-              Privacy Policy
+              {t("privacyPolicy")}
             </Link>
 
           </div>

@@ -1,10 +1,13 @@
+
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+
 import { useBooking } from "../BookingContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 const durationLabels: Record<string, string> = {
   "1-hour": "1 Hour",
@@ -18,33 +21,66 @@ const durationLabels: Record<string, string> = {
 export default function ReviewPage() {
   const router = useRouter();
   const { data, reset, isHydrated } = useBooking();
+  const { t, dir } = useLanguage();
 
   const [termsAgreed, setTermsAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  const getDurationLabel = (duration: string) => {
+    const durationTranslations: Record<string, string> = {
+      "1-hour": t("review.oneHour"),
+      "2-hours": t("review.twoHours"),
+      "4-hours": t("review.fourHours"),
+      "8-hours": t("review.eightHours"),
+      "12-hours": t("review.twelveHours"),
+      "24-hours": t("review.twentyFourHours"),
+    };
+
+    return durationTranslations[duration] ?? durationLabels[duration] ?? duration;
+  };
+
   const summaryRows = [
     ...(data.preferredNurseName
-      ? [{ label: "Preferred nurse", value: data.preferredNurseName }]
+      ? [
+          {
+            label: t("review.preferredNurse"),
+            value: data.preferredNurseName,
+          },
+        ]
       : []),
-    { label: "Care for", value: data.careForLabel },
-    { label: "Care type", value: data.careTypeLabel },
-    { label: "Start date", value: data.startDate },
     {
-      label: "Duration",
-      value: durationLabels[data.careDuration] ?? data.careDuration,
+      label: t("review.careFor"),
+      value: data.careForLabel,
     },
-    { label: "Location", value: data.careAddress },
+    {
+      label: t("review.careType"),
+      value: data.careTypeLabel,
+    },
+    {
+      label: t("review.startDate"),
+      value: data.startDate,
+    },
+    {
+      label: t("review.duration"),
+      value: getDurationLabel(data.careDuration),
+    },
+    {
+      label: t("review.location"),
+      value: data.careAddress,
+    },
   ];
 
   const handleSubmit = async () => {
     if (!termsAgreed || submitting) return;
 
     if (!data.preferredNurseId) {
-      setErrorMsg("Preferred nurse is required. Please select a nurse first.");
+      setErrorMsg(t("review.nurseRequired"));
+
       setTimeout(() => {
         router.push("/find-a-nurses");
       }, 1500);
+
       return;
     }
 
@@ -59,13 +95,14 @@ export default function ReviewPage() {
       );
 
       if (response.data.success) {
-        reset(); // مسح الـ draft بعد نجاح الحجز
+        reset();
         router.push("/book/confirmation");
       }
     } catch (err: any) {
       console.error("Care request error:", err);
+
       setErrorMsg(
-        err.response?.data?.message || "Something went wrong. Please try again."
+        err.response?.data?.message || t("review.submitError")
       );
     } finally {
       setSubmitting(false);
@@ -74,38 +111,53 @@ export default function ReviewPage() {
 
   if (!isHydrated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#F1F8FB]">
+      <div
+        className="flex min-h-screen items-center justify-center bg-[#F1F8FB]"
+        dir={dir}
+      >
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#006D77] border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F1F8FB]">
+    <div
+      className="min-h-screen bg-[#F1F8FB]"
+      dir={dir}
+    >
       <main className="min-h-[650px] px-4 py-6 sm:px-6 sm:py-8">
+
         {/* Steps */}
         <div className="mx-auto mb-6 flex w-full max-w-[400px] items-center justify-center">
           {[1, 2, 3, 4, 5].map((step, idx) => (
-            <div key={step} className="flex min-w-0 flex-1 items-center last:flex-none">
+            <div
+              key={step}
+              className="flex min-w-0 flex-1 items-center last:flex-none"
+            >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#006D77] text-[10px] font-semibold text-white sm:h-8 sm:w-8 sm:text-xs">
                 {step === 5 ? "5" : "✓"}
               </div>
-              {idx < 4 && <div className="h-[2px] w-full bg-[#006D77]" />}
+
+              {idx < 4 && (
+                <div className="h-[2px] w-full bg-[#006D77]" />
+              )}
             </div>
           ))}
         </div>
 
         {/* Card */}
         <section className="mx-auto w-full max-w-[620px] rounded-xl bg-white px-4 py-5 shadow-[0_4px_20px_rgba(0,0,0,0.06)] sm:px-8 sm:py-7">
+
+          {/* Title */}
           <h1 className="text-[20px] font-bold text-[#092F35] sm:text-[22px]">
-            Review &amp; Submit
+            {t("review.title")}
           </h1>
 
           <p className="mt-1 max-w-[520px] text-[11px] leading-5 text-gray-600 sm:text-[12px]">
-            Please verify the details of your care request before submitting.
+            {t("review.description")}
           </p>
 
-          {/* خطأ الإرسال إن وجد */}
+          {/* Error */}
           {errorMsg && (
             <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
               {errorMsg}
@@ -122,7 +174,14 @@ export default function ReviewPage() {
                 <dt className="shrink-0 text-[10px] text-gray-500 sm:text-sm">
                   {row.label}
                 </dt>
-                <dd className="break-words text-left text-[11px] font-medium text-[#17363B] sm:max-w-[65%] sm:text-right sm:text-sm">
+
+                <dd
+                  className={`break-words text-[11px] font-medium text-[#17363B] sm:max-w-[65%] sm:text-sm ${
+                    dir === "rtl"
+                      ? "text-right sm:text-left"
+                      : "text-left sm:text-right"
+                  }`}
+                >
                   {row.value || "—"}
                 </dd>
               </div>
@@ -132,7 +191,10 @@ export default function ReviewPage() {
           {/* Notes */}
           {data.notes && (
             <div className="mt-3 rounded-xl bg-[#F8FAFC] p-3 sm:p-4">
-              <p className="text-[10px] text-gray-500 sm:text-sm">Notes</p>
+              <p className="text-[10px] text-gray-500 sm:text-sm">
+                {t("review.notes")}
+              </p>
+
               <p className="mt-1 break-words text-[11px] leading-5 text-[#17363B] sm:text-sm">
                 {data.notes}
               </p>
@@ -147,8 +209,9 @@ export default function ReviewPage() {
               onChange={(e) => setTermsAgreed(e.target.checked)}
               className="mt-1 h-4 w-4 shrink-0 rounded border-gray-300 text-[#006D77] focus:ring-[#006D77]"
             />
+
             <span>
-              By submitting, you agree to our Terms of Service and Privacy Policy. Confirmation is typically provided within 24–48 hours.
+              {t("review.terms")}
             </span>
           </label>
 
@@ -157,13 +220,16 @@ export default function ReviewPage() {
 
           {/* Buttons */}
           <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-center">
+
+            {/* Back */}
             <Link
               href="/book/describe-needs"
               className="flex h-10 w-full items-center justify-center gap-1 rounded-md border border-[#D5E0E2] bg-white px-4 text-[10px] font-medium text-[#31565C] transition hover:bg-gray-50 sm:h-auto sm:w-auto sm:py-2"
             >
-              ← Back
+              {dir === "rtl" ? "→" : "←"} {t("common.back")}
             </Link>
 
+            {/* Submit */}
             <button
               type="button"
               disabled={!termsAgreed || submitting}
@@ -174,7 +240,9 @@ export default function ReviewPage() {
                   : "cursor-not-allowed bg-gray-300 text-gray-500"
               }`}
             >
-              {submitting ? "Submitting..." : "Submit Care Request →"}
+              {submitting
+                ? t("review.submitting")
+                : t("review.submit")}
             </button>
           </div>
         </section>

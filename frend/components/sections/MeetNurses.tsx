@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 import axios from "axios";
 import Button from "@/components/ui/Button";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Nurse {
   id: number;
@@ -25,6 +26,7 @@ interface Nurse {
 }
 
 export default function MeetNurses() {
+	const { t } = useLanguage();
   const [nursesList, setNursesList] = useState<Nurse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,16 +53,15 @@ export default function MeetNurses() {
       <div className="container-content">
         <div className="flex items-end justify-between">
           <div>
-            <span className="eyebrow-light">Our Team</span>
+            <span className="eyebrow-light">{t("ourTeam")}</span>
             <h2 className="mt-3 text-2xl font-bold text-navy-900 sm:text-3xl">
-              Meet Our Nurses
+            {t("meetOurNurses")}
             </h2>
           </div>
           <Link
             href="/find-a-nurses"
             className="hidden text-sm font-semibold text-teal-700 hover:underline sm:block"
-          >
-            View All Nurses →
+          >{t("viewAllNurses")}
           </Link>
         </div>
 
@@ -75,7 +76,7 @@ export default function MeetNurses() {
           </div>
         ) : nursesList.length === 0 ? (
           <div className="mt-10 py-12 text-center text-sm text-navy-900/40">
-            No registered nurses available at the moment.
+        {t("noNursesAvailable")}
           </div>
         ) : (
           <div className="mt-10 grid gap-6 sm:grid-cols-3">
@@ -104,7 +105,7 @@ export default function MeetNurses() {
                       className="object-cover"
                     />
                     <span className="absolute left-3 top-3 z-10 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-teal-700 shadow-sm">
-                      {nurse.available || (nurse.price ? `$${nurse.price}/hr` : "Available")}
+                 {nurse.available ||  (nurse.price ? `$${nurse.price}/hr` : t("available"))}
                     </span>
                   </div>
                   <div className="p-5">
@@ -112,12 +113,12 @@ export default function MeetNurses() {
                       <div>
                         <h3 className="font-semibold text-navy-900">{nurse.name}</h3>
                         <p className="text-xs text-navy-900/50">
-                          {nurse.credential || "Registered Nurse"}
+                     {nurse.credential || t("registeredNurse")}
                         </p>
                       </div>
                     </div>
                     <p className="mt-2 text-sm font-medium text-teal-700">
-                      {nurse.specialty || nurse.specialization || "General / Home Care"}
+            {nurse.specialty ||nurse.specialization || t("generalHomeCare")}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {tags.map((tag, idx) => (
@@ -140,7 +141,7 @@ export default function MeetNurses() {
                         variant="solid"
                         className="px-4 py-2 text-xs"
                       >
-                        Book Now
+                    {t("bookNow")}
                       </Button>
                     </div>
                   </div>

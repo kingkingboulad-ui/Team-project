@@ -1,4 +1,3 @@
-
 "use client";
 
 import { FormEvent, useState } from "react";
@@ -10,6 +9,7 @@ import { ArrowRight } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useBooking } from "../BookingContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 // Leaflet must only load in the browser
 const LocationMap = dynamic(() => import("../LocationMap"), {
@@ -24,10 +24,15 @@ const LocationMap = dynamic(() => import("../LocationMap"), {
 export default function WhenWherePage() {
   const router = useRouter();
   const { data, update } = useBooking();
+  const { t, dir } = useLanguage();
 
   const [startDate, setStartDate] = useState(data.startDate);
-  const [careDuration, setCareDuration] = useState(data.careDuration);
-  const [careAddress, setCareAddress] = useState(data.careAddress);
+  const [careDuration, setCareDuration] = useState(
+    data.careDuration
+  );
+  const [careAddress, setCareAddress] = useState(
+    data.careAddress
+  );
 
   const [location, setLocation] = useState({
     lat: data.latitude,
@@ -42,7 +47,7 @@ export default function WhenWherePage() {
     const address = careAddress.trim();
 
     if (!address) {
-      alert("Please enter a care address.");
+      alert(t("enterCareAddress"));
       return;
     }
 
@@ -62,7 +67,7 @@ export default function WhenWherePage() {
       const results = await response.json();
 
       if (!results || results.length === 0) {
-        alert("Address not found. Please try another address.");
+        alert(t("addressNotFound"));
         return;
       }
 
@@ -72,7 +77,7 @@ export default function WhenWherePage() {
       });
     } catch (error) {
       console.error("Address search error:", error);
-      alert("Something went wrong while searching for this address.");
+      alert(t("addressSearchError"));
     } finally {
       setSearching(false);
     }
@@ -89,7 +94,10 @@ export default function WhenWherePage() {
 
   // ================= MAP LOCATION =================
 
-  const handleLocationChange = (lat: number, lng: number) => {
+  const handleLocationChange = (
+    lat: number,
+    lng: number
+  ) => {
     setLocation({
       lat,
       lng,
@@ -100,17 +108,17 @@ export default function WhenWherePage() {
 
   const handleContinue = () => {
     if (!startDate) {
-      alert("Please select a start date.");
+      alert(t("selectStartDate"));
       return;
     }
 
     if (!careDuration) {
-      alert("Please select the care duration.");
+      alert(t("selectCareDuration"));
       return;
     }
 
     if (!careAddress.trim()) {
-      alert("Please enter the care address.");
+      alert(t("enterCareAddress"));
       return;
     }
 
@@ -126,8 +134,11 @@ export default function WhenWherePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F1F8FB]">
-
+    <div
+      dir={dir}
+      className="min-h-screen bg-[#F1F8FB]"
+    >
+     
 
       <main className="min-h-[650px] px-4 py-6 sm:px-6 sm:py-8">
 
@@ -181,11 +192,11 @@ export default function WhenWherePage() {
 
         <div className="mx-auto mb-5 w-full max-w-3xl">
           <h1 className="text-[22px] font-bold text-[#1C2E4A] sm:text-3xl">
-            When &amp; Where
+            {t("whenAndWhere")}
           </h1>
 
           <p className="mt-1 text-[11px] leading-5 text-gray-500 sm:text-sm">
-            Tell us when and where you need nursing care.
+            {t("whenWhereDescription")}
           </p>
         </div>
 
@@ -203,7 +214,7 @@ export default function WhenWherePage() {
                 htmlFor="startDate"
                 className="mb-1.5 block text-xs font-semibold text-[#1C2E4A] sm:text-sm"
               >
-                Start Date
+                {t("startDate")}
               </label>
 
               <input
@@ -223,7 +234,7 @@ export default function WhenWherePage() {
                 htmlFor="careDuration"
                 className="mb-1.5 block text-xs font-semibold text-[#1C2E4A] sm:text-sm"
               >
-                Care Duration
+                {t("careDuration")}
               </label>
 
               <select
@@ -234,13 +245,33 @@ export default function WhenWherePage() {
                 }
                 className="h-10 w-full rounded-lg border border-gray-200 bg-white px-3 text-xs text-gray-700 outline-none transition focus:border-[#00535B] focus:ring-2 focus:ring-[#00535B]/10 sm:text-sm"
               >
-                <option value="">Select duration</option>
-                <option value="1-hour">1 Hour</option>
-                <option value="2-hours">2 Hours</option>
-                <option value="4-hours">4 Hours</option>
-                <option value="8-hours">8 Hours</option>
-                <option value="12-hours">12 Hours</option>
-                <option value="24-hours">24 Hours</option>
+                <option value="">
+                  {t("selectDuration")}
+                </option>
+
+                <option value="1-hour">
+                  {t("oneHour")}
+                </option>
+
+                <option value="2-hours">
+                  {t("twoHours")}
+                </option>
+
+                <option value="4-hours">
+                  {t("fourHours")}
+                </option>
+
+                <option value="8-hours">
+                  {t("eightHours")}
+                </option>
+
+                <option value="12-hours">
+                  {t("twelveHours")}
+                </option>
+
+                <option value="24-hours">
+                  {t("twentyFourHours")}
+                </option>
               </select>
             </div>
           </div>
@@ -253,7 +284,7 @@ export default function WhenWherePage() {
               htmlFor="careAddress"
               className="mb-1.5 block text-xs font-semibold text-[#1C2E4A] sm:text-sm"
             >
-              Care Address
+              {t("careAddress")}
             </label>
 
             <form
@@ -269,7 +300,7 @@ export default function WhenWherePage() {
                 onChange={(event) =>
                   setCareAddress(event.target.value)
                 }
-                placeholder="Enter your care address"
+                placeholder={t("enterCareAddressPlaceholder")}
                 className="h-12 w-full min-w-0 flex-1 rounded-lg border border-gray-200 px-4 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-[#00535B] focus:ring-2 focus:ring-[#00535B]/10"
               />
 
@@ -279,12 +310,14 @@ export default function WhenWherePage() {
                 disabled={searching}
                 className="h-12 w-full shrink-0 rounded-lg bg-[#00535B] px-6 text-xs font-semibold text-white transition hover:bg-[#006D77] disabled:cursor-not-allowed disabled:opacity-50 sm:w-[100px]"
               >
-                {searching ? "Searching..." : "Search"}
+                {searching
+                  ? t("searching")
+                  : t("search")}
               </button>
             </form>
 
             <p className="mt-1.5 text-[10px] leading-4 text-gray-400 sm:text-[11px]">
-              Enter your address and press Search or Enter.
+              {t("addressSearchHint")}
             </p>
           </div>
 
@@ -292,11 +325,11 @@ export default function WhenWherePage() {
 
           <div className="mb-2 mt-5">
             <h2 className="text-xs font-semibold text-[#1C2E4A] sm:text-sm">
-              Care Location
+              {t("careLocation")}
             </h2>
 
             <p className="mt-0.5 text-[10px] leading-4 text-gray-400 sm:text-xs">
-              You can also select a location directly on the map.
+              {t("mapLocationHint")}
             </p>
           </div>
 
@@ -313,14 +346,14 @@ export default function WhenWherePage() {
           <div className="mt-3 flex flex-col gap-1 rounded-lg bg-[#F0FDFA] px-3 py-2 sm:flex-row sm:flex-wrap sm:gap-x-5 sm:gap-y-1">
 
             <span className="text-[10px] text-gray-600 sm:text-xs">
-              Latitude:{" "}
+              {t("latitude")}:{" "}
               <span className="font-semibold text-[#00535B]">
                 {location.lat.toFixed(5)}
               </span>
             </span>
 
             <span className="text-[10px] text-gray-600 sm:text-xs">
-              Longitude:{" "}
+              {t("longitude")}:{" "}
               <span className="font-semibold text-[#00535B]">
                 {location.lng.toFixed(5)}
               </span>
@@ -330,14 +363,21 @@ export default function WhenWherePage() {
 
           {/* ================= BUTTONS ================= */}
 
-          <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
+          <div
+            className={`mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-between ${
+              dir === "rtl"
+                ? "sm:flex-row-reverse"
+                : ""
+            }`}
+          >
 
             {/* Back */}
             <Link
               href="/book/type-of-care"
               className="flex h-10 w-full items-center justify-center rounded-lg border border-gray-200 px-6 text-xs font-semibold text-gray-600 transition hover:bg-gray-50 sm:h-auto sm:w-auto sm:py-2 sm:text-sm"
             >
-              ← Back
+              {dir === "rtl" ? "→" : "←"}{" "}
+              {t("back")}
             </Link>
 
             {/* Continue */}
@@ -346,14 +386,22 @@ export default function WhenWherePage() {
               onClick={handleContinue}
               className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#00535B] px-7 text-xs font-semibold text-white transition hover:bg-[#006D77] sm:h-auto sm:w-auto sm:py-2 sm:text-sm"
             >
-              Continue
-              <ArrowRight size={14} />
+              {t("continue")}
+
+              <ArrowRight
+                size={14}
+                className={
+                  dir === "rtl"
+                    ? "rotate-180"
+                    : ""
+                }
+              />
             </button>
 
           </div>
+
         </div>
       </main>
-
 
     </div>
   );

@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Star, MapPin, Briefcase } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export interface Nurse {
   id: number | string;
@@ -29,6 +30,8 @@ interface NurseCardProps {
 }
 
 export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
+  const { t } = useLanguage();
+
   /* =========================
       NAME
   ========================= */
@@ -36,13 +39,13 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
     nurse.name ||
     nurse.fullName ||
     `${nurse.first_name || ""} ${nurse.last_name || ""}`.trim() ||
-    "Nurse Professional";
+    t("nurseProfessional");
 
   /* =========================
       ROLE
   ========================= */
   const nurseRole =
-    nurse.role || nurse.specialization || "General Healthcare";
+    nurse.role || nurse.specialization || t("generalHealthcare");
 
   /* =========================
       IMAGE HANDLING
@@ -53,14 +56,19 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
 
   let nurseImage = fallbackAvatar;
 
-  if (nurse.image && typeof nurse.image === "string" && nurse.image.trim() !== "") {
+  if (
+    nurse.image &&
+    typeof nurse.image === "string" &&
+    nurse.image.trim() !== ""
+  ) {
     const img = nurse.image.trim();
+
     if (img.startsWith("http")) {
-      nurseImage = img; // رابط خارجي مثل Unsplash
+      nurseImage = img;
     } else if (img.startsWith("/uploads/")) {
-      nurseImage = `http://localhost:5000${img}`; // مرفوع من السيرفر
+      nurseImage = `http://localhost:5000${img}`;
     } else {
-      nurseImage = img.startsWith("/") ? img : `/${img}`; // مسار محلي من public داخل Next.js
+      nurseImage = img.startsWith("/") ? img : `/${img}`;
     }
   }
 
@@ -159,6 +167,7 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
               >
                 {nurseRate}
               </span>
+
               <span className="text-[11px] sm:text-xs text-slate-400">
                 /hr
               </span>
@@ -193,17 +202,27 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
 
           {/* LOCATION */}
           <div className="flex items-start gap-2 mt-4 text-xs sm:text-sm text-slate-500">
-            <MapPin size={16} className="shrink-0 mt-0.5 text-[#0d7c7b]" />
+            <MapPin
+              size={16}
+              className="shrink-0 mt-0.5 text-[#0d7c7b]"
+            />
+
             <span className="line-clamp-2">
-              {nurse.location || "Location not available"}
+              {nurse.location || t("locationNotAvailable")}
             </span>
           </div>
 
           {/* EXPERIENCE */}
           <div className="flex items-center gap-2 mt-2 text-xs sm:text-sm text-slate-500">
-            <Briefcase size={16} className="shrink-0 text-[#0d7c7b]" />
+            <Briefcase
+              size={16}
+              className="shrink-0 text-[#0d7c7b]"
+            />
+
             <span>
-              {nurse.experience ? `${nurse.experience} yrs experience` : "Experience not specified"}
+              {nurse.experience
+                ? `${nurse.experience} ${t("yrsExperience")}`
+                : t("experienceNotSpecified")}
             </span>
           </div>
         </div>
@@ -226,10 +245,15 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
         >
           {/* RATING + RATE BUTTON */}
           <div className="flex items-center gap-1.5">
-            <Star size={16} className="fill-amber-400 text-amber-400 shrink-0" />
+            <Star
+              size={16}
+              className="fill-amber-400 text-amber-400 shrink-0"
+            />
+
             <span className="text-sm font-bold text-slate-800">
               {Number(nurse.rating || 0).toFixed(1)}
             </span>
+
             <span className="text-xs text-slate-400">
               ({nurse.reviews ?? 0})
             </span>
@@ -239,7 +263,7 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
               onClick={onRateClick}
               className="ml-2 text-xs font-semibold text-[#00535B] hover:text-[#00737D] hover:underline"
             >
-              Rate
+              {t("rate")}
             </button>
           </div>
 
@@ -260,7 +284,7 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
                 transition-colors
               "
             >
-              Profile
+              {t("profile")}
             </Link>
 
             <Link
@@ -277,7 +301,7 @@ export default function NurseCard({ nurse, onRateClick }: NurseCardProps) {
                 transition-colors
               "
             >
-              Book
+              {t("book")}
             </Link>
           </div>
         </div>

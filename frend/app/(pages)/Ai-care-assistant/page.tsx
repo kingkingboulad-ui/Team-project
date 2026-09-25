@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import axios from 'axios';
-import HeaderSection from '../../../components/sections/HeaderSection';
-import CareAssistantForm from '../../../components/sections/CareAssistantForm';
-import ResultsPlaceholder from '../../../components/sections/ResultsPlaceholder';
+import React, { useState } from "react";
+import axios from "axios";
+import HeaderSection from "../../../components/sections/HeaderSection";
+import CareAssistantForm from "../../../components/sections/CareAssistantForm";
+import ResultsPlaceholder from "../../../components/sections/ResultsPlaceholder";
 
 export interface AIAnalysis {
   assessment: string;
@@ -34,10 +34,11 @@ export interface AnalysisResponse {
 }
 
 export default function AICareAssistantPage() {
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<AnalysisResponse | null>(null);
+  const [result, setResult] =
+    useState<AnalysisResponse | null>(null);
 
   const handleAnalyze = async () => {
     if (!prompt.trim()) return;
@@ -46,8 +47,10 @@ export default function AICareAssistantPage() {
       setLoading(true);
       setError(null);
 
-      // استدعاء الباك إند المتصل بـ Gemini
-      const res = await axios.post('http://localhost:5000/api/ai/care-assistant', { prompt });
+      const res = await axios.post(
+        "http://localhost:5000/api/ai/care-assistant",
+        { prompt }
+      );
 
       if (res.data.success) {
         setResult({
@@ -56,7 +59,10 @@ export default function AICareAssistantPage() {
         });
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to analyze condition, please try again.');
+      setError(
+        err.response?.data?.message ||
+          "Failed to analyze condition, please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -75,6 +81,7 @@ export default function AICareAssistantPage() {
             error={error}
             onAnalyze={handleAnalyze}
           />
+
           <ResultsPlaceholder
             loading={loading}
             result={result}

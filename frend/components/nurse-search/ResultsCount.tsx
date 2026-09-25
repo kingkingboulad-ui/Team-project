@@ -1,17 +1,23 @@
 "use client";
 
 import React from "react";
+import { useLanguage } from "@/context/LanguageContext";
+
+interface ResultsCountProps {
+  count: number;
+}
 
 export default function ResultsCount({
-    count,
-}: {
-    count: number;
-}) {
-    return (
-        <div className="mb-5">
-            <p className="text-sm font-semibold text-[#0d7c7b]">
-                {count} {count === 1 ? "nurse" : "nurses"} found
-            </p>
-        </div>
-    );
+  count,
+}: ResultsCountProps) {
+  const { t } = useLanguage();
+
+  return (
+    <p className="text-sm font-medium text-slate-600">
+      <span className="font-bold text-slate-900">
+        {count}
+      </span>{" "}
+      {t("nursesFound")}
+    </p>
+  );
 }

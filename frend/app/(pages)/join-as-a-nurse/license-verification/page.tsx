@@ -9,29 +9,32 @@ import {
   FileCheck2,
   ShieldCheck,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function LicenseVerificationPage() {
   const router = useRouter();
+  const { t, dir } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-[#F1F8FB]">
-    
-
+    <div
+      className="min-h-screen bg-[#F1F8FB]"
+      dir={dir}
+    >
       <main className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-[1100px]">
 
           {/* Header */}
           <div className="mb-7">
             <p className="text-[10px] font-semibold uppercase tracking-wide text-[#6B7E83]">
-              REGISTRATION SUBMITTED
+              {t("licenseVerification.registrationSubmitted")}
             </p>
 
             <h1 className="mt-1 text-[22px] font-bold text-[#092F35]">
-              Onboarding Status
+              {t("licenseVerification.onboardingStatus")}
             </h1>
 
             <p className="mt-1 text-[11px] text-[#71858A]">
-              Track your application and complete the required steps.
+              {t("licenseVerification.trackApplication")}
             </p>
           </div>
 
@@ -48,7 +51,7 @@ export default function LicenseVerificationPage() {
                   </div>
 
                   <span className="mt-2 text-[9px] font-semibold text-[#456268]">
-                    ACCOUNT CREATED
+                    {t("licenseVerification.accountCreated")}
                   </span>
 
                 </div>
@@ -65,7 +68,7 @@ export default function LicenseVerificationPage() {
                   </div>
 
                   <span className="mt-2 text-[9px] font-semibold text-[#456268]">
-                    LICENSE VERIFICATION
+                    {t("licenseVerification.licenseVerification")}
                   </span>
 
                 </div>
@@ -82,7 +85,7 @@ export default function LicenseVerificationPage() {
                   </div>
 
                   <span className="mt-2 text-[9px] font-semibold text-[#8A9B9F]">
-                    BACKGROUND CHECK
+                    {t("licenseVerification.backgroundCheck")}
                   </span>
 
                 </div>
@@ -98,7 +101,7 @@ export default function LicenseVerificationPage() {
                 </div>
 
                 <span className="mt-2 text-[9px] font-semibold text-[#8A9B9F]">
-                  ACTIVATION
+                  {t("licenseVerification.activation")}
                 </span>
 
               </div>
@@ -116,25 +119,23 @@ export default function LicenseVerificationPage() {
 
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-[#006D77]">
-                    ACTIVE PROCESS
+                    {t("licenseVerification.activeProcess")}
                   </p>
 
                   <h2 className="mt-1 text-[19px] font-bold text-[#092F35]">
-                    License Verification
+                    {t("licenseVerification.licenseVerification")}
                   </h2>
                 </div>
 
                 <span className="flex items-center gap-1 rounded-full bg-[#E8F6F3] px-3 py-1 text-[9px] font-semibold text-[#006D77]">
                   <Clock3 size={11} />
-                  IN PROGRESS
+                  {t("licenseVerification.inProgress")}
                 </span>
 
               </div>
 
               <p className="mt-5 text-[11px] leading-5 text-[#657B80]">
-                We have received your documents and your professional
-                credentials are currently being reviewed. This verification
-                helps ensure all nurses meet our professional standards.
+                {t("licenseVerification.reviewDescription")}
               </p>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -148,15 +149,15 @@ export default function LicenseVerificationPage() {
                   />
 
                   <p className="mt-3 text-[10px] font-semibold uppercase text-[#456268]">
-                    DOCUMENTS SUBMITTED
+                    {t("licenseVerification.documentsSubmitted")}
                   </p>
 
                   <p className="mt-2 text-[11px] text-[#657B80]">
-                    ✓ Nursing License
+                    ✓ {t("licenseVerification.nursingLicense")}
                   </p>
 
                   <p className="mt-1 text-[11px] text-[#657B80]">
-                    ✓ Curriculum Vitae
+                    ✓ {t("licenseVerification.curriculumVitae")}
                   </p>
 
                 </div>
@@ -170,15 +171,15 @@ export default function LicenseVerificationPage() {
                   />
 
                   <p className="mt-3 text-[10px] font-semibold uppercase text-[#456268]">
-                    VERIFICATION STATUS
+                    {t("licenseVerification.verificationStatus")}
                   </p>
 
                   <p className="mt-2 text-[11px] font-semibold text-[#006D77]">
-                    Documents Under Review
+                    {t("licenseVerification.documentsUnderReview")}
                   </p>
 
                   <p className="mt-1 text-[10px] text-[#71858A]">
-                    Usually completed within 24–48 hours.
+                    {t("licenseVerification.usuallyCompleted")}
                   </p>
 
                 </div>
@@ -188,8 +189,7 @@ export default function LicenseVerificationPage() {
               <div className="mt-5 rounded-md bg-[#DDF5F8] px-4 py-3">
 
                 <p className="text-[10px] leading-5 text-[#31565C]">
-                  Your documents are securely reviewed by our verification
-                  team. You will be notified when this step is complete.
+                  {t("licenseVerification.secureMessage")}
                 </p>
 
               </div>
@@ -200,26 +200,25 @@ export default function LicenseVerificationPage() {
             <aside className="rounded-lg border border-[#D7E3E5] bg-white p-5 shadow-sm">
 
               <p className="text-[10px] font-semibold uppercase text-[#71858A]">
-                REQUIRED ACTIONS
+                {t("licenseVerification.requiredActions")}
               </p>
 
               <h3 className="mt-2 text-[15px] font-bold text-[#092F35]">
-                Application Submitted
+                {t("licenseVerification.applicationSubmitted")}
               </h3>
 
               <p className="mt-2 text-[10px] leading-5 text-[#71858A]">
-                Your registration has been successfully submitted.
-                No additional action is required at this stage.
+                {t("licenseVerification.noActionRequired")}
               </p>
 
               <div className="mt-5 rounded-md bg-[#F1F8FB] p-3">
 
                 <p className="text-[9px] font-semibold uppercase text-[#71858A]">
-                  NEXT STEP
+                  {t("licenseVerification.nextStep")}
                 </p>
 
                 <p className="mt-1 text-[11px] font-semibold text-[#006D77]">
-                  Background Check
+                  {t("licenseVerification.backgroundCheck")}
                 </p>
 
               </div>
@@ -235,7 +234,8 @@ export default function LicenseVerificationPage() {
               onClick={() => router.push("/join-as-a-nurse")}
               className="rounded-md border border-[#CBDADD] bg-white px-5 py-2 text-[10px] font-semibold text-[#567278]"
             >
-              ← Back
+              {dir === "rtl" ? "→" : "←"}{" "}
+              {t("common.back")}
             </button>
 
             <button
@@ -244,15 +244,14 @@ export default function LicenseVerificationPage() {
               }
               className="rounded-md bg-[#006D77] px-6 py-2.5 text-[10px] font-semibold text-white transition hover:bg-[#00535B]"
             >
-              Continue →
+              {t("common.continue")}{" "}
+              {dir === "rtl" ? "←" : "→"}
             </button>
 
           </div>
 
         </div>
       </main>
-
-      
     </div>
   );
 }

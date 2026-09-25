@@ -1,17 +1,34 @@
+"use client";
+
 import { steps } from "@/data/content";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function HowItWorks() {
+  const { t } = useLanguage();
+
+  const stepTitleKeys = [
+    "tellUsYourNeeds",
+    "getMatchedInstantly",
+    "bookAndRelax",
+  ];
+
+  const stepDescriptionKeys = [
+    "tellUsYourNeedsDescription",
+    "getMatchedDescription",
+    "bookAndRelaxDescription",
+  ];
+
   return (
     <section className="bg-[#f0f6fa] py-16 sm:py-24">
       <div className="container mx-auto px-4">
         {/* SUBTITLE BADGE */}
         <p className="text-center text-xs font-semibold tracking-widest text-[#064e52] uppercase">
-          SIMPLE PROCESS
+          {t("simpleProcess")}
         </p>
 
         {/* MAIN TITLE */}
         <h2 className="mt-3 text-center text-3xl font-semibold text-[#0a192f] sm:text-4xl">
-          How NurseConnect Works
+          {t("howNurseConnectWorks")}
         </h2>
 
         {/* CARDS GRID */}
@@ -28,12 +45,12 @@ export default function HowItWorks() {
 
               {/* TITLE */}
               <h3 className="mt-8 text-lg font-semibold text-[#0a192f]">
-                {step.title}
+                {t(stepTitleKeys[i])}
               </h3>
 
               {/* DESCRIPTION */}
               <p className="mt-3 text-sm leading-relaxed text-slate-600">
-                {step.description}
+                {t(stepDescriptionKeys[i])}
               </p>
             </div>
           ))}

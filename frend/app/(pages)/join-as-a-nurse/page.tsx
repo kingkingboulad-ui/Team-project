@@ -1,57 +1,97 @@
-'use client';
+"use client";
 
-import axios from 'axios';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Check, Camera, FileText } from 'lucide-react';
-import Image from 'next/image';
+import axios from "axios";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Check, Camera, FileText } from "lucide-react";
+import Image from "next/image";
+import { useLanguage } from "@/context/LanguageContext";
 
 const AVAILABLE_CATEGORIES = [
-  'Home Care',
-  'Elderly Care',
-  'Pediatric Care',
-  'Post-Surgery Care',
-  'Wound Dressing',
-  'IV Therapy & Injections',
-  'Palliative Care',
-  'ICU Support',
-  'Physical Therapy Assistance'
+  {
+    value: "Home Care",
+    key: "homeCare",
+  },
+  {
+    value: "Elderly Care",
+    key: "elderlyCare",
+  },
+  {
+    value: "Pediatric Care",
+    key: "pediatricCare",
+  },
+  {
+    value: "Post-Surgery Care",
+    key: "postSurgeryCare",
+  },
+  {
+    value: "Wound Dressing",
+    key: "woundDressing",
+  },
+  {
+    value: "IV Therapy & Injections",
+    key: "ivTherapy",
+  },
+  {
+    value: "Palliative Care",
+    key: "palliativeCare",
+  },
+  {
+    value: "ICU Support",
+    key: "icuSupport",
+  },
+  {
+    value: "Physical Therapy Assistance",
+    key: "physicalTherapy",
+  },
 ];
 
 export default function CreateNurseAccountPage() {
   const router = useRouter();
+  const { t, dir } = useLanguage();
 
-  // Personal Information
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
+  // ================= PERSONAL INFORMATION =================
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // Professional Profile
-  const [specialization, setSpecialization] = useState('');
-  const [yearsExperience, setYearsExperience] = useState('');
-  const [location, setLocation] = useState('');
-  const [price, setPrice] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  // ================= PROFESSIONAL PROFILE =================
+  const [specialization, setSpecialization] = useState("");
+  const [yearsExperience, setYearsExperience] = useState("");
+  const [location, setLocation] = useState("");
+  const [price, setPrice] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    []
+  );
 
-  // Files Upload (Image & CV)
+  // ================= FILE UPLOAD =================
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [cvFile, setCvFile] = useState<File | null>(null);
 
+  // ================= GENERAL STATE =================
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const toggleCategory = (cat: string) => {
+  // ================= CATEGORY =================
+  const toggleCategory = (category: string) => {
     setSelectedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((item) => item !== cat) : [...prev, cat]
+      prev.includes(category)
+        ? prev.filter((item) => item !== category)
+        : [...prev, category]
     );
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ================= IMAGE =================
+  const handleImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0] ?? null;
+
     setImageFile(file);
+
     if (file) {
       setImagePreview(URL.createObjectURL(file));
     } else {
@@ -59,26 +99,34 @@ export default function CreateNurseAccountPage() {
     }
   };
 
-  const handleCvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ================= CV =================
+  const handleCvChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setCvFile(e.target.files?.[0] ?? null);
   };
 
+  // ================= SUBMIT =================
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage('');
 
+    setErrorMessage("");
+
+    // Profile photo validation
     if (!imageFile) {
-      setErrorMessage('Please upload a profile photo.');
+      setErrorMessage(t("uploadProfilePhoto"));
       return;
     }
 
+    // CV validation
     if (!cvFile) {
-      setErrorMessage('Please upload your CV.');
+      setErrorMessage(t("uploadCv"));
       return;
     }
 
+    // Category validation
     if (selectedCategories.length === 0) {
-      setErrorMessage('Please select at least one care category / service.');
+      setErrorMessage(t("selectAtLeastOneCategory"));
       return;
     }
 
@@ -86,38 +134,52 @@ export default function CreateNurseAccountPage() {
 
     try {
       const formData = new FormData();
-      formData.append('fullName', fullName);
-      formData.append('email', email);
-      formData.append('phone', phone);
-      formData.append('password', password);
-      formData.append('specialization', specialization);
-      formData.append('experience', yearsExperience);
-      formData.append('location', location);
-      formData.append('price', price);
-      formData.append('role', 'nurse');
 
-      // إرسال التصنيفات
-      formData.append('categories', JSON.stringify(selectedCategories));
+      formData.append("fullName", fullName);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      formData.append("password", password);
 
-      // الحقول المرفوعة مطابقة لـ Multer: image و cvFile
-      formData.append('image', imageFile);
-      formData.append('cvFile', cvFile);
+      formData.append("specialization", specialization);
+      formData.append("experience", yearsExperience);
+      formData.append("location", location);
+      formData.append("price", price);
+
+      formData.append("role", "nurse");
+
+      // Send categories to backend
+      formData.append(
+        "categories",
+        JSON.stringify(selectedCategories)
+      );
+
+      // Upload files
+      formData.append("image", imageFile);
+      formData.append("cvFile", cvFile);
 
       const res = await axios.post(
-        'http://localhost:5000/api/nurses/apply',
+        "http://localhost:5000/api/nurses/apply",
         formData,
         {
           withCredentials: true,
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
       if (res.status === 200 || res.status === 201) {
-        router.push("/join-as-a-nurse/license-verification");
+        router.push(
+          "/join-as-a-nurse/license-verification"
+        );
       }
     } catch (error: any) {
+      console.error("Nurse registration error:", error);
+
       const message =
-        error.response?.data?.message || 'حدث خطأ أثناء إنشاء الحساب، يرجى المحاولة لاحقاً.';
+        error.response?.data?.message ||
+        t("nurseRegistrationError");
+
       setErrorMessage(message);
     } finally {
       setLoading(false);
@@ -125,251 +187,466 @@ export default function CreateNurseAccountPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] py-10 px-4 sm:px-8">
+    <main
+      dir={dir}
+      className="min-h-screen bg-[#f8fafc] py-10 px-4 sm:px-8"
+    >
       <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-8">
 
-        {/* Left: Intro copy */}
+        {/* ================= LEFT INTRO ================= */}
         <div className="space-y-4 lg:pt-2">
-          <h1 className="text-sm font-bold tracking-wide text-slate-800">ACCOUNT CREATION</h1>
+
+          <h1 className="text-sm font-bold tracking-wide text-slate-800">
+            {t("accountCreation")}
+          </h1>
+
           <p className="text-xs text-slate-500 leading-relaxed">
-            Join our network of trusted healthcare professionals.
+            {t("joinTrustedProfessionals")}
           </p>
+
           <p className="text-[11px] text-slate-400 leading-relaxed">
-            Please provide your personal information, profile photo, and credentials
-            for verification. Our team reviews all applications within 24–48 hours.
+            {t("nurseApplicationDescription")}
           </p>
+
         </div>
 
-        {/* Right: Form */}
+        {/* ================= RIGHT FORM ================= */}
         <div className="space-y-6">
 
+          {/* ERROR MESSAGE */}
           {errorMessage && (
             <div className="p-3 text-xs text-red-700 bg-red-100 border border-red-200 rounded-xl text-center">
               {errorMessage}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+          >
 
-            {/* 01 Personal Information */}
+            {/* ================================================= */}
+            {/* 01 PERSONAL INFORMATION */}
+            {/* ================================================= */}
+
             <section className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-4 shadow-sm">
-              <h2 className="text-sm font-bold text-[#0d7c7b]">01 / Personal Information</h2>
 
+              <h2 className="text-sm font-bold text-[#0d7c7b]">
+                {t("personalInformation")}
+              </h2>
+
+              {/* Full Name */}
               <div className="space-y-1.5">
+
                 <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                  Full Legal Name
+                  {t("fullLegalName")}
                 </label>
+
                 <input
                   type="text"
                   required
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Jane Doe"
+                  onChange={(e) =>
+                    setFullName(e.target.value)
+                  }
+                  placeholder={t("fullNamePlaceholder")}
                   className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
                 />
+
               </div>
 
+              {/* Email + Phone */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                {/* Email */}
                 <div className="space-y-1.5">
+
                   <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                    Email Address
+                    {t("emailAddress")}
                   </label>
+
                   <input
                     type="email"
                     required
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) =>
+                      setEmail(e.target.value)
+                    }
                     placeholder="jane.doe@example.com"
+                    dir="ltr"
                     className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
                   />
+
                 </div>
+
+                {/* Phone */}
                 <div className="space-y-1.5">
+
                   <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                    Phone Number
+                    {t("phoneNumber")}
                   </label>
+
                   <input
                     type="tel"
                     required
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+1 (555) 000-0000"
+                    onChange={(e) =>
+                      setPhone(e.target.value)
+                    }
+                    placeholder="+961 70 000 000"
+                    dir="ltr"
                     className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
                   />
+
                 </div>
+
               </div>
 
+              {/* Password */}
               <div className="space-y-1.5">
+
                 <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                  Password
+                  {t("password")}
                 </label>
+
                 <div className="relative">
+
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={
+                      showPassword
+                        ? "text"
+                        : "password"
+                    }
                     required
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) =>
+                      setPassword(e.target.value)
+                    }
                     placeholder="••••••••"
-                    className="w-full px-3.5 pr-10 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
+                    dir="ltr"
+                    className={`w-full ${
+                      dir === "rtl"
+                        ? "pl-10 pr-3.5"
+                        : "pl-3.5 pr-10"
+                    } py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all`}
                   />
+
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600"
+                    onClick={() =>
+                      setShowPassword(!showPassword)
+                    }
+                    className={`absolute inset-y-0 ${
+                      dir === "rtl"
+                        ? "left-0 pl-3.5"
+                        : "right-0 pr-3.5"
+                    } flex items-center text-slate-400 hover:text-slate-600`}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7z"
+                      />
                     </svg>
                   </button>
+
                 </div>
+
               </div>
+
             </section>
 
-            {/* 02 Professional Profile */}
-            <section className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-4 shadow-sm">
-              <h2 className="text-sm font-bold text-[#0d7c7b]">02 / Professional Profile</h2>
+            {/* ================================================= */}
+            {/* 02 PROFESSIONAL PROFILE */}
+            {/* ================================================= */}
 
+            <section className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-4 shadow-sm">
+
+              <h2 className="text-sm font-bold text-[#0d7c7b]">
+                {t("professionalProfile")}
+              </h2>
+
+              {/* Specialization + Experience */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                {/* Specialization */}
                 <div className="space-y-1.5">
+
                   <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                    Primary Specialization
+                    {t("primarySpecialization")}
                   </label>
+
                   <select
                     required
                     value={specialization}
-                    onChange={(e) => setSpecialization(e.target.value)}
+                    onChange={(e) =>
+                      setSpecialization(e.target.value)
+                    }
                     className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all appearance-none"
                   >
-                    <option value="" disabled>Select specialization...</option>
-                    <option value="general">General / Home Care</option>
-                    <option value="pediatric">Pediatric Care</option>
-                    <option value="geriatric">Geriatric Care</option>
-                    <option value="icu">ICU / Critical Care</option>
-                    <option value="postop">Post-Operative Care</option>
-                    <option value="palliative">Palliative Care</option>
+                    <option value="" disabled>
+                      {t("selectSpecialization")}
+                    </option>
+
+                    <option value="general">
+                      {t("generalHomeCare")}
+                    </option>
+
+                    <option value="pediatric">
+                      {t("pediatricCare")}
+                    </option>
+
+                    <option value="geriatric">
+                      {t("geriatricCare")}
+                    </option>
+
+                    <option value="icu">
+                      {t("icuCriticalCare")}
+                    </option>
+
+                    <option value="postop">
+                      {t("postOperativeCare")}
+                    </option>
+
+                    <option value="palliative">
+                      {t("palliativeCare")}
+                    </option>
                   </select>
+
                 </div>
+
+                {/* Experience */}
                 <div className="space-y-1.5">
+
                   <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                    Years of Experience
+                    {t("yearsOfExperience")}
                   </label>
+
                   <select
                     required
                     value={yearsExperience}
-                    onChange={(e) => setYearsExperience(e.target.value)}
+                    onChange={(e) =>
+                      setYearsExperience(e.target.value)
+                    }
                     className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all appearance-none"
                   >
-                    <option value="" disabled>Select years...</option>
-                    <option value="0-1">Less than 1 year</option>
-                    <option value="1-3">1–3 years</option>
-                    <option value="3-5">3–5 years</option>
-                    <option value="5-10">5–10 years</option>
-                    <option value="10+">10+ years</option>
+                    <option value="" disabled>
+                      {t("selectYears")}
+                    </option>
+
+                    <option value="0-1">
+                      {t("lessThanOneYear")}
+                    </option>
+
+                    <option value="1-3">
+                      {t("oneToThreeYears")}
+                    </option>
+
+                    <option value="3-5">
+                      {t("threeToFiveYears")}
+                    </option>
+
+                    <option value="5-10">
+                      {t("fiveToTenYears")}
+                    </option>
+
+                    <option value="10+">
+                      {t("tenPlusYears")}
+                    </option>
                   </select>
+
                 </div>
+
               </div>
 
+              {/* Location + Price */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                {/* Location */}
                 <div className="space-y-1.5">
+
                   <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                    Current Location / Region
+                    {t("currentLocation")}
                   </label>
+
                   <input
                     type="text"
                     required
                     value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="City, State"
+                    onChange={(e) =>
+                      setLocation(e.target.value)
+                    }
+                    placeholder={t("locationPlaceholder")}
                     className="w-full px-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
                   />
+
                 </div>
 
+                {/* Price */}
                 <div className="space-y-1.5">
+
                   <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                    Hourly Rate ($ / hour)
+                    {t("hourlyRate")}
                   </label>
+
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400 text-xs font-semibold">
+
+                    <span
+                      className={`absolute inset-y-0 ${
+                        dir === "rtl"
+                          ? "right-0 pr-3.5"
+                          : "left-0 pl-3.5"
+                      } flex items-center text-slate-400 text-xs font-semibold`}
+                    >
                       $
                     </span>
+
                     <input
                       type="number"
                       required
                       min="0"
                       step="0.5"
                       value={price}
-                      onChange={(e) => setPrice(e.target.value)}
+                      onChange={(e) =>
+                        setPrice(e.target.value)
+                      }
                       placeholder="50.00"
-                      className="w-full pl-7 pr-3.5 py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all"
+                      dir="ltr"
+                      className={`w-full ${
+                        dir === "rtl"
+                          ? "pr-7 pl-3.5"
+                          : "pl-7 pr-3.5"
+                      } py-2.5 bg-[#e8f8f8] border border-transparent rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-[#0d7c7b] transition-all`}
                     />
+
                   </div>
+
                 </div>
+
               </div>
 
-              {/* اختيار التصنيفات */}
+              {/* Categories */}
               <div className="space-y-2 pt-2 border-t border-slate-100">
-                <div className="flex items-center justify-between">
+
+                <div className="flex items-center justify-between gap-3">
+
                   <label className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide">
-                    Select Care Categories / Services Provided
+                    {t("selectCareCategories")}
                   </label>
-                  <span className="text-[10px] text-slate-400">
-                    {selectedCategories.length} selected
+
+                  <span className="text-[10px] text-slate-400 whitespace-nowrap">
+                    {selectedCategories.length}{" "}
+                    {t("selected")}
                   </span>
+
                 </div>
 
                 <div className="flex flex-wrap gap-2 pt-1">
-                  {AVAILABLE_CATEGORIES.map((cat) => {
-                    const isSelected = selectedCategories.includes(cat);
-                    return (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => toggleCategory(cat)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all border ${
-                          isSelected
-                            ? 'bg-[#0d7c7b] text-white border-[#0d7c7b] shadow-sm'
-                            : 'bg-[#e8f8f8] text-slate-700 border-transparent hover:border-[#0d7c7b]/30'
-                        }`}
-                      >
-                        {isSelected && <Check className="w-3.5 h-3.5" />}
-                        <span>{cat}</span>
-                      </button>
-                    );
-                  })}
+
+                  {AVAILABLE_CATEGORIES.map(
+                    (category) => {
+                      const isSelected =
+                        selectedCategories.includes(
+                          category.value
+                        );
+
+                      return (
+                        <button
+                          key={category.value}
+                          type="button"
+                          onClick={() =>
+                            toggleCategory(
+                              category.value
+                            )
+                          }
+                          className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all border ${
+                            isSelected
+                              ? "bg-[#0d7c7b] text-white border-[#0d7c7b] shadow-sm"
+                              : "bg-[#e8f8f8] text-slate-700 border-transparent hover:border-[#0d7c7b]/30"
+                          }`}
+                        >
+                          {isSelected && (
+                            <Check className="w-3.5 h-3.5" />
+                          )}
+
+                          <span>
+                            {t(category.key)}
+                          </span>
+                        </button>
+                      );
+                    }
+                  )}
+
                 </div>
+
               </div>
+
             </section>
 
-            {/* 03 Profile Photo & CV Upload */}
+            {/* ================================================= */}
+            {/* 03 PHOTO + CV */}
+            {/* ================================================= */}
+
             <section className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-4 shadow-sm">
-              <div className="flex items-center justify-between">
-                <h2 className="text-sm font-bold text-[#0d7c7b]">03 / Profile Photo & CV Upload</h2>
-                <span className="text-[10px] text-slate-400">Accepted formats: JPG, PNG, WEBP, PDF (Max 5MB)</span>
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+
+                <h2 className="text-sm font-bold text-[#0d7c7b]">
+                  {t("profilePhotoCvUpload")}
+                </h2>
+
+                <span className="text-[10px] text-slate-400">
+                  {t("acceptedFormats")}
+                </span>
+
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Profile Image Upload */}
+
+                {/* PROFILE IMAGE */}
                 <label className="cursor-pointer block">
+
                   <span className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide mb-1.5">
-                    Profile Picture (Photo)
+                    {t("profilePicture")}
                   </span>
+
                   <div className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-200 rounded-xl p-4 bg-[#fafcfc] hover:bg-[#e8f8f8] transition-colors text-center min-h-[140px]">
+
                     {imagePreview ? (
-                    <Image
-                    src={imagePreview}
-                    alt="Preview"
-                    width={64}
-                    height={64}
-                    unoptimized // ضرورية لروابط المعاينة blob: حتى يقبلها Next.js مباشرة
-                    className="w-16 h-16 rounded-full object-cover border-2 border-[#0d7c7b]"
-                  />
+                      <Image
+                        src={imagePreview}
+                        alt={t("profilePicture")}
+                        width={64}
+                        height={64}
+                        unoptimized
+                        className="w-16 h-16 rounded-full object-cover border-2 border-[#0d7c7b]"
+                      />
                     ) : (
                       <Camera className="w-6 h-6 text-slate-400" />
                     )}
+
                     <span className="text-[11px] text-slate-600 font-medium truncate max-w-[180px]">
-                      {imageFile ? imageFile.name : 'Click to upload photo'}
+                      {imageFile
+                        ? imageFile.name
+                        : t("clickToUploadPhoto")}
                     </span>
+
                   </div>
+
                   <input
                     type="file"
                     required
@@ -377,19 +654,28 @@ export default function CreateNurseAccountPage() {
                     onChange={handleImageChange}
                     className="hidden"
                   />
+
                 </label>
 
-                {/* CV Upload */}
+                {/* CV */}
                 <label className="cursor-pointer block">
+
                   <span className="block text-[11px] font-medium text-slate-600 uppercase tracking-wide mb-1.5">
-                    Curriculum Vitae (CV)
+                    {t("curriculumVitae")}
                   </span>
+
                   <div className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-slate-200 rounded-xl p-4 bg-[#fafcfc] hover:bg-[#e8f8f8] transition-colors text-center min-h-[140px]">
+
                     <FileText className="w-6 h-6 text-slate-400" />
+
                     <span className="text-[11px] text-slate-600 font-medium truncate max-w-[180px]">
-                      {cvFile ? cvFile.name : 'Click to upload CV'}
+                      {cvFile
+                        ? cvFile.name
+                        : t("clickToUploadCv")}
                     </span>
+
                   </div>
+
                   <input
                     type="file"
                     required
@@ -397,31 +683,59 @@ export default function CreateNurseAccountPage() {
                     onChange={handleCvChange}
                     className="hidden"
                   />
+
                 </label>
+
               </div>
+
             </section>
 
-            {/* Submit */}
+            {/* ================================================= */}
+            {/* SUBMIT */}
+            {/* ================================================= */}
+
             <button
               type="submit"
               disabled={loading}
               className="w-full py-2.5 bg-[#0f5454] hover:bg-[#0b4242] disabled:opacity-50 text-white text-xs font-medium rounded-xl transition-colors shadow-sm flex items-center justify-center gap-2"
             >
-              {loading ? 'Submitting...' : 'Submit Registration'}
+              {loading
+                ? t("submitting")
+                : t("submitRegistration")}
+
               {!loading && (
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7-7 7M5 12h16" />
+                <svg
+                  className={`w-3.5 h-3.5 ${
+                    dir === "rtl" ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M14 5l7 7-7 7M5 12h16"
+                  />
                 </svg>
               )}
             </button>
 
+            {/* LOGIN */}
             <p className="text-center text-xs text-slate-500">
-              Already have an account?{' '}
-              <a href="/Sign-in" className="font-semibold text-[#0d7c7b] hover:underline">
-                Log In
+              {t("alreadyHaveAccount")}{" "}
+
+              <a
+                href="/Sign-in"
+                className="font-semibold text-[#0d7c7b] hover:underline"
+              >
+                {t("logIn")}
               </a>
             </p>
+
           </form>
+
         </div>
       </div>
     </main>

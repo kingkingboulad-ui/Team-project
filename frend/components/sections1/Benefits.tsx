@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -11,76 +10,73 @@ import {
   Award,
   LayoutGrid,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 const benefits = [
   {
     icon: UserRoundPlus,
-    title: "Create Your Profile",
-    description:
-      "Build a professional profile highlighting your qualifications, specializations, and experience in nursing.",
+    title: "createYourProfile",
+    description: "createYourProfileDescription",
   },
   {
     icon: CalendarDays,
-    title: "Set Your Availability",
-    description:
-      "You're in control. Set your own schedule and only accept requests that fit your availability.",
+    title: "setYourAvailability",
+    description: "setYourAvailabilityDescription",
   },
   {
     icon: HeartPulse,
-    title: "Choose Your Care Types",
-    description:
-      "Specialize in the areas you're most skilled in. Focus on patients you can genuinely help.",
+    title: "chooseYourCareTypes",
+    description: "chooseYourCareTypesDescription",
   },
   {
     icon: MessageSquare,
-    title: "Receive Care Requests",
-    description:
-      "Patients in your area can send you care requests that match your professional specializations.",
+    title: "receiveCareRequests",
+    description: "receiveCareRequestsDescription",
   },
   {
     icon: ShieldCheck,
-    title: "Communicate Securely",
-    description:
-      "Use our encrypted messaging system to coordinate with clients and families safely.",
+    title: "communicateSecurely",
+    description: "communicateSecurelyDescription",
   },
   {
     icon: WalletCards,
-    title: "Track Your Earnings",
-    description:
-      "Transparent, weekly payouts. View your earnings history and manage your finances all in one place.",
+    title: "trackYourEarnings",
+    description: "trackYourEarningsDescription",
   },
   {
     icon: Award,
-    title: "Build Your Reputation",
-    description:
-      "Collect verified reviews from patients. Great care leads to more bookings and higher rates.",
+    title: "buildYourReputation",
+    description: "buildYourReputationDescription",
   },
   {
     icon: LayoutGrid,
-    title: "Manage Bookings",
-    description:
-      "A simple, clean dashboard to manage all your appointments and patient information.",
+    title: "manageBookings",
+    description: "manageBookingsDescription",
   },
 ];
 
 export default function Benefits() {
+  const { t, dir } = useLanguage();
+
   return (
-    <section className="bg-[#F2F8FC] px-4 py-16 sm:px-6 md:py-20 lg:py-24">
+    <section
+      dir={dir}
+      className="bg-[#F2F8FC] px-4 py-16 sm:px-6 md:py-20 lg:py-24"
+    >
       <div className="mx-auto max-w-6xl">
 
         {/* Heading */}
         <div className="mb-10 text-center md:mb-14">
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.15em] text-[#00535B] sm:text-sm">
-            Everything You Need
+            {t("everythingYouNeed")}
           </p>
 
           <h2 className="text-2xl font-bold leading-tight text-[#12343B] sm:text-3xl md:text-4xl">
-            How NurseConnect Supports You
+            {t("howNurseConnectSupportsYou")}
           </h2>
 
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-gray-600 sm:text-base">
-            We built every feature with nurses in mind — from profile
-            management to secure payments.
+            {t("nurseFeaturesDescription")}
           </p>
         </div>
 
@@ -118,12 +114,12 @@ export default function Benefits() {
 
                 {/* Title */}
                 <h3 className="mb-2 text-base font-bold leading-snug text-[#12343B] sm:text-lg">
-                  {benefit.title}
+                  {t(benefit.title)}
                 </h3>
 
                 {/* Description */}
                 <p className="text-sm leading-6 text-gray-500">
-                  {benefit.description}
+                  {t(benefit.description)}
                 </p>
               </div>
             );
@@ -133,3 +129,4 @@ export default function Benefits() {
     </section>
   );
 }
+

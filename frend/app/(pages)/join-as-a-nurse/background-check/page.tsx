@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -8,14 +9,24 @@ import {
   Clock3,
   ShieldCheck,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function BackgroundCheckPage() {
   const router = useRouter();
+  const { t, dir } = useLanguage();
+
+  const verificationItems = [
+    t("backgroundCheck.criminalRecords"),
+    t("backgroundCheck.sexRegistry"),
+    t("backgroundCheck.employmentVerification"),
+    t("backgroundCheck.educationVerification"),
+  ];
 
   return (
-    <div className="min-h-screen bg-[#F1F8FB]">
-
-
+    <div
+      className="min-h-screen bg-[#F1F8FB]"
+      dir={dir}
+    >
       <main className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-[1100px]">
 
@@ -23,15 +34,15 @@ export default function BackgroundCheckPage() {
           <div className="mb-7">
 
             <p className="text-[10px] font-semibold uppercase tracking-wide text-[#6B7E83]">
-              REGISTRATION SUBMITTED
+              {t("backgroundCheck.registrationSubmitted")}
             </p>
 
             <h1 className="mt-1 text-[22px] font-bold text-[#092F35]">
-              Background Check
+              {t("backgroundCheck.title")}
             </h1>
 
             <p className="mt-1 text-[11px] text-[#71858A]">
-              Step 3 of 4 in your onboarding process.
+              {t("backgroundCheck.stepDescription")}
             </p>
 
           </div>
@@ -42,14 +53,26 @@ export default function BackgroundCheckPage() {
             <div className="flex items-center">
 
               {[
-                "PROFILE",
-                "LICENSE",
-                "BACKGROUND",
-                "ACTIVATION",
+                {
+                  key: "profile",
+                  label: t("backgroundCheck.profile"),
+                },
+                {
+                  key: "license",
+                  label: t("backgroundCheck.license"),
+                },
+                {
+                  key: "background",
+                  label: t("backgroundCheck.background"),
+                },
+                {
+                  key: "activation",
+                  label: t("backgroundCheck.activation"),
+                },
               ].map((step, index) => (
 
                 <div
-                  key={step}
+                  key={step.key}
                   className={`flex ${
                     index === 3 ? "" : "flex-1"
                   } items-center`}
@@ -72,7 +95,7 @@ export default function BackgroundCheckPage() {
                     </div>
 
                     <span className="mt-2 text-[9px] font-semibold text-[#456268]">
-                      {step}
+                      {step.label}
                     </span>
 
                   </div>
@@ -106,46 +129,43 @@ export default function BackgroundCheckPage() {
                 <div>
 
                   <p className="text-[10px] font-semibold uppercase text-[#006D77]">
-                    CURRENT STATUS
+                    {t("backgroundCheck.currentStatus")}
                   </p>
 
                   <h2 className="mt-1 text-[19px] font-bold text-[#092F35]">
-                    Background Check
+                    {t("backgroundCheck.title")}
                   </h2>
 
                 </div>
 
                 <span className="flex items-center gap-1 rounded-full bg-[#E8F6F3] px-3 py-1 text-[9px] font-semibold text-[#006D77]">
                   <Clock3 size={11} />
-                  IN PROGRESS
+                  {t("backgroundCheck.inProgress")}
                 </span>
 
               </div>
 
               <p className="mt-5 text-[11px] leading-5 text-[#657B80]">
-                Your background check has been initiated. Our verification
-                team is reviewing the required information before your
-                account can be activated.
+                {t("backgroundCheck.description")}
               </p>
 
               {/* Required Actions */}
               <div className="mt-6 rounded-md border border-[#F0D9D9] bg-[#FFF7F7] p-5">
 
                 <p className="text-[9px] font-bold uppercase text-[#B85C5C]">
-                  REQUIRED ACTIONS
+                  {t("backgroundCheck.requiredActions")}
                 </p>
 
                 <h3 className="mt-2 text-[14px] font-bold text-[#092F35]">
-                  Verification Information
+                  {t("backgroundCheck.verificationInformation")}
                 </h3>
 
                 <p className="mt-1 text-[10px] leading-5 text-[#657B80]">
-                  Please make sure that the information provided during
-                  registration is accurate and complete.
+                  {t("backgroundCheck.informationDescription")}
                 </p>
 
                 <button className="mt-4 rounded-md bg-[#006D77] px-5 py-2 text-[10px] font-semibold text-white">
-                  Review Information
+                  {t("backgroundCheck.reviewInformation")}
                 </button>
 
               </div>
@@ -159,8 +179,7 @@ export default function BackgroundCheckPage() {
                 />
 
                 <p className="text-[10px] leading-5 text-[#31565C]">
-                  Your information is handled securely and is only used for
-                  professional verification purposes.
+                  {t("backgroundCheck.securityMessage")}
                 </p>
 
               </div>
@@ -174,17 +193,12 @@ export default function BackgroundCheckPage() {
               <div className="rounded-lg border border-[#D7E3E5] bg-white p-5 shadow-sm">
 
                 <h3 className="text-[14px] font-bold text-[#092F35]">
-                  Verification Scope
+                  {t("backgroundCheck.verificationScope")}
                 </h3>
 
                 <div className="mt-4 space-y-3">
 
-                  {[
-                    "Criminal Records Search",
-                    "Sex Registry Check",
-                    "Employment Verification",
-                    "Education Verification",
-                  ].map((item) => (
+                  {verificationItems.map((item) => (
 
                     <div
                       key={item}
@@ -210,38 +224,38 @@ export default function BackgroundCheckPage() {
               <div className="rounded-lg border border-[#D7E3E5] bg-white p-5 shadow-sm">
 
                 <h3 className="text-[14px] font-bold text-[#092F35]">
-                  Timeline
+                  {t("backgroundCheck.timeline")}
                 </h3>
 
                 <div className="mt-4 space-y-4">
 
                   <div>
                     <p className="text-[10px] font-semibold text-[#006D77]">
-                      ✓ Request Submitted
+                      ✓ {t("backgroundCheck.requestSubmitted")}
                     </p>
 
                     <p className="mt-1 text-[9px] text-[#8A9B9F]">
-                      Background check started
+                      {t("backgroundCheck.backgroundStarted")}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-[10px] font-semibold text-[#006D77]">
-                      ● Background Review
+                      ● {t("backgroundCheck.backgroundReview")}
                     </p>
 
                     <p className="mt-1 text-[9px] text-[#8A9B9F]">
-                      Currently in progress
+                      {t("backgroundCheck.currentlyInProgress")}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-[10px] font-semibold text-[#A2B0B3]">
-                      ○ Approval
+                      ○ {t("backgroundCheck.approval")}
                     </p>
 
                     <p className="mt-1 text-[9px] text-[#A2B0B3]">
-                      Waiting for verification
+                      {t("backgroundCheck.waitingVerification")}
                     </p>
                   </div>
 
@@ -262,7 +276,8 @@ export default function BackgroundCheckPage() {
               }
               className="rounded-md border border-[#CBDADD] bg-white px-5 py-2 text-[10px] font-semibold text-[#567278]"
             >
-              ← Back
+              {dir === "rtl" ? "→" : "←"}{" "}
+              {t("common.back")}
             </button>
 
             <button
@@ -271,7 +286,8 @@ export default function BackgroundCheckPage() {
               }
               className="rounded-md bg-[#006D77] px-6 py-2.5 text-[10px] font-semibold text-white transition hover:bg-[#00535B]"
             >
-              Continue →
+              {t("common.continue")}{" "}
+              {dir === "rtl" ? "←" : "→"}
             </button>
 
           </div>

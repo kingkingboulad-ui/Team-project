@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -8,6 +7,7 @@ import {
     ChevronDown,
     X,
 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface SearchAndFilterProps {
     searchTerm: string;
@@ -69,12 +69,23 @@ export default function SearchAndFilter({
 }: SearchAndFilterProps) {
     const [showFilters, setShowFilters] = useState(false);
 
+    const { t } = useLanguage();
+
+    const categoryKeys: Record<string, string> = {
+        "All": "all",
+        "Elderly Care": "elderlyCare",
+        "Post-Surgery": "postSurgery",
+        "Medication Support": "medicationSupport",
+        "Daily Assistance": "dailyAssistance",
+        "Disability Support": "disabilitySupport",
+        "Palliative Care": "palliativeCare",
+        "Companionship": "companionship",
+    };
+
     return (
         <div className="w-full">
 
-            {/* =========================
-                SEARCH + FILTER + SORT
-            ========================= */}
+            {/* SEARCH + FILTER + SORT */}
 
             <div className="flex flex-col gap-3 lg:flex-row">
 
@@ -99,7 +110,9 @@ export default function SearchAndFilter({
                         onChange={(e) =>
                             setSearchTerm(e.target.value)
                         }
-                        placeholder="Search by name, specialty or location..."
+                        placeholder={t(
+                            "searchByNameSpecialtyLocation"
+                        )}
                         className="
                             h-14
                             w-full
@@ -151,7 +164,7 @@ export default function SearchAndFilter({
                         strokeWidth={2}
                     />
 
-                    <span>Filters</span>
+                    <span>{t("filters")}</span>
                 </button>
 
                 {/* SORT */}
@@ -183,23 +196,23 @@ export default function SearchAndFilter({
                         "
                     >
                         <option value="top-rated">
-                            Sort: Top Rated
+                            {t("sortTopRated")}
                         </option>
 
                         <option value="price-low">
-                            Price: Low to High
+                            {t("priceLowToHigh")}
                         </option>
 
                         <option value="price-high">
-                            Price: High to Low
+                            {t("priceHighToLow")}
                         </option>
 
                         <option value="name">
-                            Name: A-Z
+                            {t("nameAZ")}
                         </option>
 
                         <option value="experience">
-                            Experience: Most Experienced
+                            {t("mostExperienced")}
                         </option>
                     </select>
 
@@ -217,9 +230,7 @@ export default function SearchAndFilter({
                 </div>
             </div>
 
-            {/* =========================
-                FILTER PANEL
-            ========================= */}
+            {/* FILTER PANEL */}
 
             {showFilters && (
                 <div
@@ -241,12 +252,11 @@ export default function SearchAndFilter({
 
                         <div>
                             <h3 className="text-lg font-semibold text-slate-900">
-                                Filter Nurses
+                                {t("filterNurses")}
                             </h3>
 
                             <p className="mt-1 text-sm text-slate-500">
-                                Refine your search based on
-                                rating, price, experience and location.
+                                {t("refineSearch")}
                             </p>
                         </div>
 
@@ -286,22 +296,18 @@ export default function SearchAndFilter({
                         "
                     >
 
-                        {/* =========================
-                            RATING
-                        ========================= */}
+                        {/* RATING */}
 
                         <div>
                             <label className="mb-2 block text-sm font-medium text-slate-700">
-                                Minimum Rating
+                                {t("minimumRating")}
                             </label>
 
                             <select
                                 value={minRating}
                                 onChange={(e) =>
                                     setMinRating(
-                                        Number(
-                                            e.target.value
-                                        )
+                                        Number(e.target.value)
                                     )
                                 }
                                 className="
@@ -321,7 +327,7 @@ export default function SearchAndFilter({
                                 "
                             >
                                 <option value={0}>
-                                    Any Rating
+                                    {t("anyRating")}
                                 </option>
 
                                 <option value={4}>
@@ -338,13 +344,11 @@ export default function SearchAndFilter({
                             </select>
                         </div>
 
-                        {/* =========================
-                            PRICE
-                        ========================= */}
+                        {/* PRICE */}
 
                         <div>
                             <label className="mb-2 block text-sm font-medium text-slate-700">
-                                Price Range
+                                {t("priceRange")}
                             </label>
 
                             <select
@@ -371,30 +375,28 @@ export default function SearchAndFilter({
                                 "
                             >
                                 <option value="any">
-                                    Any Price
+                                    {t("anyPrice")}
                                 </option>
 
                                 <option value="under50">
-                                    Under $50 / hr
+                                    {t("under50")}
                                 </option>
 
                                 <option value="50-65">
-                                    $50 - $65 / hr
+                                    {t("price50To65")}
                                 </option>
 
                                 <option value="upper65">
-                                    $65+ / hr
+                                    {t("price65Plus")}
                                 </option>
                             </select>
                         </div>
 
-                        {/* =========================
-                            EXPERIENCE
-                        ========================= */}
+                        {/* EXPERIENCE */}
 
                         <div>
                             <label className="mb-2 block text-sm font-medium text-slate-700">
-                                Experience
+                                {t("experience")}
                             </label>
 
                             <select
@@ -421,30 +423,28 @@ export default function SearchAndFilter({
                                 "
                             >
                                 <option value="any">
-                                    Any Experience
+                                    {t("anyExperience")}
                                 </option>
 
                                 <option value="1-3">
-                                    1 - 3 Years
+                                    {t("experience1To3")}
                                 </option>
 
                                 <option value="3-5">
-                                    3 - 5 Years
+                                    {t("experience3To5")}
                                 </option>
 
                                 <option value="5+">
-                                    5+ Years
+                                    {t("experience5Plus")}
                                 </option>
                             </select>
                         </div>
 
-                        {/* =========================
-                            LOCATION
-                        ========================= */}
+                        {/* LOCATION */}
 
                         <div>
                             <label className="mb-2 block text-sm font-medium text-slate-700">
-                                Location
+                                {t("location")}
                             </label>
 
                             <input
@@ -455,7 +455,9 @@ export default function SearchAndFilter({
                                         e.target.value
                                     )
                                 }
-                                placeholder="e.g. Beirut"
+                                placeholder={t(
+                                    "locationExample"
+                                )}
                                 className="
                                     h-11
                                     w-full
@@ -498,15 +500,13 @@ export default function SearchAndFilter({
                                 hover:text-red-600
                             "
                         >
-                            Clear Filters
+                            {t("clearFilters")}
                         </button>
                     </div>
                 </div>
             )}
 
-            {/* =========================
-                CATEGORIES
-            ========================= */}
+            {/* CATEGORIES */}
 
             <div className="mt-5 w-full overflow-x-auto pb-2">
                 <div className="flex min-w-max gap-2">
@@ -540,7 +540,7 @@ export default function SearchAndFilter({
                                     }
                                 `}
                             >
-                                {category}
+                                {t(categoryKeys[category])}
                             </button>
                         );
                     })}

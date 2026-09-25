@@ -9,10 +9,12 @@ import { ArrowRight } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { useBooking } from "../BookingContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function DescribeNeedsPage() {
   const router = useRouter();
   const { data, update } = useBooking();
+  const { t, dir } = useLanguage();
 
   const [notes, setNotes] = useState(data.notes);
   const [infoAgreed, setInfoAgreed] = useState(data.infoAgreed);
@@ -31,9 +33,10 @@ export default function DescribeNeedsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F1F8FB]">
-  
-
+    <div
+      className="min-h-screen bg-[#F1F8FB]"
+      dir={dir}
+    >
       <main className="min-h-[650px] px-4 py-6 sm:px-6 sm:py-8">
 
         {/* Steps */}
@@ -86,12 +89,11 @@ export default function DescribeNeedsPage() {
 
           {/* Title */}
           <h1 className="text-[20px] font-bold text-[#092F35] sm:text-[22px]">
-            Describe your needs
+            {t("describeNeeds.title")}
           </h1>
 
           <p className="mt-1 max-w-[520px] text-[11px] leading-5 text-gray-600 sm:text-[12px]">
-            Please provide details about the care needed so we can
-            match you with the right nurse.
+            {t("describeNeeds.description")}
           </p>
 
           {/* Textarea */}
@@ -99,7 +101,7 @@ export default function DescribeNeedsPage() {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={5}
-            placeholder="E.g. my mother is 82 years old and has difficulty walking. She needs help with daily medication management, getting around the house safely, and companionship a few times a week..."
+            placeholder={t("describeNeeds.placeholder")}
             className="mt-5 min-h-[140px] w-full resize-y rounded-lg border border-gray-200 px-3 py-3 text-xs leading-5 text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-[#00535B] focus:ring-2 focus:ring-[#00535B]/10 sm:min-h-[150px] sm:text-sm"
           />
 
@@ -113,8 +115,7 @@ export default function DescribeNeedsPage() {
             />
 
             <span>
-              I understand my information will be shared with
-              matched nurses per our Privacy Policy.
+              {t("describeNeeds.privacy")}
             </span>
           </label>
 
@@ -129,7 +130,7 @@ export default function DescribeNeedsPage() {
               href="/book/when-where"
               className="flex h-10 w-full items-center justify-center gap-1 rounded-md border border-[#D5E0E2] bg-white px-4 text-[10px] font-medium text-[#31565C] transition hover:bg-gray-50 sm:h-auto sm:w-auto sm:py-2"
             >
-              ← Back
+              {dir === "rtl" ? "→" : "←"} {t("common.back")}
             </Link>
 
             {/* Continue */}
@@ -143,14 +144,15 @@ export default function DescribeNeedsPage() {
                   : "cursor-not-allowed bg-gray-300 text-gray-500"
               }`}
             >
-              Continue
-              <ArrowRight size={12} />
+              {t("common.continue")}
+              <ArrowRight
+                size={12}
+                className={dir === "rtl" ? "rotate-180" : ""}
+              />
             </button>
           </div>
         </section>
       </main>
-
-
     </div>
   );
 }
