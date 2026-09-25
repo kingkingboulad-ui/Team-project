@@ -10,9 +10,9 @@ import dashboardRoutes from "./router/dashboardRoutes.js";
 import bookingRoutes from "./router/bookingRoutes.js";
 // import upload from '../middleware/uploadMiddleware.js';
 import aiCareRoutes from './router/aiCareRoutes.js';
+import adminRoutes from "./router/adminRoutes.js";
 import nurseSearchRoutes from './router/nurseSearchRoutes.js';
 import cors from "cors";
-
 dotenv.config();
 
 const app = express();
@@ -33,6 +33,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", bookingRoutes);
 app.use('/api/ai', aiCareRoutes);
+app.use("/api/admin", adminRoutes);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

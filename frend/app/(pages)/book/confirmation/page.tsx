@@ -91,7 +91,7 @@ export default function ConfirmationPage() {
 
             {/* Dashboard */}
             <Link
-              href="/dashboard"
+              href="/patient-profile"
               className="flex h-10 w-full items-center justify-center rounded-lg bg-[#006D77] px-4 text-[11px] font-semibold text-white transition hover:bg-[#00535B] sm:h-auto sm:flex-1 sm:py-2.5 sm:text-sm"
             >
               View My Dashboard

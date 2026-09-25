@@ -1,7 +1,7 @@
 // BookingContext.tsx
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 export type BookingData = {
   preferredNurseId: number | null;
@@ -49,47 +49,45 @@ type BookingContextValue = {
 const BookingContext = createContext<BookingContextValue | null>(null);
 
 export function BookingProvider({ children }: { children: React.ReactNode }) {
-  // نقرأ مباشرة من sessionStorage في الحالة المبدئية إذا كنا في المتصفح لتجنب وميض الـ null
-  const [data, setData] = useState<BookingData>(() => {
-    if (typeof window !== "undefined") {
+  const [data, setData] = useState<BookingData>(defaultData);
+  const [hydrated, setHydrated] = useState(false);
+
+  // استرجاع البيانات المخزنة بعد اكتمال التحميل على العميل (يمنع الـ Hydration Mismatch)
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        setData(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setHydrated(true);
+    }
+  }, []);
+
+  // حفظ التعديلات في sessionStorage عند تغير البيانات
+  useEffect(() => {
+    if (hydrated) {
       try {
-        const saved = sessionStorage.getItem(STORAGE_KEY);
-        if (saved) return JSON.parse(saved);
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       } catch (e) {
         console.error(e);
       }
     }
-    return defaultData;
-  });
-
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    if (hydrated) {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
   }, [data, hydrated]);
 
-  function update(patch: Partial<BookingData>) {
-    setData((prev) => {
-      const updated = { ...prev, ...patch };
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      }
-      return updated;
-    });
-  }
+  // تثبيت مرجع الدالة لمنع الـ Infinite Loops في الـ useEffect للمستهلكين
+  const update = useCallback((patch: Partial<BookingData>) => {
+    setData((prev) => ({ ...prev, ...patch }));
+  }, []);
 
-  function reset() {
+  const reset = useCallback(() => {
     setData(defaultData);
     if (typeof window !== "undefined") {
       sessionStorage.removeItem(STORAGE_KEY);
     }
-  }
+  }, []);
 
   return (
     <BookingContext.Provider value={{ data, update, reset, isHydrated: hydrated }}>

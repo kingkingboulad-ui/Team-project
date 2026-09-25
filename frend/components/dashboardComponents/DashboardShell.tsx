@@ -226,7 +226,7 @@ export default function DashboardShell({ children }: ShellProps) {
               <p className="px-3 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">System</p>
 
               <Link
-                href="/admin/settings"
+                href="/admin/Settings"
                 onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${pathname.toLowerCase().startsWith('/admin/settings')
                     ? 'bg-[#0d6e6e] text-white shadow-sm'

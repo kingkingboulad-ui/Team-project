@@ -80,37 +80,37 @@ export default function BookPage() {
   }, [data.careForId]);
 
   // Handle nurse ID from URL or previously saved data
-  useEffect(() => {
-    if (!isHydrated) return;
 
-    const nurseIdParam = searchParams.get("nurseId");
+useEffect(() => {
+  if (!isHydrated) return;
 
-    if (nurseIdParam) {
-      const numericId = Number(nurseIdParam);
+  const nurseIdParam = searchParams.get("nurseId");
 
-      if (!isNaN(numericId)) {
+  if (nurseIdParam) {
+    const numericId = Number(nurseIdParam);
+
+    if (!isNaN(numericId)) {
+      // فحص يمنع التحديث إذا كانت الممرضة هي نفسها المخزنة مسبقاً
+      if (data.preferredNurseId !== numericId) {
         const nurse = getNurseById(numericId);
-
         update({
           preferredNurseId: numericId,
-          preferredNurseName: nurse
-            ? nurse.name
-            : `Nurse #${numericId}`,
+          preferredNurseName: nurse ? nurse.name : `Nurse #${numericId}`,
         });
       }
-    } else if (!data.preferredNurseId) {
-      alert(t("selectNurseToContinue"));
-      router.push("/find-a-nurses");
     }
-  }, [
-    searchParams,
-    isHydrated,
-    data.preferredNurseId,
-    router,
-    t,
-    update,
-  ]);
-
+  } else if (!data.preferredNurseId) {
+    alert(t("selectNurseToContinue"));
+    router.push("/find-a-nurses");
+  }
+}, [
+  searchParams,
+  isHydrated,
+  data.preferredNurseId,
+  router,
+  t,
+  // لا داعي لإضافة update هنا إذا كانت دالة مستقرة، أو غلفها بـ useCallback داخل الـ Context
+]);
   // Continue to Type of Care page
   const handleContinue = () => {
     if (!selected) return;

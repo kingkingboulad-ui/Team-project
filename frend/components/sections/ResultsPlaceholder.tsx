@@ -335,7 +335,7 @@ export default function ResultsPlaceholder({
 
           {/* Book Appointment */}
           <Link
-            href={`/book-appointment?nurseId=${result.nurse.id}`}
+            href={`/book?nurseId=${result.nurse.id}`}
             className="flex-1 py-2 px-3 bg-[#0d7c7b] hover:bg-[#095f5e] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-sm"
           >
             <span>{t("bookAppointment")}</span>

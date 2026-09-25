@@ -211,7 +211,7 @@ export default function ActivatedPage() {
               </div>
 
               <button
-                onClick={() => router.push("/nurses")}
+                onClick={() => router.push("/profile")}
                 className="mt-5 w-full rounded-md bg-white py-2.5 text-[10px] font-bold text-[#006D77]"
               >
                 {t("activated.goToProfile")}{" "}
@@ -226,7 +226,7 @@ export default function ActivatedPage() {
           <div className="mt-7 flex justify-center">
 
             <button
-              onClick={() => router.push("/nurses")}
+              onClick={() => router.push("/find-a-nurses")}
               className="rounded-md bg-[#006D77] px-7 py-3 text-[10px] font-semibold uppercase tracking-wide text-white transition hover:bg-[#00535B]"
             >
               {t("activated.startFindingRequests")}{" "}
