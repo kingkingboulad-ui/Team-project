@@ -16,7 +16,26 @@ interface LanguageContextType {
   t: (key: string) => string;
 }
 
-const translations: Record<Lang, Record<string, any>> = {
+/*
+|--------------------------------------------------------------------------
+| TRANSLATIONS
+|--------------------------------------------------------------------------
+| Keep your en and ar translations here.
+|
+| IMPORTANT:
+| Use flat keys:
+|
+| "common.back": "Back"
+|
+| NOT:
+|
+| common: {
+|   back: "Back"
+| }
+|
+*/
+
+const translations: Record<Lang, Record<string, string>> = {
   // =========================================================
   // ENGLISH
   // =========================================================
@@ -24,6 +43,7 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // NAVBAR
     // =======================================================
+
     home: "Home",
     nurseConnect: "NurseConnect",
     findNurse: "Find a Nurse",
@@ -37,16 +57,19 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // HERO
     // =======================================================
+
     trustedByFamilies: "Trusted by 10,000+ families",
 
     trustedCareTitle: "Trusted Care,",
     trustedCareHighlight: "When You Need It.",
 
     professionalNursingCare: "Professional Nursing Care",
+
     expertNursesTitle: "Expert Nurses,",
     rightAtHome: "Right at Home.",
 
     careYouCanTrustEyebrow: "Care You Can Trust",
+
     yourHealthTitle: "Your Health,",
     ourPriority: "Our Priority.",
 
@@ -81,8 +104,8 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // HERO SEARCH
     // =======================================================
-    findYourIdealCaregiver:
-      "Find your ideal caregiver",
+
+    findYourIdealCaregiver: "Find your ideal caregiver",
 
     chooseCarePreferences:
       "Choose your care preferences and find the right professional for you.",
@@ -96,6 +119,7 @@ const translations: Record<Lang, Record<string, any>> = {
     fullSupport247: "24/7 Full Support",
 
     location: "Location",
+
     locationPlaceholder:
       "e.g. San Jose, Oakland, Tripoli...",
 
@@ -104,6 +128,7 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // CARE CATEGORIES
     // =======================================================
+
     all: "All",
     elderlyCare: "Elderly Care",
     postSurgery: "Post-Surgery",
@@ -116,13 +141,13 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // AI CARE ASSISTANT
     // =======================================================
+
     notSureWhatCareYouNeed:
       "Not sure what care you need?",
 
     letOurAI: "Let our",
 
-    aiCareAssistant:
-      "AI Care Assistant",
+    aiCareAssistant: "AI Care Assistant",
 
     analyzeSymptoms:
       "analyze your symptoms and match you with the right nurse.",
@@ -130,13 +155,13 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // HOW IT WORKS
     // =======================================================
+
     simpleProcess: "SIMPLE PROCESS",
 
     howNurseConnectWorks:
       "How NurseConnect Works",
 
-    tellUsYourNeeds:
-      "Tell Us Your Needs",
+    tellUsYourNeeds: "Tell Us Your Needs",
 
     tellUsYourNeedsDescription:
       "Share your care requirements, schedule, and location so we understand exactly what your family needs.",
@@ -147,17 +172,16 @@ const translations: Record<Lang, Record<string, any>> = {
     getMatchedDescription:
       "Our AI reviews vetted, licensed nurses nearby and matches you with the best fit for your care and budget.",
 
-    bookAndRelax:
-      "Book & Relax",
+    bookAndRelax: "Book & Relax",
 
     bookAndRelaxDescription:
       "Confirm your booking, message your nurse directly, and track every visit from your NurseConnect dashboard.",
 
     // =======================================================
-    // AI MATCH SECTION
+    // AI MATCH
     // =======================================================
-    poweredByAI:
-      "Powered by AI",
+
+    poweredByAI: "Powered by AI",
 
     letAIHelp:
       "Let AI Help You Find the Right Care",
@@ -165,11 +189,9 @@ const translations: Record<Lang, Record<string, any>> = {
     aiMatchingDescription:
       "Answer a few quick questions about your care needs and our matching engine will surface licensed nurses nearby who fit your schedule, budget, and specialty requirements.",
 
-    tryAIMatching:
-      "Try AI Matching",
+    tryAIMatching: "Try AI Matching",
 
-    aiMatchSummary:
-      "AI Match Summary",
+    aiMatchSummary: "AI Match Summary",
 
     aiMatchSummaryDescription:
       "Based on your answers, here's a caregiver profile tailored to your family's needs.",
@@ -180,54 +202,42 @@ const translations: Record<Lang, Record<string, any>> = {
     postSurgicalRecovery:
       "Post-Surgical Recovery",
 
-    visitFrequency:
-      "Visit Frequency",
+    visitFrequency: "Visit Frequency",
 
     dailyMorningsPreferred:
       "Daily, Mornings Preferred",
 
-    matchesNearby:
-      "Matches Nearby",
+    matchesNearby: "Matches Nearby",
 
-    nursesAvailable:
-      "12 Nurses Available",
+    nursesAvailable: "12 Nurses Available",
 
     estimatedResponse:
       "Estimated Response",
 
-    underTwoHours:
-      "Under 2 hours",
+    underTwoHours: "Under 2 hours",
 
-    viewMyMatches:
-      "View My Matches",
+    viewMyMatches: "View My Matches",
 
     // =======================================================
-    // MEET OUR NURSES
+    // NURSES
     // =======================================================
-    ourTeam:
-      "Our Team",
 
-    meetOurNurses:
-      "Meet Our Nurses",
-
-    viewAllNurses:
-      "View All Nurses →",
+    ourTeam: "Our Team",
+    meetOurNurses: "Meet Our Nurses",
+    viewAllNurses: "View All Nurses →",
 
     noNursesAvailable:
       "No registered nurses available at the moment.",
 
-    generalHomeCare:
-      "General / Home Care",
+    generalHomeCare: "General / Home Care",
 
-    available:
-      "Available",
-
-    bookNow:
-      "Book Now",
+    available: "Available",
+    bookNow: "Book Now",
 
     // =======================================================
     // CARE YOU CAN TRUST
     // =======================================================
+
     whyFamiliesChooseUs:
       "Why Families Choose Us",
 
@@ -243,8 +253,7 @@ const translations: Record<Lang, Record<string, any>> = {
     backgroundVerifiedDescription:
       "Every nurse completes license verification, background checks, and reference screening before joining.",
 
-    ratingsReviews:
-      "Ratings & Reviews",
+    ratingsReviews: "Ratings & Reviews",
 
     ratingsReviewsDescription:
       "Real feedback from families helps you choose a caregiver with confidence, every time.",
@@ -276,6 +285,7 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // CTA
     // =======================================================
+
     readyToFindTrustedCare:
       "Ready to Find Trusted Care?",
 
@@ -291,8 +301,8 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // READY TO START
     // =======================================================
-    readyToStart:
-      "Ready to Start?",
+
+    readyToStart: "Ready to Start?",
 
     readyToStartDescription:
       "Join thousands of nurses who have built rewarding careers through NurseConnect.",
@@ -303,56 +313,31 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // FOOTER
     // =======================================================
+
     trustedByThousands:
       "Trusted by Thousands of Families",
 
     footerDescription:
       "Connecting families with trusted, licensed nurses for compassionate in-home care — whenever and wherever it's needed.",
 
-    forPatients:
-      "FOR PATIENTS",
+    forPatients: "FOR PATIENTS",
+    requestCare: "Request Care",
+    howItWorks: "How It Works",
 
-    requestCare:
-      "Request Care",
+    forNursesFooter: "FOR NURSES",
+    nurseDashboard: "Nurse Dashboard",
+    howToApply: "How to Apply",
+    nurseResources: "Nurse Resources",
 
-    howItWorks:
-      "How It Works",
+    company: "COMPANY",
+    aboutUs: "About Us",
+    safetyTrust: "Safety & Trust",
+    privacyPolicy: "Privacy Policy",
+    termsOfService: "Terms of Service",
+    contactUs: "Contact Us",
 
-    forNursesFooter:
-      "FOR NURSES",
-
-    nurseDashboard:
-      "Nurse Dashboard",
-
-    howToApply:
-      "How to Apply",
-
-    nurseResources:
-      "Nurse Resources",
-
-    company:
-      "COMPANY",
-
-    aboutUs:
-      "About Us",
-
-    safetyTrust:
-      "Safety & Trust",
-
-    privacyPolicy:
-      "Privacy Policy",
-
-    termsOfService:
-      "Terms of Service",
-
-    contactUs:
-      "Contact Us",
-
-    emergencySupport:
-      "Emergency Support",
-
-    available247:
-      "AVAILABLE 24/7",
+    emergencySupport: "Emergency Support",
+    available247: "AVAILABLE 24/7",
 
     allRightsReserved:
       "All rights reserved.",
@@ -360,53 +345,19 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // GENERAL
     // =======================================================
+
     Find_your_ideal_caregiver:
       "Find your ideal caregiver",
 
-    hourlyRate:
-      "Hourly Rate",
-
-    experience:
-      "Experience",
-
-    rating:
-      "Rating",
+    hourlyRate: "Hourly Rate",
+    experience: "Experience",
+    rating: "Rating",
 
     // =======================================================
-    // TESTIMONIALS
+    // FIND NURSE
     // =======================================================
-    testimonialEmilyQuote:
-      "NurseConnect made it so easy to find a caregiver for my mother. The AI matching found someone with dementia care experience within a day.",
 
-    testimonialEmilyName:
-      "Emily Paul",
-
-    testimonialEmilyRole:
-      "Daughter & Caregiver",
-
-    testimonialDanielQuote:
-      "As a new parent recovering from surgery, having a vetted nurse show up on time, every time, gave our whole family peace of mind.",
-
-    testimonialDanielName:
-      "Daniel Martin",
-
-    testimonialDanielRole:
-      "New Parent",
-
-    testimonialJohnQuote:
-      "The verification process is thorough and it shows. Our nurse was professional, warm, and genuinely invested in my father's recovery.",
-
-    testimonialJohnName:
-      "John Roberts",
-
-    testimonialJohnRole:
-      "Son & Care Coordinator",
-
-    // =======================================================
-    // FIND NURSE PAGE
-    // =======================================================
-    findANurse:
-      "Find a Nurse",
+    findANurse: "Find a Nurse",
 
     findNurseDescription:
       "Find qualified nurses who can provide the care you need.",
@@ -414,116 +365,63 @@ const translations: Record<Lang, Record<string, any>> = {
     findQualifiedNurses:
       "Find qualified nurses who can provide the care you need.",
 
-    searchNurses:
-      "Search nurses...",
+    searchNurses: "Search nurses...",
 
     searchByNameSpecialtyLocation:
       "Search by name, specialty or location...",
 
-    sort:
-      "Sort",
+    sort: "Sort",
+    sortBy: "Sort By",
 
-    sortBy:
-      "Sort By",
+    topRated: "Top Rated",
+    sortTopRated: "Sort: Top Rated",
 
-    topRated:
-      "Top Rated",
+    priceLowToHigh: "Price: Low to High",
+    priceHighToLow: "Price: High to Low",
 
-    sortTopRated:
-      "Sort: Top Rated",
+    nameAZ: "Name: A-Z",
+    mostExperienced: "Most Experienced",
 
-    priceLowToHigh:
-      "Price: Low to High",
-
-    priceHighToLow:
-      "Price: High to Low",
-
-    nameAZ:
-      "Name: A-Z",
-
-    mostExperienced:
-      "Most Experienced",
-
-    filters:
-      "Filters",
-
-    filterNurses:
-      "Filter Nurses",
+    filters: "Filters",
+    filterNurses: "Filter Nurses",
 
     refineSearch:
       "Refine your search based on rating, price, experience and location.",
 
-    clearFilters:
-      "Clear Filters",
+    clearFilters: "Clear Filters",
 
-    minRating:
-      "Minimum Rating",
+    minRating: "Minimum Rating",
+    minimumRating: "Minimum Rating",
+    anyRating: "Any Rating",
 
-    minimumRating:
-      "Minimum Rating",
+    priceRange: "Price Range",
+    anyPrice: "Any Price",
 
-    anyRating:
-      "Any Rating",
+    under50: "Under $50 / hr",
+    price50To65: "$50 - $65 / hr",
+    above65: "Above $65",
+    price65Plus: "$65+ / hr",
 
-    priceRange:
-      "Price Range",
+    experienceRange: "Experience",
+    anyExperience: "Any Experience",
 
-    anyPrice:
-      "Any Price",
+    oneToThreeYears: "1 - 3 years",
+    experience1To3: "1 - 3 Years",
 
-    under50:
-      "Under $50 / hr",
+    threeToFiveYears: "3 - 5 years",
+    experience3To5: "3 - 5 Years",
 
-    price50To65:
-      "$50 - $65 / hr",
+    fivePlusYears: "5+ years",
+    experience5Plus: "5+ Years",
 
-    above65:
-      "Above $65",
+    locationFilter: "Location",
+    locationExample: "e.g. Beirut",
 
-    price65Plus:
-      "$65+ / hr",
+    results: "Results",
+    nursesFound: "nurses found",
 
-    experienceRange:
-      "Experience",
-
-    anyExperience:
-      "Any Experience",
-
-    oneToThreeYears:
-      "1 - 3 years",
-
-    experience1To3:
-      "1 - 3 Years",
-
-    threeToFiveYears:
-      "3 - 5 years",
-
-    experience3To5:
-      "3 - 5 Years",
-
-    fivePlusYears:
-      "5+ years",
-
-    experience5Plus:
-      "5+ Years",
-
-    locationFilter:
-      "Location",
-
-    locationExample:
-      "e.g. Beirut",
-
-    results:
-      "Results",
-
-    nursesFound:
-      "nurses found",
-
-    rate:
-      "Rate",
-
-    rateNurse:
-      "Rate Nurse",
+    rate: "Rate",
+    rateNurse: "Rate Nurse",
 
     outOfFiveStars:
       "out of 5 stars",
@@ -531,17 +429,13 @@ const translations: Record<Lang, Record<string, any>> = {
     feedbackReview:
       "Feedback / Review",
 
-    optional:
-      "Optional",
+    optional: "Optional",
 
     writeExperience:
       "Write your experience with this nurse...",
 
-    cancel:
-      "Cancel",
-
-    submitRating:
-      "Submit Rating",
+    cancel: "Cancel",
+    submitRating: "Submit Rating",
 
     loadingNurses:
       "Loading nurses...",
@@ -558,11 +452,8 @@ const translations: Record<Lang, Record<string, any>> = {
     tryAnotherSearch:
       "Try another name, specialty, location, category or filter.",
 
-    previous:
-      "Previous",
-
-    next:
-      "Next",
+    previous: "Previous",
+    next: "Next",
 
     ratingSubmitted:
       "Your rating has been submitted successfully.",
@@ -570,12 +461,12 @@ const translations: Record<Lang, Record<string, any>> = {
     failedSubmitRating:
       "Failed to submit rating. Please make sure you are logged in.",
 
-    nurse:
-      "Nurse",
+    nurse: "Nurse",
 
     // =======================================================
     // NURSE CARD
     // =======================================================
+
     nurseProfessional:
       "Nurse Professional",
 
@@ -591,548 +482,40 @@ const translations: Record<Lang, Record<string, any>> = {
     experienceNotSpecified:
       "Experience not specified",
 
-    profile:
-      "Profile",
-
-    book:
-      "Book",
+    profile: "Profile",
+    book: "Book",
 
     // =======================================================
-    // FOR NURSES - HERO
+    // AUTH / PROFILE
     // =======================================================
-    joinOurNursingCommunity:
-      "Join Our Nursing Community",
 
-    makeADifference:
-      "Make a Difference.",
+    patient: "Patient",
+    admin: "Admin",
 
-    careForOthers:
-      "Care for Others.",
+    myProfile: "My Profile",
+    nurseWorkspace: "Nurse Workspace",
+    adminDashboard: "Admin Dashboard",
+    systemSettings: "System Settings",
+    signOut: "Sign Out",
+    signedInAs: "Signed in as",
 
-    connectWithPatients:
-      "Connect with patients who need professional nursing care and make a real difference in their lives.",
-
-    professionalNursingOpportunities:
-      "Professional Nursing Opportunities",
-
-    yourSkills:
-      "Your Skills,",
-
-    theirCare:
-      "Their Care.",
-
-    findMeaningfulOpportunities:
-      "Find meaningful nursing opportunities and provide compassionate care to patients and families.",
-
-    growWithNurseConnect:
-      "Grow With NurseConnect",
-
-    careWithPurpose:
-      "Care With Purpose.",
-
-    growYourCareer:
-      "Grow Your Career.",
-
-    buildYourNursingCareer:
-      "Build your nursing career while helping people get the quality care they deserve.",
-
-    findOpportunities:
-      "Find Opportunities",
-
-    families:
-      "Families",
-
-    nurses:
-      "Nurses",
-
-    satisfaction:
-      "Satisfaction",
-
-    professionalNurse:
-      "Professional nurse",
-
-    verifiedNurse:
-      "Verified Nurse",
-
-    professionalCaregiver:
-      "Professional Caregiver",
-
-    newOpportunity:
-      "New Opportunity",
-
-    findYourNextPatient:
-      "Find your next patient",
-
-    // =======================================================
-    // FOR NURSES - HOW IT WORKS
-    // =======================================================
-    shareCareRequirements:
-      "Share your care requirements, schedule, and location so we understand exactly what your family needs.",
-
-    aiReviewsNurses:
-      "Our AI reviews vetted, licensed nurses nearby and matches you with the best fit for your care and budget.",
-
-    confirmYourBooking:
-      "Confirm your booking, message your nurse directly, and track every visit from your NurseConnect dashboard.",
-
-    everyNurseCompletes:
-      "Every nurse completes license verification, background checks, and reference screening before joining.",
-
-    ratingsAndReviews:
-      "Ratings & Reviews",
-
-    realFeedback:
-      "Real feedback from families helps you choose a caregiver with confidence, every time.",
-
-    bookOneOffVisits:
-      "Book one-off visits, recurring care, or 24/7 support — whatever fits your family's routine.",
-
-    coordinateDirectly:
-      "Coordinate directly with your nurse through encrypted, in-app messaging at every step.",
-
-    transparentPricing:
-      "Transparent pricing and protected payments, released only once care is confirmed.",
-
-    licensedAndInsured:
-      "Licensed & Insured",
-
-    allCaregivers:
-      "All caregivers are licensed professionals covered by liability insurance for your peace of mind.",
-
-    // =======================================================
-    // FOR NURSES - BENEFITS
-    // =======================================================
-    everythingYouNeed:
-      "Everything You Need",
-
-    howNurseConnectSupportsYou:
-      "How NurseConnect Supports You",
-
-    nurseFeaturesDescription:
-      "We built every feature with nurses in mind — from profile management to secure payments.",
-
-    createYourProfile:
-      "Create Your Profile",
-
-    createYourProfileDescription:
-      "Build a professional profile highlighting your qualifications, specializations, and experience in nursing.",
-
-    setYourAvailability:
-      "Set Your Availability",
-
-    setYourAvailabilityDescription:
-      "You're in control. Set your own schedule and only accept requests that fit your availability.",
-
-    chooseYourCareTypes:
-      "Choose Your Care Types",
-
-    chooseYourCareTypesDescription:
-      "Specialize in the areas you're most skilled in. Focus on patients you can genuinely help.",
-
-    receiveCareRequests:
-      "Receive Care Requests",
-
-    receiveCareRequestsDescription:
-      "Patients in your area can send you care requests that match your professional specializations.",
-
-    communicateSecurely:
-      "Communicate Securely",
-
-    communicateSecurelyDescription:
-      "Use our encrypted messaging system to coordinate with clients and families safely.",
-
-    trackYourEarnings:
-      "Track Your Earnings",
-
-    trackYourEarningsDescription:
-      "Transparent, weekly payouts. View your earnings history and manage your finances all in one place.",
-
-    buildYourReputation:
-      "Build Your Reputation",
-
-    buildYourReputationDescription:
-      "Collect verified reviews from patients. Great care leads to more bookings and higher rates.",
-
-    manageBookings:
-      "Manage Bookings",
-
-    manageBookingsDescription:
-      "A simple, clean dashboard to manage all your appointments and patient information.",
-
-    // =======================================================
-    // FOR NURSES - HOW TO JOIN
-    // =======================================================
-    howToJoin:
-      "How to Join",
-
-    gettingStarted:
-      "Getting started takes less than 10 minutes.",
-
-    createAccount:
-      "Create Account",
-
-    createAccountDescription:
-      "Sign up with your professional details.",
-
-    buildProfile:
-      "Build Profile",
-
-    buildProfileDescription:
-      "Add your qualifications, specializations, and photo.",
-
-    passVerification:
-      "Pass Verification",
-
-    passVerificationDescription:
-      "We verify your license and run a background check.",
-
-    startConnecting:
-      "Start Connecting",
-
-    startConnectingDescription:
-      "Go live and start receiving care requests.",
-
-    // =======================================================
-    // NURSE TESTIMONIAL
-    // =======================================================
-    nurseTestimonial:
-      "Nurse Testimonial",
-
-    nurseTestimonialQuote:
-      "NurseConnect gave me the freedom to do the work I love on my own terms. I set my own schedule, choose my patients, and earn more than I ever did at a clinic.",
-
-    nurseExperienceLocation:
-      "12 years experience • Oakland, CA",
-
-    // =======================================================
-    // AI PAGE
-    // =======================================================
-    aiCareAssistantDescription:
-      "Describe your situation in plain language and I will recommend the right type of care and nurse profile for you.",
-
-    describeTheSituation:
-      "Describe the Situation",
-
-    startVoiceInput:
-      "Start Voice Input",
-
-    stopRecording:
-      "Stop Recording",
-
-    listening:
-      "Listening...",
-
-    voiceInput:
-      "Voice Input",
-
-    careAssistantPlaceholder:
-      "Type or speak: e.g. My mother is 75 and needs help with medication, walking, and daily monitoring after hip surgery...",
-
-    toAnalyze:
-      "to analyze",
-
-    analyzing:
-      "Analyzing...",
-
-    analyzeNeeds:
-      "Analyze Needs",
-
-    tryAnExample:
-      "Try an Example",
-
-    microphonePermissionDenied:
-      "Microphone permission denied. Please allow access in browser settings.",
-
-    voiceCaptureError:
-      "Voice capture error occurred. Please try speaking again.",
-
-    speechRecognitionNotSupported:
-      "Your browser does not support voice speech recognition. Please use Google Chrome or Microsoft Edge.",
-
-    aiClinicalTriage:
-      "AI Clinical Triage in Progress...",
-
-    aiClinicalTriageDescription:
-      "Scanning symptoms, assessing risk parameters, and matching specialized clinical profiles.",
-
-    aiResultsWillAppearHere:
-      "Your AI Results Will Appear Here",
-
-    aiResultsDescription:
-      'Describe your care situation on the left and click "Analyze Needs" to receive personalized recommendations.',
-
-    urgentMedicalAttention:
-      "Urgent Medical Attention Required (Red Flag Detected)",
-
-    urgentMedicalAttentionDescription:
-      "The symptoms described suggest potential acute instability. Contact emergency medical services immediately or proceed to the nearest emergency department without delaying for home care.",
-
-    careProtocol:
-      "Care Protocol",
-
-    priority:
-      "Priority",
-
-    criticalParametersToMonitor:
-      "Critical Parameters to Monitor",
-
-    immediateActionSteps:
-      "Immediate Action Steps",
-
-    primaryRecommendedNurse:
-      "Primary Recommended Nurse",
-
-    viewNurseCV:
-      "View Nurse CV",
-
-    noCVAvailable:
-      "No CV available",
-
-    bookAppointment:
-      "Book Appointment",
-
-    secondaryAlternativeMatch:
-      "Secondary Alternative Match",
-
-    viewAlternateCV:
-      "View Alternate CV",
-
-    selectBackup:
-      "Select Backup",
-
-    cv:
-      "CV",
-
-    officialRegisteredCredentials:
-      "Official Registered Credentials",
-
-    open:
-      "Open",
-
-    close:
-      "Close",
-
-    nurseCV:
-      "Nurse CV",
-
-    // =======================================================
-    // NURSE PROFILE / DASHBOARD
-    // =======================================================
-    "nurse.registeredNurse":
-      "Registered Nurse",
-
-    "nurse.loadingData":
-      "Loading nurse data...",
-
-    "nurse.profileNotAccessible":
-      "Profile Not Accessible",
-
-    "nurse.pleaseLogin":
-      "Please log in.",
-
-    "nurse.signIn":
-      "Sign In",
-
-    "nurse.applicationUnderReview":
-      "Nurse Application Under Review",
-
-    "nurse.waitingApproval":
-      "Your profile is currently waiting for admin approval.",
-
-    "nurse.cancel":
-      "Cancel",
-
-    "nurse.editProfile":
-      "Edit Profile",
-
-    "nurse.change":
-      "Change",
-
-    "nurse.uploadNewPhoto":
-      "Upload new profile photo",
-
-    "nurse.viewMyCV":
-      "View My CV",
-
-    "nurse.hourlyRate":
-      "Hourly Rate",
-
-    "nurse.totalBookings":
-      "Total Bookings",
-
-    "nurse.experience":
-      "Experience",
-
-    "nurse.years":
-      "yrs",
-
-    "nurse.reviews":
-      "Reviews",
-
-    "nurse.curriculumVitae":
-      "Curriculum Vitae (CV)",
-
-    "nurse.verifiedSubmitted":
-      "Verified and submitted to the administration",
-
-    "nurse.noCV":
-      "No CV uploaded yet",
-
-    "nurse.previewCV":
-      "Preview CV",
-
-    "nurse.openNewTab":
-      "Open in new tab",
-
-    "nurse.notProvided":
-      "Not Provided",
-
-    "nurse.editProfileDetails":
-      "Edit Profile Details",
-
-    "nurse.updateQualifications":
-      "Update your clinical qualifications, contact details and documents.",
-
-    "nurse.profileImage":
-      "Profile Image",
-
-    "nurse.replaceCV":
-      "Replace CV / Resume",
-
-    "nurse.uploadPDFImage":
-      "Click to upload PDF/Image",
-
-    "nurse.specialization":
-      "Specialization",
-
-    "nurse.experienceExample":
-      "e.g. 5 yrs, 1-3",
-
-    "nurse.rate":
-      "Rate ($ / hr)",
-
-    "nurse.locationCity":
-      "Location / City",
-
-    "nurse.phoneNumber":
-      "Phone Number",
-
-    "nurse.saveAllChanges":
-      "Save All Changes",
-
-    "nurse.allPatientBookings":
-      "All Patient Bookings",
-
-    "nurse.manageBookings":
-      "Manage, update, and remove incoming care requests.",
-
-    "nurse.total":
-      "Total",
-
-    "nurse.noBookings":
-      "No bookings assigned to you yet.",
-
-    "nurse.request":
-      "Request",
-
-    "nurse.bookedOn":
-      "Booked on",
-
-    "nurse.careType":
-      "Care Type",
-
-    "nurse.for":
-      "For",
-
-    "nurse.dateDuration":
-      "Date & Duration",
-
-    "nurse.patientContact":
-      "Patient Contact",
-
-    "nurse.noPhone":
-      "No phone",
-
-    "nurse.location":
-      "Location",
-
-    "nurse.viewMap":
-      "View Map",
-
-    "nurse.notes":
-      "Notes",
-
-    "nurse.pending":
-      "Pending",
-
-    "nurse.accepted":
-      "Accepted",
-
-    "nurse.rejected":
-      "Rejected",
-
-    "nurse.completed":
-      "Completed",
-
-    "nurse.decline":
-      "Decline",
-
-    "nurse.acceptBooking":
-      "Accept Booking",
-
-    "nurse.markCompleted":
-      "Mark as Completed",
-
-    "nurse.cvPreview":
-      "Curriculum Vitae Preview",
-
-    "nurse.open":
-      "Open",
-
-    "nurse.confirmDelete":
-      "Are you sure you want to delete this booking record?",
-
-    "nurse.failedUpdateStatus":
-      "Failed to update status.",
-
-    "nurse.failedDelete":
-      "Failed to delete booking.",
-
-    "nurse.failedUpdateProfile":
-      "Failed to update profile details.",
-
-    "nurse.couldNotLoad":
-      "Could not load your profile and bookings.",
-
-    // =======================================================
-    // LOGIN
-    // =======================================================
-    welcomeBack:
-      "Welcome Back",
+    welcomeBack: "Welcome Back",
 
     pleaseSignIn:
       "Please sign in to your account.",
 
-    patientLogin:
-      "Patient Login",
+    patientLogin: "Patient Login",
+    nurseLogin: "Nurse Login",
 
-    nurseLogin:
-      "Nurse Login",
-
-    emailAddress:
-      "Email Address",
-
-    password:
-      "Password",
+    emailAddress: "Email Address",
+    password: "Password",
 
     forgotPassword:
       "Forgot password?",
 
-    rememberMe:
-      "Remember me",
+    rememberMe: "Remember me",
 
-    signingIn:
-      "Signing In...",
+    signingIn: "Signing In...",
 
     orContinueWith:
       "or continue with",
@@ -1162,223 +545,18 @@ const translations: Record<Lang, Record<string, any>> = {
       "Streamlining communication and critical workflows for better patient outcomes.",
 
     // =======================================================
-    // PATIENT REGISTER
-    // =======================================================
-    trustedSecure:
-      "Trusted & Secure",
-
-    empoweringHealthcareJourney:
-      "Empowering your healthcare journey.",
-
-    healthcareJourneyDescription:
-      "Access verified, compassionate nursing care directly from your home. We're here to support your family's health.",
-
-    findCareFamilyDeserves:
-      "Find the care your family deserves.",
-
-    joinNurseConnectDescription:
-      "Join NurseConnect to connect with verified, compassionate nurses in your area.",
-
-    firstName:
-      "First Name",
-
-    lastName:
-      "Last Name",
-
-    firstNamePlaceholder:
-      "Jane",
-
-    lastNamePlaceholder:
-      "Doe",
-
-    phoneNumber:
-      "Phone Number",
-
-    phonePlaceholder:
-      "(555) 000-0000",
-
-    creatingAccount:
-      "Creating Account...",
-
-    createPatientAccount:
-      "Create Patient Account",
-
-    securePrivate:
-      "Secure & Private.",
-
-    securePrivateDescription:
-      "HIPAA compliant platform with 256-bit encryption ensuring your data remains completely private.",
-
-    alreadyHaveAccount:
-      "Already have an account?",
-
-    registrationError:
-      "An error occurred while creating the account. Please try again later.",
-
-    // =======================================================
-    // NURSE REGISTRATION
-    // =======================================================
-    accountCreation:
-      "ACCOUNT CREATION",
-
-    joinTrustedProfessionals:
-      "Join our network of trusted healthcare professionals.",
-
-    nurseApplicationDescription:
-      "Please provide your personal information, profile photo, and credentials for verification. Our team reviews all applications within 24–48 hours.",
-
-    personalInformation:
-      "01 / Personal Information",
-
-    fullLegalName:
-      "Full Legal Name",
-
-    fullNamePlaceholder:
-      "Jane Doe",
-
-    professionalProfile:
-      "02 / Professional Profile",
-
-    primarySpecialization:
-      "Primary Specialization",
-
-    selectSpecialization:
-      "Select specialization...",
-
-    pediatricCare:
-      "Pediatric Care",
-
-    geriatricCare:
-      "Geriatric Care",
-
-    icuCriticalCare:
-      "ICU / Critical Care",
-
-    postOperativeCare:
-      "Post-Operative Care",
-
-    yearsOfExperience:
-      "Years of Experience",
-
-    selectYears:
-      "Select years...",
-
-    lessThanOneYear:
-      "Less than 1 year",
-
-    oneToThreeYears:
-      "1 - 3 years",
-
-    threeToFiveYears:
-      "3 - 5 years",
-
-    fiveToTenYears:
-      "5–10 years",
-
-    tenPlusYears:
-      "10+ years",
-
-    currentLocation:
-      "Current Location / Region",
-
-    selectCareCategories:
-      "Select Care Categories / Services Provided",
-
-    selected:
-      "selected",
-
-    homeCare:
-      "Home Care",
-
-    postSurgeryCare:
-      "Post-Surgery Care",
-
-    woundDressing:
-      "Wound Dressing",
-
-    ivTherapy:
-      "IV Therapy & Injections",
-
-    icuSupport:
-      "ICU Support",
-
-    physicalTherapy:
-      "Physical Therapy Assistance",
-
-    typeOfCare:
-      "Type of care",
-
-    selectPrimaryCareType:
-      "Please select the primary type of care required. You can discuss specific details later.",
-
-    mobilityAssistance:
-      "Mobility Assistance",
-
-    other:
-      "Other",
-
-    back:
-      "Back",
-
-    continue:
-      "Continue",
-
-    profilePhotoCvUpload:
-      "03 / Profile Photo & CV Upload",
-
-    acceptedFormats:
-      "Accepted formats: JPG, PNG, WEBP, PDF (Max 5MB)",
-
-    profilePicture:
-      "Profile Picture (Photo)",
-
-    clickToUploadPhoto:
-      "Click to upload photo",
-
-    curriculumVitae:
-      "Curriculum Vitae (CV)",
-
-    clickToUploadCv:
-      "Click to upload CV",
-
-    submitting:
-      "Submitting...",
-
-    submitRegistration:
-      "Submit Registration",
-
-    logIn:
-      "Log In",
-
-    uploadProfilePhoto:
-      "Please upload a profile photo.",
-
-    uploadCv:
-      "Please upload your CV.",
-
-    selectAtLeastOneCategory:
-      "Please select at least one care category / service.",
-
-    nurseRegistrationError:
-      "An error occurred while creating the account. Please try again later.",
-
-    // =======================================================
     // WHO NEEDS CARE
     // =======================================================
+
     whoNeedsCare:
       "Who needs care?",
 
     selectPrimaryPerson:
       "Select the primary person requiring nursing services to help us tailor the experience.",
 
-    myself:
-      "Myself",
-
-    parent:
-      "Parent",
-
-    child:
-      "Child",
+    myself: "Myself",
+    parent: "Parent",
+    child: "Child",
 
     personWithDisability:
       "Person with disability",
@@ -1392,65 +570,41 @@ const translations: Record<Lang, Record<string, any>> = {
     // =======================================================
     // WHEN & WHERE
     // =======================================================
-    whenAndWhere:
-      "When & Where",
+
+    whenAndWhere: "When & Where",
 
     whenWhereDescription:
       "Tell us when and where you need nursing care.",
 
-    startDate:
-      "Start Date",
+    startDate: "Start Date",
+    careDuration: "Care Duration",
+    selectDuration: "Select duration",
 
-    careDuration:
-      "Care Duration",
+    oneHour: "1 Hour",
+    twoHours: "2 Hours",
+    fourHours: "4 Hours",
+    eightHours: "8 Hours",
+    twelveHours: "12 Hours",
+    twentyFourHours: "24 Hours",
 
-    selectDuration:
-      "Select duration",
-
-    oneHour:
-      "1 Hour",
-
-    twoHours:
-      "2 Hours",
-
-    fourHours:
-      "4 Hours",
-
-    eightHours:
-      "8 Hours",
-
-    twelveHours:
-      "12 Hours",
-
-    twentyFourHours:
-      "24 Hours",
-
-    careAddress:
-      "Care Address",
+    careAddress: "Care Address",
 
     enterCareAddressPlaceholder:
       "Enter your care address",
 
-    search:
-      "Search",
-
-    searching:
-      "Searching...",
+    search: "Search",
+    searching: "Searching...",
 
     addressSearchHint:
       "Enter your address and press Search or Enter.",
 
-    careLocation:
-      "Care Location",
+    careLocation: "Care Location",
 
     mapLocationHint:
       "You can also select a location directly on the map.",
 
-    latitude:
-      "Latitude",
-
-    longitude:
-      "Longitude",
+    latitude: "Latitude",
+    longitude: "Longitude",
 
     enterCareAddress:
       "Please enter a care address.",
@@ -1466,19 +620,18 @@ const translations: Record<Lang, Record<string, any>> = {
 
     selectCareDuration:
       "Please select the care duration.",
-	joinAsANurse:
-	"Join as a Nurse",
-	   patient: "Patient", nurse: "Nurse", admin: "Admin", myProfile: "My Profile", nurseWorkspace: "Nurse Workspace", adminDashboard: "Admin Dashboard", systemSettings: "System Settings", signOut: "Sign Out", signedInAs: "Signed in as",
 
-	// English
-familiesServed: "Families Served",
-verifiedNurses: "Verified Nurses",
-averageRating: "Average Rating",
-supportAvailable: "Support Available",
+    // =======================================================
+    // COMMON
+    // =======================================================
+
+    "common.back": "Back",
+    "common.continue": "Continue",
 
     // =======================================================
     // DESCRIBE NEEDS
     // =======================================================
+
     "describeNeeds.title":
       "Describe your needs",
 
@@ -1494,6 +647,7 @@ supportAvailable: "Support Available",
     // =======================================================
     // REVIEW
     // =======================================================
+
     "review.title":
       "Review & Submit",
 
@@ -1536,384 +690,509 @@ supportAvailable: "Support Available",
     "review.submit":
       "Submit Care Request →",
 
-    "review.oneHour":
+    "review.oneHour": "1 Hour",
+    "review.twoHours": "2 Hours",
+    "review.fourHours": "4 Hours",
+    "review.eightHours": "8 Hours",
+    "review.twelveHours": "12 Hours",
+    "review.twentyFourHours": "24 Hours",
+
+    // =======================================================
+    // CONFIRMATION
+    // =======================================================
+
+    "confirmation.title":
+      "Care Request Submitted!",
+
+    "confirmation.description":
+      "We're matching you with the best suitable nurse in your area. You'll receive a confirmation shortly.",
+
+    "confirmation.preferredNurse":
+      "Preferred Nurse",
+
+    "confirmation.careFor":
+      "Care For",
+
+    "confirmation.careType":
+      "Care Type",
+
+    "confirmation.startDate":
+      "Start Date",
+
+    "confirmation.duration":
+      "Duration",
+
+    "confirmation.location":
+      "Location",
+
+    "confirmation.oneHour":
       "1 Hour",
 
-    "review.twoHours":
+    "confirmation.twoHours":
       "2 Hours",
 
-    "review.fourHours":
+    "confirmation.fourHours":
       "4 Hours",
 
-    "review.eightHours":
+    "confirmation.eightHours":
       "8 Hours",
 
-    "review.twelveHours":
+    "confirmation.twelveHours":
       "12 Hours",
 
-    "review.twentyFourHours":
+    "confirmation.twentyFourHours":
       "24 Hours",
 
-    // =======================================================
-    // LICENSE VERIFICATION
-    // =======================================================
-    "licenseVerification.registrationSubmitted":
-      "REGISTRATION SUBMITTED",
+    "confirmation.dashboard":
+      "View My Dashboard",
 
-    "licenseVerification.onboardingStatus":
-      "Onboarding Status",
-
-    "licenseVerification.trackApplication":
-      "Track your application and complete the required steps.",
-
-    "licenseVerification.accountCreated":
-      "ACCOUNT CREATED",
-
-    "licenseVerification.licenseVerification":
-      "LICENSE VERIFICATION",
-
-    "licenseVerification.backgroundCheck":
-      "BACKGROUND CHECK",
-
-    "licenseVerification.activation":
-      "ACTIVATION",
-
-    "licenseVerification.activeProcess":
-      "ACTIVE PROCESS",
-
-    "licenseVerification.inProgress":
-      "IN PROGRESS",
-
-    "licenseVerification.reviewDescription":
-      "We have received your documents and your professional credentials are currently being reviewed. This verification helps ensure all nurses meet our professional standards.",
-
-    "licenseVerification.documentsSubmitted":
-      "DOCUMENTS SUBMITTED",
-
-    "licenseVerification.nursingLicense":
-      "Nursing License",
-
-    "licenseVerification.curriculumVitae":
-      "Curriculum Vitae",
-
-    "licenseVerification.verificationStatus":
-      "VERIFICATION STATUS",
-
-    "licenseVerification.documentsUnderReview":
-      "Documents Under Review",
-
-    "licenseVerification.usuallyCompleted":
-      "Usually completed within 24–48 hours.",
-
-    "licenseVerification.secureMessage":
-      "Your documents are securely reviewed by our verification team. You will be notified when this step is complete.",
-
-    "licenseVerification.requiredActions":
-      "REQUIRED ACTIONS",
-
-    "licenseVerification.applicationSubmitted":
-      "Application Submitted",
-
-    "licenseVerification.noActionRequired":
-      "Your registration has been successfully submitted. No additional action is required at this stage.",
-
-    "licenseVerification.nextStep":
-      "NEXT STEP",
+    "confirmation.browseNurses":
+      "Browse Nurses",
 
     // =======================================================
-    // BACKGROUND CHECK
+    // ABOUT
     // =======================================================
-    "backgroundCheck.registrationSubmitted":
-      "REGISTRATION SUBMITTED",
 
-    "backgroundCheck.title":
-      "Background Check",
+    "about.ourStory":
+      "Our Story",
 
-    "backgroundCheck.stepDescription":
-      "Step 3 of 4 in your onboarding process.",
+    "about.trustedCare":
+      "Trusted Care Starts With Trusted People",
 
-    "backgroundCheck.profile":
-      "PROFILE",
+    "about.heroDescription":
+      "NurseConnect was created to bridge the gap between families looking for trusted home care and licensed nurses ready to provide it, with a simpler experience and greater confidence for everyone.",
 
-    "backgroundCheck.license":
-      "LICENSE",
+    "about.familiesServed":
+      "Families Served",
 
-    "backgroundCheck.background":
-      "BACKGROUND",
+    "about.verifiedNurses":
+      "Verified Nurses",
 
-    "backgroundCheck.activation":
-      "ACTIVATION",
+    "about.citiesCovered":
+      "Cities Covered",
 
-    "backgroundCheck.currentStatus":
-      "CURRENT STATUS",
+    "about.averageRating":
+      "Average Rating",
 
-    "backgroundCheck.inProgress":
-      "IN PROGRESS",
+    "about.howWeStarted":
+      "How We Started",
 
-    "backgroundCheck.description":
-      "Your background check has been initiated. Our verification team is reviewing the required information before your account can be activated.",
+    "about.builtByANurse":
+      "Built by a nurse who lived the problem",
 
-    "backgroundCheck.requiredActions":
-      "REQUIRED ACTIONS",
+    "about.storyParagraph1":
+      "NurseConnect started in 2023 after one of our co-founders, a former ICU nurse, spent weeks trying to find reliable home care for her grandmother. Between unreliable referrals, unclear credentials, and no easy way to see other families' experiences, the process took much longer than it should have.",
 
-    "backgroundCheck.verificationInformation":
-      "Verification Information",
+    "about.storyParagraph2":
+      "We built the platform we wished existed: every nurse is verified for their license and background, with real reviews from real families and a simple way to book, communicate, and manage care in one place.",
 
-    "backgroundCheck.informationDescription":
-      "Please make sure that the information provided during registration is accurate and complete.",
+    "about.foundedIn":
+      "Founded in San Francisco",
 
-    "backgroundCheck.reviewInformation":
-      "Review Information",
+    "about.licensedChecked":
+      "Licensed & background-checked",
 
-    "backgroundCheck.securityMessage":
-      "Your information is handled securely and is only used for professional verification purposes.",
+    "about.supportAvailable":
+      "Support available for families and nurses, every day of the year",
 
-    "backgroundCheck.verificationScope":
-      "Verification Scope",
+    "about.whatWeStandFor":
+      "What We Stand For",
 
-    "backgroundCheck.criminalRecords":
-      "Criminal Records Search",
+    "about.ourValues":
+      "Our Values",
 
-    "backgroundCheck.sexRegistry":
-      "Sex Registry Check",
+    "about.compassionFirst":
+      "Compassion First",
 
-    "backgroundCheck.employmentVerification":
-      "Employment Verification",
+    "about.compassionDescription":
+      "Every matching process starts with compassion. We look for nurses who treat patients like people, not simply as a list of tasks.",
 
-    "backgroundCheck.educationVerification":
-      "Education Verification",
+    "about.trustSafety":
+      "Trust & Safety",
 
-    "backgroundCheck.timeline":
-      "Timeline",
+    "about.trustSafetyDescription":
+      "Every nurse on the platform goes through license verification, background checks, and reference screening.",
 
-    "backgroundCheck.requestSubmitted":
-      "Request Submitted",
+    "about.communityDriven":
+      "Community-Driven",
 
-    "backgroundCheck.backgroundStarted":
-      "Background check started",
+    "about.communityDescription":
+      "Real family ratings and reviews help us maintain and continuously improve the quality of our network.",
 
-    "backgroundCheck.backgroundReview":
-      "Background Review",
+    "about.simpleByDesign":
+      "Simple by Design",
 
-    "backgroundCheck.currentlyInProgress":
-      "Currently in progress",
+    "about.simpleDescription":
+      "Finding trusted care should not be complicated. We bring booking, communication, and care management together in one place.",
 
-    "backgroundCheck.approval":
-      "Approval",
+    "about.leadership":
+      "Leadership",
 
-    "backgroundCheck.waitingVerification":
-      "Waiting for verification",
+    "about.meetTheTeam":
+      "Meet the Team",
 
-    // =======================================================
-    // ACTIVATED
-    // =======================================================
-    "activated.registrationSubmitted":
-      "REGISTRATION COMPLETE",
+    "about.coFounderCEO":
+      "Co-Founder & CEO",
 
-    "activated.title":
-      "Your Application Is Under Review",
+    "about.danaBio":
+      "A former ICU nurse who experienced firsthand how difficult it can be for families to find reliable home care.",
 
-    "activated.profile":
-      "PROFILE",
+    "about.coFounderCTO":
+      "Co-Founder & CTO",
 
-    "activated.license":
-      "LICENSE",
+    "about.marcusBio":
+      "Builds the matching and scheduling systems that connect families with the right nurses efficiently.",
 
-    "activated.background":
-      "BACKGROUND",
+    "about.headOfNursePartnerships":
+      "Head of Nurse Partnerships",
 
-    "activated.activation":
-      "ACTIVATION",
+    "about.privacyBio":
+      "Leads nurse onboarding and credential verification to help maintain a trusted professional network.",
 
-    "activated.successTitle":
-      "Please Wait for Approval",
+    "about.joinUs":
+      "Join Us in Redefining Home Care",
 
-    "activated.successDescription":
-"Your nurse registration process is complete. Our team is currently reviewing your application. Once your application is approved, you’ll be able to start receiving care requests.",
+    "about.ctaDescription":
+      "Whether you need care for a loved one or want to join our nurse network, we'd be happy to have you with us.",
+
+    "about.getStarted":
+      "Get Started",
+
+    "about.joinAsNurse":
+      "Join as a Nurse",
+
+	  "safety.title": "Safety & Trust",
+"safety.heroDescription":
+  "Your safety and peace of mind are at the heart of everything we do.",
+
+"safety.ourCommitment": "Our Commitment to Safety",
+"safety.commitmentDescription":
+  "We work to create a trusted and respectful care experience for every family.",
+
+"safety.verifiedNurses": "Verified Nurses",
+"safety.verifiedNursesDesc":
+  "We review nurse profiles and professional information to help families find trusted care providers.",
+
+"safety.professionalStandards": "Professional Standards",
+"safety.professionalStandardsDesc":
+  "Nurses are expected to provide care with professionalism, respect, and responsibility.",
+
+"safety.safeCare": "Safe Care",
+"safety.safeCareDesc":
+  "We promote a safe care environment where patients and nurses can feel comfortable and respected.",
+
+"safety.trustedCommunity": "Trusted Community",
+"safety.trustedCommunityDesc":
+  "We believe trust grows through transparency, communication, and respectful care.",
+
+"safety.trustTitle": "Care You Can Trust",
+"safety.trustDescription":
+  "NurseConnect connects families with nurses while keeping safety, respect, and quality care at the center of the experience.",
+"safety.badge": "Patient & Nurse Safety",
+
+"safety.title": "Your Safety Comes First",
+
+"safety.heroDescription":
+  "We are committed to creating a trusted, respectful, and safe care experience for every patient and nurse.",
+
+"safety.verifiedNurses": "Verified Nurses",
+"safety.verifiedNursesDesc":
+  "We review nurse profiles and professional information to help families connect with trusted care providers.",
+"safety.verifiedNursesCheck": "Professional information reviewed",
+
+"safety.secureBooking": "Secure Booking",
+"safety.secureBookingDesc":
+  "Our booking process is designed to keep care requests clear, organized, and easy to manage.",
+"safety.secureBookingCheck": "Simple and transparent booking",
+
+"safety.transparentProfiles": "Transparent Profiles",
+"safety.transparentProfilesDesc":
+  "View nurse information, specialties, experience, and care details before making your choice.",
+"safety.transparentProfilesCheck": "Clear nurse information",
 
-    "activated.firstSteps":
-      "Your First Steps",
+"safety.familyFocused": "Family-Focused Care",
+"safety.familyFocusedDesc":
+  "We help families find suitable nursing care while keeping communication, respect, and comfort at the center.",
+"safety.familyFocusedCheck": "Care built around your needs",
 
-    "activated.completeProfile":
-      "Complete Your Profile",
+"safety.safetyNoteTitle": "A Care Experience Built on Trust",
+"safety.safetyNoteDescription":
+  "We encourage patients and nurses to communicate clearly, respect one another, and use the platform responsibly.",
+"safety.badge": "Patient & Nurse Safety",
 
-    "activated.completeProfileDescription":
-      "Add your professional experience and preferences so patients can find you.",
+"privacy.badge": "Privacy & Data Protection",
+"privacy.title": "Privacy Policy",
+"privacy.description":
+  "Your privacy matters to us. Here is how NurseConnect handles and protects your personal information in a clear and simple way.",
+"privacy.readTime": "3 min read",
+"privacy.dataProtection": "Data Protection",
 
-    "activated.setAvailability":
-      "Set Your Availability",
+"privacy.trustOneTitle": "Privacy First",
+"privacy.trustOneDescription":
+  "We treat your personal information with care and respect.",
 
-    "activated.setAvailabilityDescription":
-      "Choose when you are available for new nursing requests.",
+"privacy.trustTwoTitle": "Secure Information",
+"privacy.trustTwoDescription":
+  "We use appropriate security measures to help protect your information.",
 
-    "activated.browseRequests":
-      "Browse Care Requests",
+"privacy.trustThreeTitle": "No Unnecessary Sharing",
+"privacy.trustThreeDescription":
+  "We only share information when it is needed to provide our services.",
 
-    "activated.browseRequestsDescription":
-      "View suitable patient requests and apply to provide care.",
+"privacy.collectTitle": "1. Information We Collect",
+"privacy.collectTag": "Information",
+"privacy.collectDescription":
+  "We may collect information such as your name, contact details, account information, booking details, and information you provide when requesting care.",
 
-    "activated.nurseConnect":
-      "NURSECONNECT",
+"privacy.useTitle": "2. How We Use Your Information",
+"privacy.useTag": "Purpose",
+"privacy.useDescription":
+  "We use your information to create and manage your account, connect you with nurses, process care requests, communicate with you, and improve our services.",
 
-    "activated.registeredNurse":
-      "Registered Nurse",
+"privacy.protectionTitle": "3. How We Protect Your Information",
+"privacy.protectionTag": "Security",
+"privacy.protectionDescription":
+  "We take reasonable technical and organizational measures to protect your information against unauthorized access, loss, misuse, or disclosure.",
 
-    "activated.profileReady":
-      "Your profile is ready.",
+"privacy.rightsTitle": "4. Your Privacy Rights",
+"privacy.rightsTag": "Your Control",
+"privacy.rightsDescription":
+  "You may review or update your account information and contact us if you have questions about your personal data or want to request changes.",
 
-    "activated.profileReadyDescription":
-      "After your application is approved, patients will be able to discover your profile and send care requests to you.",
+"privacy.contactTitle": "5. Contact Us About Privacy",
+"privacy.contactTag": "Support",
+"privacy.contactDescription":
+  "If you have a question about how we handle your information, please contact our privacy team for assistance.",
 
-    "activated.goToProfile":
-      "Go to Profile",
+"privacy.protectionBoxTitle": "Protecting Your Information",
+"privacy.protectionBoxDescription":
+  "We follow security practices designed to help keep your account and personal information protected.",
 
-    "activated.startFindingRequests":
-      "Start Finding Care Requests",
+"privacy.protectionStepOne": "Account Access",
+"privacy.protectionStepOneStatus": "Protected",
 
-    // =======================================================
-    // PATIENT PROFILE
-    // =======================================================
-    "patientProfile.loading":
-      "Loading your profile & bookings...",
+"privacy.protectionStepTwo": "Information Storage",
+"privacy.protectionStepTwoStatus": "Protected",
 
-    "patientProfile.accessDenied":
-      "Access Denied",
+"privacy.protectionStepThree": "Service Access",
+"privacy.protectionStepThreeStatus": "Controlled",
 
-    "patientProfile.loginToContinue":
-      "Please sign in to continue.",
+"privacy.protectionCheckOne": "Access is limited to authorized use",
+"privacy.protectionCheckTwo": "Information is handled responsibly",
+"privacy.protectionCheckThree": "We work to protect your personal data",
 
-    "patientProfile.signIn":
-      "Sign In",
+"privacy.contactBoxLabel": "Privacy Support",
+"privacy.contactBoxTitle": "Questions About Privacy?",
+"privacy.contactBoxDescription":
+  "Our team is here to help with privacy-related questions.",
+// =========================================================
+// TERMS OF SERVICE - ENGLISH
+// =========================================================
 
-    "patientProfile.memberSince":
-      "Member since",
+"terms.badge": "Terms of Service",
+"terms.title": "Terms of Service",
 
-    "patientProfile.noPhone":
-      "No phone provided",
+"terms.description":
+  "Simple and clear terms for using NurseConnect, requesting care, and connecting with nurses.",
 
-    "patientProfile.bookNewCare":
-      "Book New Care",
+"terms.simpleTerms": "Simple & Clear",
+"terms.trust": "Built on Trust",
 
-    "patientProfile.careRequestsStatus":
-      "Your Care Requests & Status",
+"terms.noticeTitle": "Please Read Before Using NurseConnect",
 
-    "patientProfile.followUp":
-      "Follow up on your bookings and check whether your request is approved.",
+"terms.noticeDescription":
+  "By using NurseConnect, you agree to use the platform responsibly and follow these terms. These terms help keep the experience clear, respectful, and safe for patients and nurses.",
 
-    "patientProfile.requests":
-      "Requests",
+"terms.sectionsLabel": "Platform Guidelines",
 
-    "patientProfile.noCareRequests":
-      "No care requests yet",
+"terms.sectionsTitle": "Our Main Terms",
 
-    "patientProfile.noCareRequestsDescription":
-      "You have not booked any healthcare provider yet. Choose a qualified nurse for your family.",
+"terms.useTitle": "1. Using NurseConnect",
 
-    "patientProfile.findNurse":
-      "Find a Nurse",
+"terms.useDescription":
+  "NurseConnect helps patients and families discover nurses and submit care requests through the platform.",
 
-    "patientProfile.booking":
-      "Booking",
+"terms.useCheck":
+  "Use the platform responsibly",
 
-    "patientProfile.createdOn":
-      "Created on",
+"terms.accountsTitle": "2. Accounts & Information",
 
-    "patientProfile.accepted":
-      "Accepted",
+"terms.accountsDescription":
+  "You are responsible for providing accurate information and keeping your account details up to date.",
 
-    "patientProfile.pending":
-      "Pending",
+"terms.accountsCheck":
+  "Keep your information accurate",
 
-    "patientProfile.rejected":
-      "Declined",
+"terms.bookingTitle": "3. Bookings & Requests",
 
-    "patientProfile.completed":
-      "Completed",
+"terms.bookingDescription":
+  "Care requests should include accurate details about the person receiving care, requested services, date, time, and location.",
 
-    "patientProfile.serviceType":
-      "Service Type",
+"terms.bookingCheck":
+  "Provide accurate booking details",
 
+"terms.responsibilitiesTitle": "4. Patient & Nurse Responsibilities",
 
-    "patientProfile.for":
-      "For",
+"terms.responsibilitiesDescription":
+  "Patients and nurses are expected to communicate respectfully, arrive as agreed, and follow applicable professional and safety requirements.",
 
-    "patientProfile.schedule":
-      "Schedule",
+"terms.responsibilitiesCheck":
+  "Respectful communication",
 
-    "patientProfile.selectedNurse":
-      "Selected Nurse",
+"terms.safetyTitle": "5. Safety & Appropriate Use",
 
-    "patientProfile.generalBooking":
-      "General Booking",
+"terms.safetyDescription":
+  "NurseConnect should not be used for emergencies or unlawful activities. In an emergency, contact your local emergency services.",
 
-    "patientProfile.careAddress":
-      "Care Address",
+"terms.safetyCheck":
+  "Use the platform safely",
 
-    "patientProfile.specialNotes":
-      "Special Notes",
-	"common.back":
-	"Back" ,
-	"common.continue":
-	"Continue",
-	"confirmation.title": "Care Request Submitted!",
-"confirmation.description":
-  "We're matching you with the best suitable nurse in your area. You'll receive a confirmation shortly.",
+"terms.contactTitle": "6. Questions & Contact",
 
-"confirmation.preferredNurse": "Preferred Nurse",
-"confirmation.careFor": "Care For",
-"confirmation.careType": "Care Type",
-"confirmation.startDate": "Start Date",
-"confirmation.duration": "Duration",
-"confirmation.location": "Location",
+"terms.contactDescription":
+  "If you have questions about these terms or how NurseConnect works, you can contact our team for assistance.",
 
-"confirmation.oneHour": "1 Hour",
-"confirmation.twoHours": "2 Hours",
-"confirmation.fourHours": "4 Hours",
-"confirmation.eightHours": "8 Hours",
-"confirmation.twelveHours": "12 Hours",
-"confirmation.twentyFourHours": "24 Hours",
+"terms.contactCheck":
+  "We're here to help",
 
-"confirmation.dashboard": "View My Dashboard",
-"confirmation.browseNurses": "Browse Nurses",
-  },
+"terms.ctaTitle": "Have Questions About Our Terms?",
+
+"terms.ctaDescription":
+  "Contact us if you need clarification about using NurseConnect or these terms.",
+
+"terms.contactButton": "Contact Us",
+
+"terms.homeButton": "Return to Home",
+"privacy.ctaTitle": "Have Questions About Your Privacy?",
+"privacy.ctaDescription":
+  "Contact us if you have questions about your information or how NurseConnect handles your data.",
+
+"privacy.contactButton": "Contact Privacy Team",
+"privacy.homeButton": "Return to Home",
+"safety.trustedCare": "Trusted Care, Every Step of the Way",
+"safety.trustedCareDescription":
+  "Explore nurse profiles and find care that matches your needs.",
+
+"safety.findNurse": "Find a Nurse",  
+// =========================================================
+// CONTACT - ENGLISH
+// =========================================================
+
+"contact.badge": "We're Here to Help",
+
+"contact.title": "How Can We Help?",
+
+"contact.description":
+  "Whether you have a question about care, need help with a booking, or want to join our nurse network, our team is here to help.",
+
+"contact.support": "Support & Assistance",
+
+"contact.response": "We'll get back to you",
+
+"contact.formLabel": "Send a Message",
+
+"contact.formTitle": "Tell Us How We Can Help",
+
+"contact.name": "Full Name",
+
+"contact.namePlaceholder": "Your name",
+
+"contact.email": "Email Address",
+
+"contact.emailPlaceholder": "you@example.com",
+
+"contact.subject": "Subject",
+
+"contact.subjectGeneral": "General Inquiry",
+
+"contact.subjectBooking": "Booking Support",
+
+"contact.subjectNurse": "Nurse Registration",
+
+"contact.subjectAccount": "Account Support",
+
+"contact.message": "Message",
+
+"contact.messagePlaceholder":
+  "Tell us how we can help...",
+
+"contact.sendButton": "Send Message",
+
+"contact.formNote":
+  "Please avoid sharing sensitive medical information through this form.",
+
+"contact.successTitle": "Message Sent",
+
+"contact.successDescription":
+  "Thank you for contacting NurseConnect. Our team will review your message and get back to you.",
+
+"contact.sendAnother": "Send Another Message",
+
+"contact.emailTitle": "Email Us",
+
+"contact.emailDescription":
+  "For general questions, support, or other inquiries, send us an email.",
+
+"contact.phoneTitle": "Phone",
+
+"contact.phoneDescription":
+  "For direct assistance, you can contact our team by phone.",
+
+"contact.phoneNumber": "+961 00 000 000",
+
+"contact.locationTitle": "Our Location",
+
+"contact.locationDescription":
+  "NurseConnect is based in Lebanon and serves patients and nurses through our online platform.",
+
+"contact.location": "Tripoli, Lebanon",
+
+"contact.emergencyTitle": "Medical Emergency?",
+
+"contact.emergencyDescription":
+  "NurseConnect is not an emergency service. If you are experiencing a medical emergency, contact your local emergency services immediately.",
+
+"contact.infoOneTitle": "Patient Support",
+
+"contact.infoOneDescription":
+  "Get help with bookings, accounts, and care requests.",
+
+"contact.infoTwoTitle": "Support Hours",
+
+"contact.infoTwoDescription":
+  "Our team will respond to your message as soon as possible.",
+
+"contact.infoThreeTitle": "Privacy Matters",
+
+"contact.infoThreeDescription":
+  "Please only share the information needed to handle your request.",
+},
 
   // =========================================================
   // ARABIC
   // =========================================================
+
   ar: {
     // =======================================================
     // NAVBAR
     // =======================================================
-    home:
-      "الرئيسية",
 
-    nurseConnect:
-      "NurseConnect",
+    home: "الرئيسية",
+    nurseConnect: "NurseConnect",
+    findNurse: "ابحث عن ممرض",
+    forNurses: "للممرضين",
+    aiAssistant: "مساعد الرعاية بالذكاء الاصطناعي",
 
-    findNurse:
-      "ابحث عن ممرض",
+    arabic: "عربي",
+    english: "English",
 
-    forNurses:
-      "للممرضين",
-
-    aiAssistant:
-      "مساعد الرعاية بالذكاء الاصطناعي",
-
-    arabic:
-      "عربي",
-
-    english:
-      "English",
-
-    signIn:
-      "تسجيل الدخول",
-
-    getStarted:
-      "ابدأ الآن",
+    signIn: "تسجيل الدخول",
+    getStarted: "ابدأ الآن",
 
     // =======================================================
     // HERO
     // =======================================================
+
     trustedByFamilies:
       "موثوق به من أكثر من 10,000 عائلة",
 
@@ -1992,6 +1271,7 @@ supportAvailable: "Support Available",
     // =======================================================
     // HERO SEARCH
     // =======================================================
+
     findYourIdealCaregiver:
       "اعثر على مقدم الرعاية المثالي لك",
 
@@ -2003,15 +1283,7 @@ supportAvailable: "Support Available",
 
     allCareTypes:
       "جميع أنواع الرعاية",
-// Arabic
-familiesServed: "عائلات تمت خدمتها",
-verifiedNurses: "ممرضون موثّقون",
-averageRating: "متوسط التقييم",
-supportAvailable: "دعم متوفر على مدار الساعة",
-common: {
-  back: "رجوع",
-  continue: "متابعة",
-},
+
     careSchedule:
       "جدول الرعاية",
 
@@ -2036,8 +1308,8 @@ common: {
     // =======================================================
     // CARE CATEGORIES
     // =======================================================
-    all:
-      "الكل",
+
+    all: "الكل",
 
     elderlyCare:
       "رعاية كبار السن",
@@ -2061,8 +1333,9 @@ common: {
       "الرعاية التلطيفية",
 
     // =======================================================
-    // AI CARE ASSISTANT
+    // AI
     // =======================================================
+
     notSureWhatCareYouNeed:
       "لست متأكدًا من الرعاية التي تحتاجها؟",
 
@@ -2078,10 +1351,10 @@ common: {
     // =======================================================
     // HOW IT WORKS
     // =======================================================
+
     simpleProcess:
       "خطوات بسيطة",
-	joinAsANurse:
-	"انضمي كممرضة 🩺",
+
     howNurseConnectWorks:
       "كيف تعمل NurseConnect؟",
 
@@ -2103,9 +1376,13 @@ common: {
     bookAndRelaxDescription:
       "أكد حجزك، وتواصل مباشرة مع ممرضك، وتابع كل زيارة من خلال لوحة تحكم NurseConnect.",
 
+    joinAsANurse:
+      "انضمي كممرضة 🩺",
+
     // =======================================================
     // AI MATCH
     // =======================================================
+
     poweredByAI:
       "مدعوم بالذكاء الاصطناعي",
 
@@ -2154,6 +1431,7 @@ common: {
     // =======================================================
     // NURSES
     // =======================================================
+
     ourTeam:
       "فريقنا",
 
@@ -2178,6 +1456,7 @@ common: {
     // =======================================================
     // CARE YOU CAN TRUST
     // =======================================================
+
     whyFamiliesChooseUs:
       "لماذا تختارنا العائلات؟",
 
@@ -2226,6 +1505,7 @@ common: {
     // =======================================================
     // CTA
     // =======================================================
+
     readyToFindTrustedCare:
       "هل أنت مستعد للعثور على رعاية موثوقة؟",
 
@@ -2238,9 +1518,6 @@ common: {
     joinAsNurse:
       "انضم كممرض",
 
-    // =======================================================
-    // READY TO START
-    // =======================================================
     readyToStart:
       "هل أنت مستعد للبدء؟",
 
@@ -2253,6 +1530,7 @@ common: {
     // =======================================================
     // FOOTER
     // =======================================================
+
     trustedByThousands:
       "موثوق به من آلاف العائلات",
 
@@ -2310,6 +1588,7 @@ common: {
     // =======================================================
     // GENERAL
     // =======================================================
+
     Find_your_ideal_caregiver:
       "اعثر على مقدم الرعاية المثالي لك",
 
@@ -2323,1000 +1602,50 @@ common: {
       "التقييم",
 
     // =======================================================
-    // TESTIMONIALS
+    // PROFILE / AUTH
     // =======================================================
-    testimonialEmilyQuote:
-      "جعلت NurseConnect العثور على مقدم رعاية لوالدتي أمرًا سهلًا جدًا. ساعدتني المطابقة بالذكاء الاصطناعي في العثور على شخص لديه خبرة في رعاية مرضى الخرف خلال يوم واحد.",
 
-    testimonialEmilyName:
-      "إميلي بول",
-
-    testimonialEmilyRole:
-      "ابنة ومقدمة رعاية",
-
-    testimonialDanielQuote:
-      "بصفتي والدًا جديدًا أتعافى من عملية جراحية، فإن وجود ممرض موثوق يصل في الوقت المحدد في كل مرة منح عائلتنا بأكملها راحة البال.",
-
-    testimonialDanielName:
-      "دانيال مارتن",
-
-    testimonialDanielRole:
-      "والد جديد",
-
-    testimonialJohnQuote:
-      "عملية التحقق دقيقة وشاملة، وهذا يظهر في مستوى الخدمة. كان ممرضنا محترفًا وودودًا ومهتمًا حقًا بتعافي والدي.",
-
-    testimonialJohnName:
-      "جون روبرتس",
-
-    testimonialJohnRole:
-      "ابن ومنسق للرعاية",
-
-    // =======================================================
-    // FIND NURSE
-    // =======================================================
-    findANurse:
-      "ابحث عن ممرض",
-
-    findNurseDescription:
-      "اعثر على ممرضين مؤهلين يمكنهم تقديم الرعاية التي تحتاجها.",
-
-    findQualifiedNurses:
-      "اعثر على ممرضين مؤهلين يمكنهم تقديم الرعاية التي تحتاجها.",
-
-    searchNurses:
-      "ابحث عن ممرضين...",
-
-    searchByNameSpecialtyLocation:
-      "ابحث بالاسم أو التخصص أو الموقع...",
-
-    sort:
-      "ترتيب",
-
-    sortBy:
-      "ترتيب حسب",
-
-    topRated:
-      "الأعلى تقييمًا",
-
-    sortTopRated:
-      "الترتيب: الأعلى تقييمًا",
-
-    priceLowToHigh:
-      "السعر: من الأقل إلى الأعلى",
-
-    priceHighToLow:
-      "السعر: من الأعلى إلى الأقل",
-
-    nameAZ:
-      "الاسم: من أ إلى ي",
-
-    mostExperienced:
-      "الأكثر خبرة",
-
-    filters:
-      "الفلاتر",
-
-    filterNurses:
-      "تصفية الممرضين",
-
-    refineSearch:
-      "حسّن بحثك حسب التقييم والسعر والخبرة والموقع.",
-
-    clearFilters:
-      "مسح الفلاتر",
-
-    minRating:
-      "الحد الأدنى للتقييم",
-
-    minimumRating:
-      "الحد الأدنى للتقييم",
-
-    anyRating:
-      "أي تقييم",
-
-    priceRange:
-      "نطاق السعر",
-
-    anyPrice:
-      "أي سعر",
-
-    under50:
-      "أقل من 50$ / ساعة",
-
-    price50To65:
-      "50$ - 65$ / ساعة",
-
-    above65:
-      "أكثر من 65$",
-
-    price65Plus:
-      "65$+ / ساعة",
-
-    experienceRange:
-      "الخبرة",
-
-    anyExperience:
-      "أي خبرة",
-
-    oneToThreeYears:
-      "من سنة إلى 3 سنوات",
-
-    experience1To3:
-      "من سنة إلى 3 سنوات",
-
-    threeToFiveYears:
-      "من 3 إلى 5 سنوات",
-
-    experience3To5:
-      "من 3 إلى 5 سنوات",
-
-    fivePlusYears:
-      "5 سنوات أو أكثر",
-
-    experience5Plus:
-      "5 سنوات أو أكثر",
-
-    locationFilter:
-      "الموقع",
-
-    locationExample:
-      "مثال: بيروت",
-
-    results:
-      "النتائج",
-
-    nursesFound:
-      "ممرضين تم العثور عليهم",
-
-    rate:
-      "تقييم",
-
-    rateNurse:
-      "تقييم الممرض",
-
-    outOfFiveStars:
-      "من أصل 5 نجوم",
-
-    feedbackReview:
-      "ملاحظات / مراجعة",
-
-    optional:
-      "اختياري",
-
-    writeExperience:
-      "اكتب تجربتك مع هذا الممرض...",
-
-    cancel:
-      "إلغاء",
-
-    submitRating:
-      "إرسال التقييم",
-
-    loadingNurses:
-      "جاري تحميل الممرضين...",
-
-    failedToLoadNurses:
-      "فشل تحميل الممرضين",
-
-    errorConnectingBackend:
-      "حدث خطأ أثناء الاتصال بالخادم",
-
-    noNursesFound:
-      "لم يتم العثور على ممرضين",
-
-    tryAnotherSearch:
-      "جرّب اسمًا أو تخصصًا أو موقعًا أو فئة أو فلترًا آخر.",
-
-    previous:
-      "السابق",
-
-    next:
-      "التالي",
-
-    ratingSubmitted:
-      "تم إرسال تقييمك بنجاح.",
-
-    failedSubmitRating:
-      "فشل إرسال التقييم. يرجى التأكد من تسجيل الدخول.",
+    patient:
+      "مريض",
 
     nurse:
-      "ممرض",
+      "ممرضة",
 
-    // =======================================================
-    // NURSE CARD
-    // =======================================================
-    nurseProfessional:
-      "ممرض متخصص",
+    admin:
+      "مسؤول",
 
-    generalHealthcare:
-      "الرعاية الصحية العامة",
-
-    locationNotAvailable:
-      "الموقع غير متوفر",
-
-    yrsExperience:
-      "سنوات من الخبرة",
-
-    experienceNotSpecified:
-      "الخبرة غير محددة",
-
-    profile:
+    myProfile:
       "الملف الشخصي",
 
-    book:
-      "احجز",
-// Profile 
-patient: "مريض",
-nurse: "ممرضة", admin: "مسؤول", myProfile: "الملف الشخصي", nurseWorkspace: "مساحة عمل الممرضة", adminDashboard: "لوحة تحكم المسؤول", systemSettings: "إعدادات النظام", signOut: "تسجيل الخروج", signedInAs: "مسجل الدخول باسم",
-    // =======================================================
-    // FOR NURSES
-    // =======================================================
-    joinOurNursingCommunity:
-      "انضم إلى مجتمع التمريض لدينا",
+    nurseWorkspace:
+      "مساحة عمل الممرضة",
 
-    makeADifference:
-      "أحدث فرقًا.",
+    adminDashboard:
+      "لوحة تحكم المسؤول",
 
-    careForOthers:
-      "اهتم بالآخرين.",
+    systemSettings:
+      "إعدادات النظام",
 
-    connectWithPatients:
-      "تواصل مع المرضى الذين يحتاجون إلى رعاية تمريضية متخصصة وأحدث فرقًا حقيقيًا في حياتهم.",
+    signOut:
+      "تسجيل الخروج",
 
-    professionalNursingOpportunities:
-      "فرص مهنية في مجال التمريض",
-
-    yourSkills:
-      "مهاراتك،",
-
-    theirCare:
-      "رعايتهم.",
-
-    findMeaningfulOpportunities:
-      "اعثر على فرص تمريضية مميزة وقدّم رعاية إنسانية للمرضى وعائلاتهم.",
-
-    growWithNurseConnect:
-      "تطوّر مع NurseConnect",
-
-    careWithPurpose:
-      "قدّم الرعاية بهدف.",
-
-    growYourCareer:
-      "طوّر مسيرتك المهنية.",
-
-    buildYourNursingCareer:
-      "طوّر مسيرتك المهنية في مجال التمريض وساعد الناس في الحصول على الرعاية الصحية التي يستحقونها.",
-
-    findOpportunities:
-      "اكتشف الفرص",
-
-    families:
-      "عائلات",
-
-    nurses:
-      "ممرضون",
-
-    satisfaction:
-      "نسبة الرضا",
-
-    professionalNurse:
-      "ممرض متخصص",
-
-    verifiedNurse:
-      "ممرض موثّق",
-
-    professionalCaregiver:
-      "مقدّم رعاية متخصص",
-
-    newOpportunity:
-      "فرصة جديدة",
-
-    findYourNextPatient:
-      "اعثر على مريضك القادم",
-
-    shareCareRequirements:
-      "شاركنا متطلبات الرعاية والجدول الزمني والموقع حتى نفهم تمامًا ما تحتاجه عائلتك.",
-
-    aiReviewsNurses:
-      "يقوم الذكاء الاصطناعي لدينا بمراجعة الممرضين المرخّصين والموثوقين بالقرب منك ويطابقك مع الأنسب لاحتياجاتك وميزانيتك.",
-
-    confirmYourBooking:
-      "أكد حجزك، وتواصل مباشرةً مع ممرضك، وتابع كل زيارة من خلال لوحة تحكم NurseConnect.",
-
-    everyNurseCompletes:
-      "يخضع كل ممرض للتحقق من الترخيص وفحص الخلفية والتحقق من المراجع قبل الانضمام.",
-
-    ratingsAndReviews:
-      "التقييمات والمراجعات",
-
-    realFeedback:
-      "تساعدك آراء العائلات الحقيقية على اختيار مقدم الرعاية المناسب بثقة في كل مرة.",
-
-    bookOneOffVisits:
-      "احجز زيارات لمرة واحدة، أو رعاية متكررة، أو دعمًا على مدار الساعة طوال أيام الأسبوع — بما يناسب روتين عائلتك.",
-
-    coordinateDirectly:
-      "تواصل مباشرةً مع ممرضك من خلال مراسلة مشفّرة داخل التطبيق في كل خطوة.",
-
-    transparentPricing:
-      "أسعار واضحة ومدفوعات محمية لا يتم تحريرها إلا بعد تأكيد تقديم الرعاية.",
-
-    licensedAndInsured:
-      "مرخّصون ومؤمّنون",
-
-    allCaregivers:
-      "جميع مقدمي الرعاية هم متخصصون مرخّصون ومغطّون بتأمين المسؤولية لراحة بالك.",
+    signedInAs:
+      "مسجل الدخول باسم",
 
     // =======================================================
-    // BENEFITS
+    // COMMON
     // =======================================================
-    everythingYouNeed:
-      "كل ما تحتاجه",
 
-    howNurseConnectSupportsYou:
-      "كيف يدعمك NurseConnect",
+    "common.back":
+      "رجوع",
 
-    nurseFeaturesDescription:
-      "صممنا كل ميزة مع وضع احتياجات الممرضين في الاعتبار — من إدارة الملف الشخصي إلى المدفوعات الآمنة.",
-
-    createYourProfile:
-      "أنشئ ملفك الشخصي",
-
-    createYourProfileDescription:
-      "أنشئ ملفًا مهنيًا يبرز مؤهلاتك وتخصصاتك وخبرتك في مجال التمريض.",
-
-    setYourAvailability:
-      "حدد أوقات توفرك",
-
-    setYourAvailabilityDescription:
-      "أنت من يحدد جدولك. اختر أوقات عملك واقبل فقط الطلبات التي تناسب أوقات توفرك.",
-
-    chooseYourCareTypes:
-      "اختر أنواع الرعاية",
-
-    chooseYourCareTypesDescription:
-      "تخصص في المجالات التي تتمتع فيها بأكبر قدر من الخبرة، وركّز على المرضى الذين يمكنك مساعدتهم فعليًا.",
-
-    receiveCareRequests:
-      "استقبل طلبات الرعاية",
-
-    receiveCareRequestsDescription:
-      "يمكن للمرضى في منطقتك إرسال طلبات رعاية تتناسب مع تخصصاتك المهنية.",
-
-    communicateSecurely:
-      "تواصل بأمان",
-
-    communicateSecurelyDescription:
-      "استخدم نظام المراسلة المشفّر لدينا للتواصل بأمان مع العملاء والعائلات.",
-
-    trackYourEarnings:
-      "تابع أرباحك",
-
-    trackYourEarningsDescription:
-      "مدفوعات أسبوعية واضحة وشفافة. يمكنك عرض سجل أرباحك وإدارة أموالك من مكان واحد.",
-
-    buildYourReputation:
-      "ابنِ سمعتك المهنية",
-
-    buildYourReputationDescription:
-      "اجمع تقييمات موثّقة من المرضى. الرعاية الجيدة تساعدك في الحصول على المزيد من الحجوزات وزيادة أسعارك.",
-
-    manageBookings:
-      "إدارة الحجوزات",
-
-    manageBookingsDescription:
-      "لوحة تحكم بسيطة ومنظمة لإدارة جميع مواعيدك ومعلومات المرضى.",
-
-    // =======================================================
-    // HOW TO JOIN
-    // =======================================================
-    howToJoin:
-      "كيفية الانضمام",
-
-    gettingStarted:
-      "البدء يستغرق أقل من 10 دقائق.",
-
-    createAccount:
-      "إنشاء حساب",
-
-    createAccountDescription:
-      "سجّل حسابك باستخدام معلوماتك المهنية.",
-
-    buildProfile:
-      "إنشاء الملف الشخصي",
-
-    buildProfileDescription:
-      "أضف مؤهلاتك وتخصصاتك وصورتك الشخصية.",
-
-    passVerification:
-      "اجتياز التحقق",
-
-    passVerificationDescription:
-      "نتحقق من ترخيصك ونجري فحصًا للخلفية.",
-
-    startConnecting:
-      "ابدأ بالتواصل",
-
-    startConnectingDescription:
-      "فعّل ملفك وابدأ باستقبال طلبات الرعاية.",
-
-    // =======================================================
-    // NURSE TESTIMONIAL
-    // =======================================================
-    nurseTestimonial:
-      "تجربة ممرض",
-
-    nurseTestimonialQuote:
-      "منحني NurseConnect الحرية لأقوم بالعمل الذي أحبه بالطريقة التي تناسبني. أحدد جدولي بنفسي، وأختار مرضاي، وأكسب أكثر مما كنت أكسبه في العيادة.",
-
-    nurseExperienceLocation:
-      "12 سنة من الخبرة • أوكلاند، كاليفورنيا",
-
-    // =======================================================
-    // AI PAGE
-    // =======================================================
-    aiCareAssistantDescription:
-      "صف حالتك بطريقة بسيطة وسأقترح لك نوع الرعاية المناسب وملف الممرض المناسب لاحتياجاتك.",
-
-    describeTheSituation:
-      "صف الحالة",
-
-    startVoiceInput:
-      "بدء الإدخال الصوتي",
-
-    stopRecording:
-      "إيقاف التسجيل",
-
-    listening:
-      "جارٍ الاستماع...",
-
-    voiceInput:
-      "إدخال صوتي",
-
-    careAssistantPlaceholder:
-      "اكتب أو تحدث، مثال: والدتي تبلغ 75 عامًا وتحتاج إلى المساعدة في تناول الأدوية والمشي والمتابعة اليومية بعد عملية الورك...",
-
-    toAnalyze:
-      "للتحليل",
-
-    analyzing:
-      "جارٍ التحليل...",
-
-    analyzeNeeds:
-      "تحليل الاحتياجات",
-
-    tryAnExample:
-      "جرّب مثالًا",
-
-    microphonePermissionDenied:
-      "تم رفض إذن استخدام الميكروفون. يرجى السماح بالوصول إليه من إعدادات المتصفح.",
-
-    voiceCaptureError:
-      "حدث خطأ أثناء التقاط الصوت. يرجى المحاولة مرة أخرى.",
-
-    speechRecognitionNotSupported:
-      "متصفحك لا يدعم التعرف على الكلام. يرجى استخدام Google Chrome أو Microsoft Edge.",
-
-    aiClinicalTriage:
-      "جارٍ إجراء التقييم السريري بالذكاء الاصطناعي...",
-
-    aiClinicalTriageDescription:
-      "جارٍ تحليل الأعراض وتقييم عوامل الخطورة ومطابقة الحالات مع ملفات تمريضية متخصصة.",
-
-    aiResultsWillAppearHere:
-      "ستظهر نتائج الذكاء الاصطناعي هنا",
-
-    aiResultsDescription:
-      'صف حالة الرعاية الخاصة بك على اليسار واضغط على "تحليل الاحتياجات" للحصول على توصيات مخصصة.',
-
-    urgentMedicalAttention:
-      "مطلوب عناية طبية عاجلة (تم اكتشاف علامة خطرة)",
-
-    urgentMedicalAttentionDescription:
-      "الأعراض التي تم وصفها قد تشير إلى حالة صحية حادة وغير مستقرة. اتصل بخدمات الطوارئ الطبية فورًا أو توجّه إلى أقرب قسم طوارئ دون تأخير للحصول على الرعاية المنزلية.",
-
-    careProtocol:
-      "بروتوكول الرعاية",
-
-    priority:
-      "الأولوية",
-
-    criticalParametersToMonitor:
-      "المؤشرات الحيوية المهمة للمراقبة",
-
-    immediateActionSteps:
-      "خطوات الرعاية الفورية",
-
-    primaryRecommendedNurse:
-      "الممرض الموصى به الأساسي",
-
-    viewNurseCV:
-      "عرض السيرة الذاتية للممرض",
-
-    noCVAvailable:
-      "السيرة الذاتية غير متوفرة",
-
-    bookAppointment:
-      "حجز موعد",
-
-    secondaryAlternativeMatch:
-      "الممرض البديل المقترح",
-
-    viewAlternateCV:
-      "عرض السيرة الذاتية البديلة",
-
-    selectBackup:
-      "اختيار البديل",
-
-    cv:
-      "السيرة الذاتية",
-
-    officialRegisteredCredentials:
-      "المؤهلات الرسمية المسجلة",
-
-    open:
-      "فتح",
-
-    close:
-      "إغلاق",
-
-    nurseCV:
-      "السيرة الذاتية للممرض",
-
-    // =======================================================
-    // NURSE PROFILE / DASHBOARD
-    // =======================================================
-    "nurse.registeredNurse":
-      "ممرّض/ة مسجّل/ة",
-
-    "nurse.loadingData":
-      "جارٍ تحميل بيانات الممرّض/ة...",
-
-    "nurse.profileNotAccessible":
-      "الملف الشخصي غير متاح",
-
-    "nurse.pleaseLogin":
-      "يرجى تسجيل الدخول.",
-
-    "nurse.signIn":
-      "تسجيل الدخول",
-
-    "nurse.applicationUnderReview":
-      "طلب الانضمام كممرّض/ة قيد المراجعة",
-
-    "nurse.waitingApproval":
-      "ملفك الشخصي بانتظار موافقة المسؤول.",
-
-    "nurse.cancel":
-      "إلغاء",
-
-    "nurse.editProfile":
-      "تعديل الملف الشخصي",
-
-    "nurse.change":
-      "تغيير",
-
-    "nurse.uploadNewPhoto":
-      "اضغط لاختيار صورة شخصية جديدة",
-
-    "nurse.viewMyCV":
-      "عرض سيرتي الذاتية",
-
-    "nurse.hourlyRate":
-      "الأجر بالساعة",
-
-    "nurse.totalBookings":
-      "إجمالي الحجوزات",
-
-    "nurse.experience":
-      "الخبرة",
-
-    "nurse.years":
-      "سنة",
-
-    "nurse.reviews":
-      "التقييمات",
-
-    "nurse.curriculumVitae":
-      "السيرة الذاتية (CV)",
-
-    "nurse.verifiedSubmitted":
-      "تم التحقق منها وإرسالها إلى الإدارة",
-
-    "nurse.noCV":
-      "لم يتم رفع السيرة الذاتية بعد",
-
-    "nurse.previewCV":
-      "معاينة السيرة الذاتية",
-
-    "nurse.openNewTab":
-      "فتح في علامة تبويب جديدة",
-
-    "nurse.notProvided":
-      "غير متوفرة",
-
-    "nurse.editProfileDetails":
-      "تعديل تفاصيل الملف الشخصي",
-
-    "nurse.updateQualifications":
-      "حدّث مؤهلاتك السريرية وبيانات الاتصال والمستندات.",
-
-    "nurse.profileImage":
-      "الصورة الشخصية",
-
-    "nurse.replaceCV":
-      "استبدال السيرة الذاتية",
-
-    "nurse.uploadPDFImage":
-      "اضغط لرفع PDF أو صورة",
-
-    "nurse.specialization":
-      "التخصص",
-
-    "nurse.experienceExample":
-      "مثال: 5 سنوات، 1-3",
-
-    "nurse.rate":
-      "السعر ($ / ساعة)",
-
-    "nurse.locationCity":
-      "الموقع / المدينة",
-
-    "nurse.phoneNumber":
-      "رقم الهاتف",
-
-    "nurse.saveAllChanges":
-      "حفظ جميع التغييرات",
-
-    "nurse.allPatientBookings":
-      "جميع حجوزات المرضى",
-
-    "nurse.manageBookings":
-      "إدارة وتحديث وحذف طلبات الرعاية الواردة.",
-
-    "nurse.total":
-      "الإجمالي",
-
-    "nurse.noBookings":
-      "لا توجد حجوزات مخصصة لك حتى الآن.",
-
-    "nurse.request":
-      "الطلب",
-
-    "nurse.bookedOn":
-      "تم الحجز في",
-
-    "nurse.careType":
-      "نوع الرعاية",
-
-    "nurse.for":
-      "لـ",
-
-    "nurse.dateDuration":
-      "التاريخ والمدة",
-
-    "nurse.patientContact":
-      "بيانات اتصال المريض",
-
-    "nurse.noPhone":
-      "لا يوجد رقم هاتف",
-
-    "nurse.location":
-      "الموقع",
-
-    "nurse.viewMap":
-      "عرض الخريطة",
-
-    "nurse.notes":
-      "ملاحظات",
-
-    "nurse.pending":
-      "قيد الانتظار",
-
-    "nurse.accepted":
-      "مقبول",
-
-    "nurse.rejected":
-      "مرفوض",
-
-    "nurse.completed":
-      "مكتمل",
-
-    "nurse.decline":
-      "رفض",
-
-    "nurse.acceptBooking":
-      "قبول الحجز",
-
-    "nurse.markCompleted":
-      "تحديد كمكتمل",
-
-    "nurse.cvPreview":
-      "معاينة السيرة الذاتية",
-
-    "nurse.open":
-      "فتح",
-
-    "nurse.confirmDelete":
-      "هل أنت متأكد أنك تريد حذف سجل الحجز هذا؟",
-
-    "nurse.failedUpdateStatus":
-      "فشل تحديث الحالة.",
-
-    "nurse.failedDelete":
-      "فشل حذف الحجز.",
-
-    "nurse.failedUpdateProfile":
-      "فشل تحديث تفاصيل الملف الشخصي.",
-
-    "nurse.couldNotLoad":
-      "تعذّر تحميل ملفك الشخصي وحجوزاتك.",
-
-    // =======================================================
-    // LOGIN
-    // =======================================================
-    welcomeBack:
-      "مرحبًا بعودتك",
-
-    pleaseSignIn:
-      "يرجى تسجيل الدخول إلى حسابك.",
-
-    patientLogin:
-      "تسجيل دخول المريض",
-
-    nurseLogin:
-      "تسجيل دخول الممرض",
-
-    emailAddress:
-      "البريد الإلكتروني",
-
-    password:
-      "كلمة المرور",
-
-    forgotPassword:
-      "هل نسيت كلمة المرور؟",
-
-    rememberMe:
-      "تذكرني",
-
-    signingIn:
-      "جارٍ تسجيل الدخول...",
-
-    orContinueWith:
-      "أو المتابعة باستخدام",
-
-    googleLoginUnavailable:
-      "خدمة تسجيل الدخول باستخدام Google غير متاحة",
-
-    dontHaveAccount:
-      "ليس لديك حساب؟",
-
-    wantToJoinNetwork:
-      "هل تريد الانضمام إلى شبكتنا؟",
-
-    loginError:
-      "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى لاحقًا.",
-
-    googleLoginFailed:
-      "فشل تسجيل الدخول باستخدام Google",
-
-    medicalStaffAlt:
-      "طاقم طبي يتعاون معًا",
-
-    compassionateCareTitle:
-      "رعاية متعاطفة، وتواصل احترافي.",
-
-    compassionateCareDescription:
-      "نُسهّل التواصل وسير العمل الأساسي لتقديم نتائج أفضل للمرضى.",
-
-    // =======================================================
-    // PATIENT REGISTRATION
-    // =======================================================
-    trustedSecure:
-      "موثوق وآمن",
-
-    empoweringHealthcareJourney:
-      "نساعدك في رحلتك الصحية.",
-
-    healthcareJourneyDescription:
-      "احصل على رعاية تمريضية موثوقة ومتعاطفة مباشرة من منزلك. نحن هنا لدعم صحة عائلتك.",
-
-    findCareFamilyDeserves:
-      "اعثر على الرعاية التي تستحقها عائلتك.",
-
-    joinNurseConnectDescription:
-      "انضم إلى NurseConnect للتواصل مع ممرضين موثوقين ومتعاطفين في منطقتك.",
-
-    firstName:
-      "الاسم الأول",
-
-    lastName:
-      "اسم العائلة",
-
-    firstNamePlaceholder:
-      "جين",
-
-    lastNamePlaceholder:
-      "دو",
-
-    phoneNumber:
-      "رقم الهاتف",
-
-    phonePlaceholder:
-      "0000-000 (555)",
-
-    creatingAccount:
-      "جارٍ إنشاء الحساب...",
-
-    createPatientAccount:
-      "إنشاء حساب مريض",
-
-    securePrivate:
-      "آمن وخاص.",
-
-    securePrivateDescription:
-      "منصة متوافقة مع معايير HIPAA وتستخدم تشفيرًا بمستوى 256 بت لضمان بقاء بياناتك خاصة بالكامل.",
-
-    alreadyHaveAccount:
-      "لديك حساب بالفعل؟",
-
-    registrationError:
-      "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى لاحقًا.",
-
-    // =======================================================
-    // NURSE REGISTRATION
-    // =======================================================
-    accountCreation:
-      "إنشاء الحساب",
-
-    joinTrustedProfessionals:
-      "انضم إلى شبكتنا من المتخصصين الموثوقين في مجال الرعاية الصحية.",
-
-    nurseApplicationDescription:
-      "يرجى تقديم معلوماتك الشخصية وصورة الملف الشخصي والمؤهلات للتحقق منها. يقوم فريقنا بمراجعة جميع الطلبات خلال 24–48 ساعة.",
-
-    personalInformation:
-      "01 / المعلومات الشخصية",
-
-    fullLegalName:
-      "الاسم القانوني الكامل",
-
-    fullNamePlaceholder:
-      "جين دو",
-
-    professionalProfile:
-      "02 / الملف المهني",
-
-    primarySpecialization:
-      "التخصص الأساسي",
-
-    selectSpecialization:
-      "اختر التخصص...",
-
-    generalHomeCare:
-      "الرعاية العامة / المنزلية",
-
-    pediatricCare:
-      "رعاية الأطفال",
-
-    geriatricCare:
-      "رعاية المسنين",
-
-    icuCriticalCare:
-      "العناية المركزة / الرعاية الحرجة",
-
-    postOperativeCare:
-      "الرعاية بعد العمليات",
-
-    yearsOfExperience:
-      "سنوات الخبرة",
-
-    selectYears:
-      "اختر عدد السنوات...",
-
-    lessThanOneYear:
-      "أقل من سنة",
-
-    oneToThreeYears:
-      "1–3 سنوات",
-
-    threeToFiveYears:
-      "3–5 سنوات",
-
-    fiveToTenYears:
-      "5–10 سنوات",
-
-    tenPlusYears:
-      "10+ سنوات",
-
-    currentLocation:
-      "الموقع الحالي / المنطقة",
-
-    selectCareCategories:
-      "اختر فئات الرعاية / الخدمات المقدمة",
-
-    selected:
-      "محدد",
-
-    homeCare:
-      "الرعاية المنزلية",
-
-    postSurgeryCare:
-      "الرعاية بعد العمليات",
-
-    woundDressing:
-      "تضميد الجروح",
-
-    ivTherapy:
-      "العلاج الوريدي والحقن",
-
-    icuSupport:
-      "دعم العناية المركزة",
-
-    physicalTherapy:
-      "المساعدة في العلاج الطبيعي",
-
-    typeOfCare:
-      "نوع الرعاية",
-
-    selectPrimaryCareType:
-      "يرجى اختيار نوع الرعاية الأساسي المطلوب. يمكنك مناقشة التفاصيل المحددة لاحقًا.",
-
-    mobilityAssistance:
-      "المساعدة على الحركة",
-
-    other:
-      "أخرى",
-
-    back:
-      "Back",
-
-    continue:
+    "common.continue":
       "متابعة",
-
-    profilePhotoCvUpload:
-      "03 / رفع صورة الملف الشخصي والسيرة الذاتية",
-
-    acceptedFormats:
-      "الصيغ المقبولة: JPG، PNG، WEBP، PDF (الحد الأقصى 5MB)",
-
-    profilePicture:
-      "صورة الملف الشخصي",
-
-    clickToUploadPhoto:
-      "اضغط لرفع الصورة",
-
-    curriculumVitae:
-      "السيرة الذاتية (CV)",
-
-    clickToUploadCv:
-      "اضغط لرفع السيرة الذاتية",
-
-    submitting:
-      "جارٍ الإرسال...",
-
-    submitRegistration:
-      "إرسال طلب التسجيل",
-
-    logIn:
-      "تسجيل الدخول",
-
-    uploadProfilePhoto:
-      "يرجى رفع صورة للملف الشخصي.",
-
-    uploadCv:
-      "يرجى رفع السيرة الذاتية.",
-
-    selectAtLeastOneCategory:
-      "يرجى اختيار فئة رعاية أو خدمة واحدة على الأقل.",
-
-    nurseRegistrationError:
-      "حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى لاحقًا.",
 
     // =======================================================
     // WHO NEEDS CARE
     // =======================================================
+
     whoNeedsCare:
       "من يحتاج إلى الرعاية؟",
 
@@ -3344,6 +1673,7 @@ nurse: "ممرضة", admin: "مسؤول", myProfile: "الملف الشخصي", 
     // =======================================================
     // WHEN & WHERE
     // =======================================================
+
     whenAndWhere:
       "متى وأين؟",
 
@@ -3418,11 +1748,11 @@ nurse: "ممرضة", admin: "مسؤول", myProfile: "الملف الشخصي", 
 
     selectCareDuration:
       "يرجى اختيار مدة الرعاية.",
-	  // Profile
-	
+
     // =======================================================
     // DESCRIBE NEEDS
     // =======================================================
+
     "describeNeeds.title":
       "صِف احتياجاتك",
 
@@ -3438,6 +1768,7 @@ nurse: "ممرضة", admin: "مسؤول", myProfile: "الملف الشخصي", 
     // =======================================================
     // REVIEW
     // =======================================================
+
     "review.title":
       "مراجعة وإرسال",
 
@@ -3499,336 +1830,492 @@ nurse: "ممرضة", admin: "مسؤول", myProfile: "الملف الشخصي", 
       "24 ساعة",
 
     // =======================================================
-    // LICENSE VERIFICATION
+    // CONFIRMATION
     // =======================================================
-    "licenseVerification.registrationSubmitted":
-      "تم إرسال التسجيل",
 
-    "licenseVerification.onboardingStatus":
-      "حالة التسجيل",
+    "confirmation.title":
+      "تم إرسال طلب الرعاية!",
 
-    "licenseVerification.trackApplication":
-      "تتبّع طلبك وأكمل الخطوات المطلوبة.",
+    "confirmation.description":
+      "نحن نبحث لك عن الممرضة الأنسب في منطقتك. ستتلقى تأكيدًا قريبًا.",
 
-    "licenseVerification.accountCreated":
-      "تم إنشاء الحساب",
+    "confirmation.preferredNurse":
+      "الممرضة المفضلة",
 
-    "licenseVerification.licenseVerification":
-      "التحقق من الترخيص",
+    "confirmation.careFor":
+      "الرعاية لـ",
 
-    "licenseVerification.backgroundCheck":
-      "التحقق من الخلفية",
+    "confirmation.careType":
+      "نوع الرعاية",
 
-    "licenseVerification.activation":
-      "التفعيل",
+    "confirmation.startDate":
+      "تاريخ البدء",
 
-    "licenseVerification.activeProcess":
-      "العملية الحالية",
+    "confirmation.duration":
+      "المدة",
 
-    "licenseVerification.inProgress":
-      "قيد التنفيذ",
+    "confirmation.location":
+      "الموقع",
 
-    "licenseVerification.reviewDescription":
-      "لقد استلمنا مستنداتك، ويتم حاليًا مراجعة مؤهلاتك المهنية. يساعد هذا التحقق في ضمان استيفاء جميع الممرضات لمعاييرنا المهنية.",
+    "confirmation.oneHour":
+      "ساعة واحدة",
 
-    "licenseVerification.documentsSubmitted":
-      "المستندات المقدمة",
+    "confirmation.twoHours":
+      "ساعتان",
 
-    "licenseVerification.nursingLicense":
-      "ترخيص التمريض",
+    "confirmation.fourHours":
+      "4 ساعات",
+"safety.badge": "سلامة المرضى والممرضين",
 
-    "licenseVerification.curriculumVitae":
-      "السيرة الذاتية",
+"safety.title": "سلامتك أولويتنا",
 
-    "licenseVerification.verificationStatus":
-      "حالة التحقق",
+"safety.heroDescription":
+  "نلتزم بتوفير تجربة رعاية موثوقة ومحترمة وآمنة لكل مريض وممرض.",
 
-    "licenseVerification.documentsUnderReview":
-      "المستندات قيد المراجعة",
+"safety.verifiedNurses": "ممرضون موثوقون",
+"safety.verifiedNursesDesc":
+  "نراجع ملفات الممرضين والمعلومات المهنية لمساعدة العائلات في التواصل مع مقدمي رعاية موثوقين.",
+"safety.verifiedNursesCheck": "تمت مراجعة المعلومات المهنية",
 
-    "licenseVerification.usuallyCompleted":
-      "عادةً ما تكتمل خلال 24–48 ساعة.",
+"safety.secureBooking": "حجز آمن ومنظم",
+"safety.secureBookingDesc":
+  "صممنا عملية الحجز لتكون واضحة ومنظمة وسهلة لإدارة طلبات الرعاية.",
+"safety.secureBookingCheck": "حجز بسيط وواضح",
 
-    "licenseVerification.secureMessage":
-      "تتم مراجعة مستنداتك بشكل آمن من قبل فريق التحقق لدينا. سيتم إعلامك عند اكتمال هذه الخطوة.",
+"safety.transparentProfiles": "ملفات تعريف واضحة",
+"safety.transparentProfilesDesc":
+  "يمكنك الاطلاع على معلومات الممرض وتخصصاته وخبرته وتفاصيل الرعاية قبل اتخاذ قرارك.",
+"safety.transparentProfilesCheck": "معلومات واضحة عن الممرض",
 
-    "licenseVerification.requiredActions":
-      "الإجراءات المطلوبة",
+"safety.familyFocused": "رعاية تركز على العائلة",
+"safety.familyFocusedDesc":
+  "نساعد العائلات في العثور على الرعاية المناسبة مع الحفاظ على التواصل والاحترام والراحة في صميم التجربة.",
+"safety.familyFocusedCheck": "رعاية مصممة وفق احتياجاتك",
 
-    "licenseVerification.applicationSubmitted":
-      "تم إرسال الطلب",
+"safety.safetyNoteTitle": "تجربة رعاية مبنية على الثقة",
+"safety.safetyNoteDescription":
+  "نشجع المرضى والممرضين على التواصل بوضوح واحترام بعضهم البعض واستخدام المنصة بطريقة مسؤولة.",
 
-    "licenseVerification.noActionRequired":
-      "تم إرسال تسجيلك بنجاح. لا يلزم اتخاذ أي إجراء إضافي في هذه المرحلة.",
+"safety.trustedCare": "رعاية موثوقة في كل خطوة",
 
-    "licenseVerification.nextStep":
-      "الخطوة التالية",
+"safety.trustedCareDescription":
+  "استكشف ملفات الممرضين واعثر على الرعاية التي تناسب احتياجاتك.",
 
-    // =======================================================
-    // BACKGROUND CHECK
-    // =======================================================
-    "backgroundCheck.registrationSubmitted":
-      "تم إرسال التسجيل",
+"safety.findNurse": "ابحث عن ممرض",
+    "confirmation.eightHours":
+      "8 ساعات",
 
-    "backgroundCheck.title":
-      "التحقق من الخلفية",
+    "confirmation.twelveHours":
+      "12 ساعة",
 
-    "backgroundCheck.stepDescription":
-      "الخطوة 3 من 4 في عملية التسجيل الخاصة بك.",
+    "confirmation.twentyFourHours":
+      "24 ساعة",
+"privacy.badge": "الخصوصية وحماية البيانات",
+"privacy.title": "سياسة الخصوصية",
+"privacy.description":
+  "خصوصيتك مهمة بالنسبة لنا. نوضح هنا بطريقة بسيطة وواضحة كيفية تعامل NurseConnect مع معلوماتك الشخصية وحمايتها.",
+"privacy.readTime": "قراءة خلال 3 دقائق",
+"privacy.dataProtection": "حماية البيانات",
 
-    "backgroundCheck.profile":
-      "الملف الشخصي",
+"privacy.trustOneTitle": "الخصوصية أولاً",
+"privacy.trustOneDescription":
+  "نتعامل مع معلوماتك الشخصية بعناية واحترام.",
 
-    "backgroundCheck.license":
-      "الترخيص",
+"privacy.trustTwoTitle": "معلومات محمية",
+"privacy.trustTwoDescription":
+  "نستخدم إجراءات أمنية مناسبة للمساعدة في حماية معلوماتك.",
 
-    "backgroundCheck.background":
-      "التحقق من الخلفية",
+"privacy.trustThreeTitle": "عدم المشاركة غير الضرورية",
+"privacy.trustThreeDescription":
+  "لا نشارك معلوماتك إلا عندما يكون ذلك ضروريًا لتقديم خدماتنا.",
 
-    "backgroundCheck.activation":
-      "التفعيل",
-
-    "backgroundCheck.currentStatus":
-      "الحالة الحالية",
-
-    "backgroundCheck.inProgress":
-      "قيد التنفيذ",
-
-    "backgroundCheck.description":
-      "لقد بدأ التحقق من خلفيتك. يقوم فريق التحقق لدينا بمراجعة المعلومات المطلوبة قبل أن يتم تفعيل حسابك.",
-
-    "backgroundCheck.requiredActions":
-      "الإجراءات المطلوبة",
-
-    "backgroundCheck.verificationInformation":
-      "معلومات التحقق",
-
-    "backgroundCheck.informationDescription":
-      "يرجى التأكد من أن المعلومات المقدمة أثناء التسجيل دقيقة وكاملة.",
-
-    "backgroundCheck.reviewInformation":
-      "مراجعة المعلومات",
-
-    "backgroundCheck.securityMessage":
-      "يتم التعامل مع معلوماتك بشكل آمن، وتُستخدم فقط لأغراض التحقق المهني.",
-
-    "backgroundCheck.verificationScope":
-      "نطاق التحقق",
-
-    "backgroundCheck.criminalRecords":
-      "البحث في السجلات الجنائية",
-
-    "backgroundCheck.sexRegistry":
-      "التحقق من سجل الجرائم الجنسية",
-
-    "backgroundCheck.employmentVerification":
-      "التحقق من الخبرة الوظيفية",
-
-    "backgroundCheck.educationVerification":
-      "التحقق من المؤهلات التعليمية",
-
-    "backgroundCheck.timeline":
-      "الجدول الزمني",
-
-    "backgroundCheck.requestSubmitted":
-      "تم إرسال الطلب",
-
-    "backgroundCheck.backgroundStarted":
-      "بدأ التحقق من الخلفية",
-
-    "backgroundCheck.backgroundReview":
-      "مراجعة الخلفية",
-
-    "backgroundCheck.currentlyInProgress":
-      "قيد التنفيذ حاليًا",
-
-    "backgroundCheck.approval":
-      "الموافقة",
-
-    "backgroundCheck.waitingVerification":
-      "بانتظار اكتمال التحقق",
-
-    // =======================================================
-    // ACTIVATED
-    // =======================================================
-    "activated.registrationSubmitted":
-      "تم إرسال التسجيل",
-
-    "activated.title":
-      "طلبك قيد المراجعة",
-
-    "activated.profile":
-      "الملف الشخصي",
-
-    "activated.license":
-      "الترخيص",
-
-    "activated.background":
-      "التحقق من الخلفية",
-
-    "activated.activation":
-      "التفعيل",
-
-    "activated.successTitle":
-    "لقد اكتملت عملية تسجيلك كممرض . يقوم فريقنا حالياً بمراجعة طلبك. بعد الموافقة على طلبك، ستتمكنين من البدء باستقبال طلبات الرعاية.",
-    "activated.successDescription":
-        "تم إرسال ملفك وهو بانتظار الموافقة. سيتم إعلامك عند انتهاء عملية المراجعة.",
-    "activated.firstSteps":
-      "خطواتك الأولى",
-
-    "activated.completeProfile":
-      "أكمل ملفك الشخصي",
-
-    "activated.completeProfileDescription":
-      "أضف خبرتك المهنية وتفضيلاتك حتى يتمكن المرضى من العثور عليك.",
-
-    "activated.setAvailability":
-      "حدد أوقات توافرك",
-
-    "activated.setAvailabilityDescription":
-      "اختر الأوقات التي تكون فيها متاحًا لاستقبال طلبات التمريض الجديدة.",
-
-    "activated.browseRequests":
-      "تصفح طلبات الرعاية",
-
-    "activated.browseRequestsDescription":
-      "اطّلع على طلبات المرضى المناسبة وتقدّم لتقديم الرعاية.",
-
-    "activated.nurseConnect":
-      "NURSECONNECT",
-
-    "activated.registeredNurse":
-      "ممرض/ة مسجل/ة",
-
-    "activated.profileReady":
-      "ملفك الشخصي جاهز.",
-
-    "activated.profileReadyDescription":
-      "بعد الموافقة على طلبك، سيتمكن المرضى من اكتشاف ملفك الشخصي وإرسال طلبات الرعاية إليك.",
-
-    "activated.goToProfile":
-      "الانتقال إلى الملف الشخصي",
-
-    "activated.startFindingRequests":
-      "ابدأ بالبحث عن طلبات الرعاية",
+"privacy.collectTitle": "1. المعلومات التي نجمعها",
+"privacy.collectTag": "المعلومات",
+"privacy.collectDescription":
+  "قد نجمع معلومات مثل اسمك وبيانات التواصل ومعلومات حسابك وتفاصيل الحجز والمعلومات التي تقدمها عند طلب الرعاية.",
+
+"privacy.useTitle": "2. كيفية استخدام معلوماتك",
+"privacy.useTag": "الاستخدام",
+"privacy.useDescription":
+  "نستخدم معلوماتك لإنشاء حسابك وإدارته، وربطك بالممرضين، ومعالجة طلبات الرعاية، والتواصل معك، وتحسين خدماتنا.",
+
+"privacy.protectionTitle": "3. كيفية حماية معلوماتك",
+"privacy.protectionTag": "الأمان",
+"privacy.protectionDescription":
+  "نتخذ إجراءات تقنية وتنظيمية مناسبة للمساعدة في حماية معلوماتك من الوصول غير المصرح به أو الفقدان أو سوء الاستخدام أو الكشف غير المصرح به.",
+
+"privacy.rightsTitle": "4. حقوقك المتعلقة بالخصوصية",
+"privacy.rightsTag": "تحكمك",
+"privacy.rightsDescription":
+  "يمكنك مراجعة معلومات حسابك أو تحديثها، كما يمكنك التواصل معنا إذا كانت لديك أسئلة حول بياناتك الشخصية أو إذا أردت طلب تعديلها.",
+
+"privacy.contactTitle": "5. التواصل معنا بشأن الخصوصية",
+"privacy.contactTag": "الدعم",
+"privacy.contactDescription":
+  "إذا كان لديك أي سؤال حول كيفية تعاملنا مع معلوماتك، يمكنك التواصل مع فريق الخصوصية للحصول على المساعدة.",
+
+"privacy.protectionBoxTitle": "حماية معلوماتك",
+"privacy.protectionBoxDescription":
+  "نتبع ممارسات أمنية تهدف إلى المساعدة في حماية حسابك ومعلوماتك الشخصية.",
+
+"privacy.protectionStepOne": "الوصول إلى الحساب",
+"privacy.protectionStepOneStatus": "محمي",
+
+"privacy.protectionStepTwo": "تخزين المعلومات",
+"privacy.protectionStepTwoStatus": "محمي",
+
+"privacy.protectionStepThree": "الوصول إلى الخدمات",
+"privacy.protectionStepThreeStatus": "مراقب",
+
+"privacy.protectionCheckOne": "الوصول محدود للاستخدام المصرح به",
+"privacy.protectionCheckTwo": "نتعامل مع المعلومات بمسؤولية",
+"privacy.protectionCheckThree": "نعمل على حماية بياناتك الشخصية",
+
+"privacy.contactBoxLabel": "دعم الخصوصية",
+"privacy.contactBoxTitle": "لديك أسئلة حول الخصوصية؟",
+"privacy.contactBoxDescription":
+  "فريقنا موجود لمساعدتك في أي أسئلة تتعلق بالخصوصية.",
+
+"privacy.ctaTitle": "لديك أسئلة حول خصوصيتك؟",
+"privacy.ctaDescription":
+  "تواصل معنا إذا كانت لديك أسئلة حول معلوماتك أو كيفية تعامل NurseConnect مع بياناتك.",
+
+"privacy.contactButton": "تواصل مع فريق الخصوصية",
+"privacy.homeButton": "العودة إلى الرئيسية",
+    "confirmation.dashboard":
+      "عرض لوحة التحكم",
+
+    "confirmation.browseNurses":
+      "تصفح الممرضات",
 
     // =======================================================
-    // PATIENT PROFILE
+    // ABOUT
     // =======================================================
-    "patientProfile.loading":
-      "جارٍ تحميل ملفك الشخصي والحجوزات...",
 
-    "patientProfile.accessDenied":
-      "الوصول مرفوض",
+    "about.ourStory":
+      "قصتنا",
 
-    "patientProfile.loginToContinue":
-      "يرجى تسجيل الدخول للمتابعة.",
+    "about.trustedCare":
+      "الرعاية الموثوقة تبدأ بأشخاص موثوقين",
 
-    "patientProfile.signIn":
-      "تسجيل الدخول",
+    "about.heroDescription":
+      "تم إنشاء NurseConnect لسد الفجوة بين العائلات التي تحتاج إلى رعاية منزلية موثوقة والممرضين المرخصين المستعدين لتقديمها، بطريقة أسهل وبمزيد من الثقة للطرفين.",
 
-    "patientProfile.memberSince":
-      "عضو منذ",
+    "about.familiesServed":
+      "عائلة تم خدمتها",
 
-    "patientProfile.noPhone":
-      "لم يتم توفير رقم هاتف",
+    "about.verifiedNurses":
+      "ممرضون موثوقون",
 
-    "patientProfile.bookNewCare":
-      "احجز رعاية جديدة",
+    "about.citiesCovered":
+      "مدينة مشمولة",
 
-    "patientProfile.careRequestsStatus":
-      "طلبات الرعاية وحالتها",
+    "about.averageRating":
+      "متوسط التقييم",
 
-    "patientProfile.followUp":
-      "تابع حجوزاتك وتحقق مما إذا تمت الموافقة على طلبك.",
+    "about.howWeStarted":
+      "كيف بدأنا",
 
-    "patientProfile.requests":
-      "طلبات",
+    "about.builtByANurse":
+      "أسسها ممرض عاش المشكلة بنفسه",
 
-    "patientProfile.noCareRequests":
-      "لا توجد طلبات رعاية بعد",
+    "about.storyParagraph1":
+      "بدأت NurseConnect في عام 2023 بعدما أمضت إحدى مؤسساتنا المشاركات، وهي ممرضة سابقة في وحدة العناية المركزة، أسابيع في محاولة العثور على رعاية منزلية موثوقة لجدتها. وبين الإحالات غير الموثوقة، وعدم وضوح المؤهلات، وعدم وجود طريقة للاطلاع على تقييمات العائلات الأخرى، استغرق الأمر وقتًا أطول بكثير مما ينبغي.",
 
-    "patientProfile.noCareRequestsDescription":
-      "لم تقم بحجز أي مقدم رعاية صحية بعد. اختر ممرضة مؤهلة لرعاية عائلتك.",
+    "about.storyParagraph2":
+      "أنشأنا المنصة التي كنا نتمنى وجودها: كل ممرض يخضع للتحقق من خلفيته وترخيصه، مع تقييمات حقيقية من عائلات حقيقية، وطريقة بسيطة للحجز والتواصل والدفع، كل ذلك في مكان واحد.",
 
-    "patientProfile.findNurse":
-      "ابحث عن ممرضة",
+    "about.foundedIn":
+      "تأسست في سان فرانسيسكو",
 
-    "patientProfile.booking":
-      "الحجز",
+    "about.licensedChecked":
+      "مرخصون وخضعوا للتحقق من الخلفية",
 
-    "patientProfile.createdOn":
-      "تم الإنشاء في",
+    "about.supportAvailable":
+      "دعم متوفر للعائلات والممرضين طوال أيام السنة",
 
-    "patientProfile.accepted":
-      "تم قبول الطلب",
+    "about.whatWeStandFor":
+      "ما نؤمن به",
 
-    "patientProfile.pending":
-      "قيد المراجعة",
+    "about.ourValues":
+      "قيمنا",
 
-    "patientProfile.rejected":
-      "تم رفض الطلب",
+    "about.compassionFirst":
+      "التعاطف أولًا",
 
-    "patientProfile.completed":
-      "تم الإنجاز",
+    "about.compassionDescription":
+      "كل عملية مطابقة تبدأ بالتعاطف. نبحث عن ممرضين يعاملون المرضى كأفراد من العائلة، وليس كمجرد قائمة مهام.",
 
-    "patientProfile.serviceType":
-      "نوع الخدمة",
+    "about.trustSafety":
+      "الثقة والأمان",
 
-    "patientProfile.for":
-      "لـ",
+    "about.trustSafetyDescription":
+      "يخضع كل ممرض على المنصة للتحقق من الترخيص وفحص الخلفية والتحقق من المراجع.",
 
-    "patientProfile.schedule":
-      "الموعد",
+    "about.communityDriven":
+      "بناءً على المجتمع",
 
-    "patientProfile.selectedNurse":
-      "الممرضة المختارة",
+    "about.communityDescription":
+      "تساعد تقييمات ومراجعات العائلات الحقيقية في الحفاظ على جودة شبكتنا وتحسينها باستمرار.",
 
-    "patientProfile.generalBooking":
-      "حجز عام",
+    "about.simpleByDesign":
+      "البساطة في التصميم",
 
-    "patientProfile.careAddress":
-      "عنوان الرعاية",
+    "about.simpleDescription":
+      "العثور على رعاية موثوقة لا يجب أن يكون أمرًا معقدًا. نوفر الحجز والتواصل والدفع في مكان واحد.",
 
-    "patientProfile.specialNotes":
-      "ملاحظات خاصة",
-	"common.back":
-	"رجوع" ,
-	"common.continue":
-	"متابعة",
-	"confirmation.title": "تم إرسال طلب الرعاية!",
-"confirmation.description":
-  "نحن نبحث لك عن الممرضة الأنسب في منطقتك. ستتلقى تأكيدًا قريبًا.",
+    "about.leadership":
+      "فريق القيادة",
 
-"confirmation.preferredNurse": "الممرضة المفضلة",
-"confirmation.careFor": "الرعاية لـ",
-"confirmation.careType": "نوع الرعاية",
-"confirmation.startDate": "تاريخ البدء",
-"confirmation.duration": "المدة",
-"confirmation.location": "الموقع",
+    "about.meetTheTeam":
+      "تعرّف على فريقنا",
 
-"confirmation.oneHour": "ساعة واحدة",
-"confirmation.twoHours": "ساعتان",
-"confirmation.fourHours": "4 ساعات",
-"confirmation.eightHours": "8 ساعات",
-"confirmation.twelveHours": "12 ساعة",
-"confirmation.twentyFourHours": "24 ساعة",
+    "about.coFounderCEO":
+      "الشريك المؤسس والرئيس التنفيذي",
 
-"confirmation.dashboard": "عرض لوحة التحكم",
-"confirmation.browseNurses": "تصفح الممرضات",
-  },
+    "about.danaBio":
+      "ممرضة سابقة في وحدة العناية المركزة، شهدت بنفسها مدى صعوبة العثور على رعاية منزلية موثوقة للعائلات.",
+
+    "about.coFounderCTO":
+      "الشريك المؤسس والرئيس التنفيذي للتكنولوجيا",
+
+    "about.marcusBio":
+      "يطور أنظمة المطابقة والجدولة التي تربط العائلات بالممرض المناسب بسرعة.",
+
+    "about.headOfNursePartnerships":
+      "رئيس قسم شراكات الممرضين",
+
+    "about.privacyBio":
+      "تتولى عملية انضمام الممرضين والتحقق من مؤهلاتهم للحفاظ على شبكة واسعة وموثوقة.",
+
+    "about.joinUs":
+      "انضم إلينا لإعادة تعريف الرعاية المنزلية",
+
+    "about.ctaDescription":
+      "سواء كنت بحاجة إلى رعاية لأحد أحبائك أو ترغب في الانضمام إلى شبكة الممرضين لدينا، يسعدنا انضمامك إلينا.",
+
+    "about.getStarted":
+      "ابدأ الآن",
+
+    "about.joinAsNurse":
+      "انضم كممرض",
+
+	  "safety.title": "الأمان والثقة",
+"safety.heroDescription":
+  "سلامتك وراحتك هما في صميم كل ما نقوم به.",
+
+"safety.ourCommitment": "التزامنا بالسلامة",
+"safety.commitmentDescription":
+  "نعمل على توفير تجربة رعاية موثوقة ومحترمة لكل عائلة.",
+
+"safety.verifiedNurses": "ممرضون موثوقون",
+"safety.verifiedNursesDesc":
+  "نراجع ملفات الممرضين والمعلومات المهنية لمساعدة العائلات في العثور على مقدمي رعاية موثوقين.",
+
+"safety.professionalStandards": "المعايير المهنية",
+"safety.professionalStandardsDesc":
+  "نحرص على أن يتم تقديم الرعاية بمهنية واحترام ومسؤولية.",
+
+"safety.safeCare": "رعاية آمنة",
+"safety.safeCareDesc":
+  "نسعى إلى توفير بيئة رعاية آمنة يشعر فيها المرضى والممرضون بالراحة والاحترام.",
+
+"safety.trustedCommunity": "مجتمع قائم على الثقة",
+"safety.trustedCommunityDesc":
+  "نؤمن بأن الثقة تُبنى من خلال الشفافية والتواصل والرعاية المحترمة.",
+
+"safety.trustTitle": "رعاية يمكنك الوثوق بها",
+"safety.trustDescription":
+  "تربط NurseConnect العائلات بالممرضين مع وضع السلامة والاحترام وجودة الرعاية في صميم التجربة.",
+ // =========================================================
+// TERMS OF SERVICE - ARABIC
+// =========================================================
+
+"terms.badge": "شروط الاستخدام",
+
+"terms.title": "شروط الاستخدام",
+
+"terms.description":
+  "شروط بسيطة وواضحة لاستخدام NurseConnect وطلب الرعاية والتواصل مع الممرضين.",
+
+"terms.simpleTerms": "شروط واضحة وبسيطة",
+
+"terms.trust": "مبنية على الثقة",
+
+"terms.noticeTitle": "يرجى القراءة قبل استخدام NurseConnect",
+
+"terms.noticeDescription":
+  "باستخدامك لمنصة NurseConnect، فإنك توافق على استخدام المنصة بطريقة مسؤولة والالتزام بهذه الشروط. تساعد هذه الشروط في الحفاظ على تجربة واضحة ومحترمة وآمنة للمرضى والممرضين.",
+
+"terms.sectionsLabel": "إرشادات المنصة",
+
+"terms.sectionsTitle": "أهم شروطنا",
+
+"terms.useTitle": "1. استخدام NurseConnect",
+
+"terms.useDescription":
+  "تساعد NurseConnect المرضى والعائلات في اكتشاف الممرضين وإرسال طلبات الرعاية من خلال المنصة.",
+
+"terms.useCheck":
+  "استخدم المنصة بطريقة مسؤولة",
+
+"terms.accountsTitle": "2. الحسابات والمعلومات",
+
+"terms.accountsDescription":
+  "أنت مسؤول عن تقديم معلومات صحيحة والحفاظ على تحديث بيانات حسابك.",
+
+"terms.accountsCheck":
+  "حافظ على دقة معلوماتك",
+
+"terms.bookingTitle": "3. الحجوزات والطلبات",
+
+"terms.bookingDescription":
+  "يجب أن تتضمن طلبات الرعاية معلومات دقيقة عن الشخص الذي سيحصل على الرعاية والخدمات المطلوبة والتاريخ والوقت والموقع.",
+
+"terms.bookingCheck":
+  "قدّم تفاصيل دقيقة عن الحجز",
+
+"terms.responsibilitiesTitle": "4. مسؤوليات المريض والممرض",
+
+"terms.responsibilitiesDescription":
+  "يُتوقع من المرضى والممرضين التواصل باحترام والالتزام بالمواعيد المتفق عليها واتباع متطلبات السلامة والمهنية المعمول بها.",
+
+"terms.responsibilitiesCheck":
+  "التواصل باحترام",
+
+"terms.safetyTitle": "5. السلامة والاستخدام المناسب",
+
+"terms.safetyDescription":
+  "لا ينبغي استخدام NurseConnect في حالات الطوارئ أو الأنشطة غير القانونية. في حالات الطوارئ، تواصل مع خدمات الطوارئ المحلية.",
+
+"terms.safetyCheck":
+  "استخدم المنصة بأمان",
+
+"terms.contactTitle": "6. الأسئلة والتواصل",
+
+"terms.contactDescription":
+  "إذا كانت لديك أسئلة حول هذه الشروط أو حول كيفية عمل NurseConnect، يمكنك التواصل مع فريقنا للحصول على المساعدة.",
+
+"terms.contactCheck":
+  "نحن هنا لمساعدتك",
+
+"terms.ctaTitle": "لديك أسئلة حول شروط الاستخدام؟",
+
+"terms.ctaDescription":
+  "تواصل معنا إذا كنت بحاجة إلى توضيح حول استخدام NurseConnect أو هذه الشروط.",
+
+"terms.contactButton": "تواصل معنا",
+
+"terms.homeButton": "العودة إلى الرئيسية",
+// =========================================================
+// CONTACT - ARABIC
+// =========================================================
+
+"contact.badge": "نحن هنا لمساعدتك",
+
+"contact.title": "كيف يمكننا مساعدتك؟",
+
+"contact.description":
+  "سواء كان لديك سؤال حول الرعاية، أو تحتاج إلى مساعدة في الحجز، أو ترغب في الانضمام إلى شبكة الممرضين لدينا، فريقنا هنا لمساعدتك.",
+
+"contact.support": "الدعم والمساعدة",
+
+"contact.response": "سنقوم بالرد عليك",
+
+"contact.formLabel": "أرسل لنا رسالة",
+
+"contact.formTitle": "أخبرنا كيف يمكننا مساعدتك",
+
+"contact.name": "الاسم الكامل",
+
+"contact.namePlaceholder": "أدخل اسمك",
+
+"contact.email": "البريد الإلكتروني",
+
+"contact.emailPlaceholder": "you@example.com",
+
+"contact.subject": "الموضوع",
+
+"contact.subjectGeneral": "استفسار عام",
+
+"contact.subjectBooking": "المساعدة في الحجز",
+
+"contact.subjectNurse": "تسجيل ممرض",
+
+"contact.subjectAccount": "مساعدة الحساب",
+
+"contact.message": "الرسالة",
+
+"contact.messagePlaceholder":
+  "أخبرنا كيف يمكننا مساعدتك...",
+
+"contact.sendButton": "إرسال الرسالة",
+
+"contact.formNote":
+  "يرجى عدم مشاركة معلومات طبية حساسة من خلال هذا النموذج.",
+
+"contact.successTitle": "تم إرسال الرسالة",
+
+"contact.successDescription":
+  "شكرًا لتواصلك مع NurseConnect. سيقوم فريقنا بمراجعة رسالتك والتواصل معك.",
+
+"contact.sendAnother": "إرسال رسالة أخرى",
+
+"contact.emailTitle": "راسلنا عبر البريد الإلكتروني",
+
+"contact.emailDescription":
+  "للاستفسارات العامة أو الدعم أو أي أسئلة أخرى، يمكنك التواصل معنا عبر البريد الإلكتروني.",
+
+"contact.phoneTitle": "الهاتف",
+
+"contact.phoneDescription":
+  "للحصول على مساعدة مباشرة، يمكنك التواصل مع فريقنا عبر الهاتف.",
+
+"contact.phoneNumber": "+961 00 000 000",
+
+"contact.locationTitle": "موقعنا",
+
+"contact.locationDescription":
+  "يقع NurseConnect في لبنان ويخدم المرضى والممرضين من خلال منصتنا الإلكترونية.",
+
+"contact.location": "طرابلس، لبنان",
+
+"contact.emergencyTitle": "هل تواجه حالة طبية طارئة؟",
+
+"contact.emergencyDescription":
+  "NurseConnect ليست خدمة طوارئ. إذا كنت تواجه حالة طبية طارئة، تواصل فورًا مع خدمات الطوارئ المحلية.",
+
+"contact.infoOneTitle": "دعم المرضى",
+
+"contact.infoOneDescription":
+  "احصل على المساعدة في الحجوزات والحسابات وطلبات الرعاية.",
+
+"contact.infoTwoTitle": "ساعات الدعم",
+
+"contact.infoTwoDescription":
+  "سيقوم فريقنا بالرد على رسالتك في أقرب وقت ممكن.",
+
+"contact.infoThreeTitle": "خصوصيتك مهمة",
+
+"contact.infoThreeDescription":
+  "يرجى مشاركة المعلومات الضرورية فقط لمعالجة طلبك.",
+ },
 };
 
 // =========================================================
 // CONTEXT
 // =========================================================
 
-const LanguageContext = createContext<LanguageContextType>({
-  lang: "en",
-  toggleLang: () => {},
-  dir: "ltr",
-  t: (key) => key,
-});
+const LanguageContext =
+  createContext<LanguageContextType>({
+    lang: "en",
+
+    toggleLang: () => {},
+
+    dir: "ltr",
+
+    t: (key: string) => key,
+  });
 
 // =========================================================
 // PROVIDER
@@ -3839,25 +2326,42 @@ export const LanguageProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [lang, setLang] = useState<Lang>("en");
+  const [lang, setLang] =
+    useState<Lang>("en");
+
+  // ---------------------------------------------------------
+  // Load saved language
+  // ---------------------------------------------------------
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("preferred_lang");
+    const savedLang =
+      localStorage.getItem("preferred_lang");
 
     const saved: Lang =
-      savedLang === "ar" ? "ar" : "en";
+      savedLang === "ar"
+        ? "ar"
+        : "en";
 
     setLang(saved);
 
     document.documentElement.dir =
-      saved === "ar" ? "rtl" : "ltr";
+      saved === "ar"
+        ? "rtl"
+        : "ltr";
 
-    document.documentElement.lang = saved;
+    document.documentElement.lang =
+      saved;
   }, []);
+
+  // ---------------------------------------------------------
+  // Toggle language
+  // ---------------------------------------------------------
 
   const toggleLang = () => {
     const next: Lang =
-      lang === "en" ? "ar" : "en";
+      lang === "en"
+        ? "ar"
+        : "en";
 
     setLang(next);
 
@@ -3867,21 +2371,45 @@ export const LanguageProvider = ({
     );
 
     document.documentElement.dir =
-      next === "ar" ? "rtl" : "ltr";
+      next === "ar"
+        ? "rtl"
+        : "ltr";
 
-    document.documentElement.lang = next;
+    document.documentElement.lang =
+      next;
   };
+
+  // ---------------------------------------------------------
+  // Translation function
+  // ---------------------------------------------------------
 
   const t = (key: string): string => {
-    return translations[lang]?.[key] ?? key;
+    return (
+      translations[lang]?.[key] ??
+      translations.en?.[key] ??
+      key
+    );
   };
+
+  // ---------------------------------------------------------
+  // Direction
+  // ---------------------------------------------------------
+
+  const dir =
+    lang === "ar"
+      ? "rtl"
+      : "ltr";
+
+  // ---------------------------------------------------------
+  // Provider
+  // ---------------------------------------------------------
 
   return (
     <LanguageContext.Provider
       value={{
         lang,
         toggleLang,
-        dir: lang === "ar" ? "rtl" : "ltr",
+        dir,
         t,
       }}
     >
@@ -3894,5 +2422,5 @@ export const LanguageProvider = ({
 // HOOK
 // =========================================================
 
-export const useLanguage = () =>
-  useContext(LanguageContext);
+export const useLanguage =
+  () => useContext(LanguageContext);
