@@ -117,7 +117,7 @@ export default function AboutPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="rounded-2xl bg-teal-700 p-6 text-white">
-                <p className="text-2xl font-bold">2023</p>
+                <p className="text-2xl font-bold">2026</p>
 
                 <p className="mt-1 text-sm text-teal-100/80">
                   {t("about.foundedIn")}
@@ -232,11 +232,11 @@ export default function AboutPage() {
             </p>
 
             <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Button href="/signup" variant="primary">
+              <Button href="/find-a-nurses" variant="primary">
                 {t("about.getStarted")}
               </Button>
 
-              <Button href="/for-nurses" variant="outline">
+              <Button href="/join-as-a-nurse" variant="outline">
                 {t("about.joinAsNurse")}
               </Button>
             </div>

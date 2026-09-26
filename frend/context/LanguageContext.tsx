@@ -696,7 +696,7 @@ const translations: Record<Lang, Record<string, string>> = {
     "review.eightHours": "8 Hours",
     "review.twelveHours": "12 Hours",
     "review.twentyFourHours": "24 Hours",
-
+"about.priyaBio": "Works with nurses and healthcare professionals to build a trusted care network across Lebanon.",
     // =======================================================
     // CONFIRMATION
     // =======================================================
@@ -781,13 +781,13 @@ const translations: Record<Lang, Record<string, string>> = {
       "Built by a nurse who lived the problem",
 
     "about.storyParagraph1":
-      "NurseConnect started in 2023 after one of our co-founders, a former ICU nurse, spent weeks trying to find reliable home care for her grandmother. Between unreliable referrals, unclear credentials, and no easy way to see other families' experiences, the process took much longer than it should have.",
+      "NurseConnect started in 2026 after one of our co-founders, a former ICU nurse, spent weeks trying to find reliable home care for her grandmother. Between unreliable referrals, unclear credentials, and no easy way to see other families' experiences, the process took much longer than it should have.",
 
     "about.storyParagraph2":
       "We built the platform we wished existed: every nurse is verified for their license and background, with real reviews from real families and a simple way to book, communicate, and manage care in one place.",
 
     "about.foundedIn":
-      "Founded in San Francisco",
+      "Founded in Lebanon",
 
     "about.licensedChecked":
       "Licensed & background-checked",
@@ -2020,14 +2020,13 @@ const translations: Record<Lang, Record<string, string>> = {
       "أسسها ممرض عاش المشكلة بنفسه",
 
     "about.storyParagraph1":
-      "بدأت NurseConnect في عام 2023 بعدما أمضت إحدى مؤسساتنا المشاركات، وهي ممرضة سابقة في وحدة العناية المركزة، أسابيع في محاولة العثور على رعاية منزلية موثوقة لجدتها. وبين الإحالات غير الموثوقة، وعدم وضوح المؤهلات، وعدم وجود طريقة للاطلاع على تقييمات العائلات الأخرى، استغرق الأمر وقتًا أطول بكثير مما ينبغي.",
+      "بدأت NurseConnect في عام 2026 بعدما أمضت إحدى مؤسساتنا المشاركات، وهي ممرضة سابقة في وحدة العناية المركزة، أسابيع في محاولة العثور على رعاية منزلية موثوقة لجدتها. وبين الإحالات غير الموثوقة، وعدم وضوح المؤهلات، وعدم وجود طريقة للاطلاع على تقييمات العائلات الأخرى، استغرق الأمر وقتًا أطول بكثير مما ينبغي.",
 
     "about.storyParagraph2":
       "أنشأنا المنصة التي كنا نتمنى وجودها: كل ممرض يخضع للتحقق من خلفيته وترخيصه، مع تقييمات حقيقية من عائلات حقيقية، وطريقة بسيطة للحجز والتواصل والدفع، كل ذلك في مكان واحد.",
 
-    "about.foundedIn":
-      "تأسست في سان فرانسيسكو",
-
+    "about.foundedIn":"تأسست في لبنان",
+"about.priyaBio": "تعمل مع الممرضين والمتخصصين في الرعاية الصحية لبناء شبكة رعاية موثوقة في لبنان.",
     "about.licensedChecked":
       "مرخصون وخضعوا للتحقق من الخلفية",
 
